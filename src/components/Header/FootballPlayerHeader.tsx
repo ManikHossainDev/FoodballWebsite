@@ -111,7 +111,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
       <div className={`fixed top-2 right-0 h-full w-full md:w-[500px] bg-[#2b2b2b] shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${isNotificationOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl md:text-2xl font-bold text-white py-3"
+          <h2 className="text-xm md:text-2xl font-bold text-white py-3"
         style={{
           textShadow:
             "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",

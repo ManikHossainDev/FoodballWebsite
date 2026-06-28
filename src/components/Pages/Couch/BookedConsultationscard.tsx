@@ -3,10 +3,12 @@
 import React from 'react';
 import image from "@/assets/Authentication/Container.png"
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const BookedConsultationscard = () => {
   const highlights = [
-    {
+    { 
       id: 1,
       title: "Match Highlights - Oct 3",
       player: "Marcus Silva",
@@ -48,26 +50,32 @@ const BookedConsultationscard = () => {
     }
   ];
 
-  const handleReviewVideo = (id: number) => {
-    console.log(`Review video ${id}`);
+  const router = useRouter();
+
+  const handleJoinSession = (e: React.MouseEvent, id: number) => {
+    e.preventDefault();      // Link navigation বন্ধ করবে
+    e.stopPropagation();     // Event bubble বন্ধ করবে
+    console.log(`Join session ${id}`);
+    // এখানে join session এর logic দিন
   };
 
-  const handleMessage = (id: number) => {
-    console.log(`Message for video ${id}`);
+  const handleReschedule = (e: React.MouseEvent, id: number) => {
+    router.push(`/BookedConsultations/reschedulebooked`);
   };
 
   return (
     <div className="bg-[#303030] rounded-md p-4">
-      <div className=" space-y-4">
+      <div className="space-y-4">
         {highlights.map((highlight) => (
-          <div
+          <Link
+            href={`/BookedConsultations/${highlight.id}`}
             key={highlight.id}
             className="bg-[#3F3F3F] rounded-xl p-4 lg:flex items-center justify-between hover:from-gray-750 hover:to-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             {/* Thumbnail with Play Button */}
             <div className="md:flex items-center gap-1 md:gap-4 flex-1 mb-2 md:mb-0">
               <div className="relative group cursor-pointer">
-                <div className=" w-full sm:w-36 md:h-20 bg-gray-700 rounded-lg overflow-hidden">
+                <div className="w-full sm:w-36 md:h-20 bg-gray-700 rounded-lg overflow-hidden">
                   <Image
                     src={image}
                     alt={highlight.title}
@@ -91,19 +99,19 @@ const BookedConsultationscard = () => {
             {/* Action Buttons */}
             <div className="flex justify-between lg:justify-end gap-3">
               <button
-                onClick={() => handleReviewVideo(highlight.id)}
+                onClick={(e) => handleJoinSession(e, highlight.id)}
                 className="bg-red-600 hover:bg-red-700 text-white px-2 md:px-6 py-2.5 rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-red-600/50"
               >
                 Join Session
               </button>
-              <button
-                onClick={() => handleMessage(highlight.id)}
+              <Link
+                href={`/BookedConsultations/reschedulebooked?id=${highlight.id}`}
                 className="border-2 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-2 md:px-6 py-2.5 rounded-lg font-medium transition-all duration-200 hover:scale-105"
-              > 
+              >
                 Reschedule
-              </button>
+              </Link>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
