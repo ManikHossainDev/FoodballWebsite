@@ -61,7 +61,7 @@ const AgentsSidebar = ({ drawerOpen = false, onCloseDrawer }: AgentsSidebarProps
     {
       title: "Connect With Club",
       icon: <Building2 size={18} />,
-      href: "/ExploreClubs",
+      href: "/exploreclubs",
     },
   ];
 
