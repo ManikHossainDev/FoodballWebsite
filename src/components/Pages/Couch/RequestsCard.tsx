@@ -119,6 +119,15 @@ const RequestsCard = () => {
     <div className="grid grid-cols-1 xl:grid-cols-2 xl:gap-6 bg-[#303030] rounded-md">
       {/* Video Review Request Section */}
       <div className="space-y-4 lg:border-r-2 lg:border-gray-700 p-3 xl:pr-10">
+        <h1 
+          className="text-sm md:text-xl font-bold text-white py-1"
+            style={{
+              textShadow:
+                "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
+            }}
+        >
+          Video Review Request
+        </h1>
         <div className="space-y-3">
           {videoReviewData.map((item) => (
             <div
@@ -158,6 +167,15 @@ const RequestsCard = () => {
 
       {/* Consultations Request Section */}
       <div className="space-y-4 p-3">
+         <h1 
+          className="text-sm md:text-xl font-bold text-white py-1"
+            style={{
+              textShadow:
+                "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
+            }}
+        >
+          Consultations Request
+        </h1>
         <div className="space-y-3">
           {consultationsData.map((item) => (
             <div

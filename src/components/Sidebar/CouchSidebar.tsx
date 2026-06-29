@@ -13,6 +13,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { RiVideoLine } from "react-icons/ri";
 import { PiHeadsetFill } from "react-icons/pi";
 import { TbClipboardCheck } from "react-icons/tb";
+import { LuWalletCards } from "react-icons/lu";
 interface CouchSidebarProps {
   drawerOpen?: boolean;
   onCloseDrawer?: () => void;
@@ -54,6 +55,11 @@ const CouchSidebar = ({ drawerOpen = false, onCloseDrawer }: CouchSidebarProps) 
       title: "Requests",
       icon: <TbClipboardCheck  size={20} />,
       href: "/Requests",
+    },
+    {
+      title: "Wallet",
+      icon: <LuWalletCards size={20} />,
+      href: "/couchwallet",
     },
   ];
 

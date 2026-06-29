@@ -4,7 +4,7 @@ import React from 'react';
 import image from "@/assets/Authentication/Container.png"
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 const BookedConsultationscard = () => {
   const highlights = [
@@ -50,7 +50,7 @@ const BookedConsultationscard = () => {
     }
   ];
 
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleJoinSession = (e: React.MouseEvent, id: number) => {
     e.preventDefault();      // Link navigation বন্ধ করবে
@@ -59,9 +59,9 @@ const BookedConsultationscard = () => {
     // এখানে join session এর logic দিন
   };
 
-  const handleReschedule = (e: React.MouseEvent, id: number) => {
-    router.push(`/BookedConsultations/reschedulebooked`);
-  };
+  // const handleReschedule = (e: React.MouseEvent, id: number) => {
+  //   router.push(`/BookedConsultations/reschedulebooked`);
+  // };
 
   return (
     <div className="bg-[#303030] rounded-md p-4">

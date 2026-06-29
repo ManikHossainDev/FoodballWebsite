@@ -212,10 +212,10 @@ const Agents = () => {
 
                   <div className="flex flex-col gap-2 flex-shrink-0">
                     <button className="bg-[#ef4444] hover:bg-[#dc2626] text-white px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap">
-                      Message Club
+                      Cancal
                     </button>
-                    <button className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap">
-                      Message player
+                    <button className="bg-[#25DD000F]  text-[#25DD00] border border-[#25DD00] px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap">
+                      Hired
                     </button>
                   </div>
                 </div>

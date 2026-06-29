@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { LuLayoutDashboard } from "react-icons/lu";
+import { HiOutlineUserGroup } from "react-icons/hi2";
 interface AgentsSidebarProps {
   drawerOpen?: boolean;
   onCloseDrawer?: () => void;
@@ -53,6 +54,11 @@ const AgentsSidebar = ({ drawerOpen = false, onCloseDrawer }: AgentsSidebarProps
       href: "/PlacementProgress",
     },
     {
+      title:"Recommended Players",
+      icon:<HiOutlineUserGroup  size={18} />,
+      href:"/recommendedplayers",
+    },
+    {
       title: "Connect With Club",
       icon: <Building2 size={18} />,
       href: "/ExploreClubs",
@@ -64,7 +70,7 @@ const AgentsSidebar = ({ drawerOpen = false, onCloseDrawer }: AgentsSidebarProps
     return (
       <Link href={item.href} onClick={closeDrawer}>
         <div
-          className={`flex items-center gap-3 px-1 md:px-4 py-3 rounded-xl cursor-pointer transition-all ${
+          className={`flex items-center gap-3 px-1 lg:px-2 py-3 rounded-xl cursor-pointer transition-all ${
             isActive
               ? "bg-[#FFFFFF] border border-red-400 text-red-400 font-semibold shadow-[0_0_20px_rgba(255,0,0,0.5)]"
               : "text-gray-400 hover:text-white hover:bg-gray-800/50"

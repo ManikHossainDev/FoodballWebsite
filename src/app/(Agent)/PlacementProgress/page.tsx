@@ -10,9 +10,11 @@ const Page = () => {
             "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
         }}
       >
-        Browse and Manage Player Requests
+        Player Placement Progress
       </h2>
-      <p className="text-[#8F8F8F] mb-5">Help Footballers Find the Best Opportunities</p>
+      <p className="text-[#8F8F8F] mb-5">
+        Track the current status and advancement of players throughout the placement and recruitment process.
+      </p>
       <PlacementProgressCard />
     </div>
   );

@@ -15,7 +15,7 @@ type PlayerItem = {
   preferredClub: string;
 };
 
-const PlacementsRequestsCard = () => {
+const RecommendedPlayers = () => {
    const videoReviewData = [
     {
       id: 1,
@@ -104,7 +104,7 @@ const PlacementsRequestsCard = () => {
 
   // PlayerCard props type
   const PlayerCard = ({ item }: { item: PlayerItem }) => (
-    <Link href={`/PlacementsRequests/${item.id}`}>
+    <Link href={`/recommendedplayers/${item.id}`}>
       <div className="bg-[#3F3F3F] rounded-lg p-3 my-5 md:flex items-center gap-3 transition cursor-pointer ">
         <div className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
           <Image
@@ -167,4 +167,4 @@ const PlacementsRequestsCard = () => {
   );
 };
 
-export default PlacementsRequestsCard;
+export default RecommendedPlayers;

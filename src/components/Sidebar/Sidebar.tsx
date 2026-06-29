@@ -14,6 +14,7 @@ import {
   LogOut,
   ChevronRight,
 } from "lucide-react";
+import { LuWalletCards } from "react-icons/lu";
 
 interface SidebarProps {
   drawerOpen?: boolean;
@@ -61,7 +62,7 @@ const Sidebar = ({ drawerOpen = false, onCloseDrawer }: SidebarProps) => {
     },
     {
       title: "Wallet",
-      icon: <ClipboardList size={18} />,
+      icon: <LuWalletCards size={18} />,
       href: "/wallet",
     },
   ];
