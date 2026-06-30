@@ -13,6 +13,7 @@ import {
 import { LuLayoutDashboard } from "react-icons/lu";
 import { FiUsers } from "react-icons/fi";
 import { MdWork } from "react-icons/md";
+import { TbUsersGroup } from "react-icons/tb";
 
 interface SidebarClubProps {
   drawerOpen?: boolean;
@@ -47,6 +48,11 @@ const SidebarClub = ({ drawerOpen = false, onCloseDrawer }: SidebarClubProps) =>
       icon: <FiUsers  size={18} />,
       href: "/BrowsePlayers",
     },
+     {
+      title: "Recommendate Player",
+      icon: <TbUsersGroup  size={18} />,
+      href: "/clubrecommendateplayer",
+    },
     {
       title: "Work with Agents",
       icon: <MdWork  size={18} />,
@@ -60,7 +66,7 @@ const SidebarClub = ({ drawerOpen = false, onCloseDrawer }: SidebarClubProps) =>
     return (
       <Link href={item.href} onClick={closeDrawer}>
         <div
-          className={`flex items-center gap-3 px-1 md:px-4 py-3 rounded-xl cursor-pointer transition-all ${
+          className={`flex items-center gap-3 px-2 py-3 rounded-xl cursor-pointer transition-all ${
             isActive
               ? "bg-[#FFFFFF] border border-red-400 text-red-400 font-semibold shadow-[0_0_20px_rgba(255,0,0,0.5)]"
               : "text-gray-400 hover:text-white hover:bg-gray-800/50"
