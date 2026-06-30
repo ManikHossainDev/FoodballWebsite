@@ -1,6 +1,10 @@
+"use client";
+
 import { MessageCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Player {
+  id: string;
   name: string;
   position: string;
   experience: string;
@@ -8,12 +12,12 @@ interface Player {
 }
 
 const players: Player[] = [
-  { name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
-  { name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
-  { name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
-  { name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
-  { name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
-  { name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
+  { id: "1", name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
+  { id: "2", name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
+  { id: "3", name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
+  { id: "4", name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
+  { id: "5", name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
+  { id: "6", name: "Marcus Silva", position: "Forward", experience: "5 years", club: "Barcelona FC" },
 ];
 
 function Avatar({ name }: { name: string }) {
@@ -29,8 +33,22 @@ function Avatar({ name }: { name: string }) {
 }
 
 function PlayerRow({ player }: { player: Player }) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/clubrecommendateplayer/${player.id}`);
+  };
+
+  const handleMessageClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // message agent logic here
+  };
+
   return (
-    <div className="flex items-center justify-between bg-zinc-800/80 rounded-xl px-4 py-3">
+    <div
+      onClick={handleCardClick}
+      className="flex items-center justify-between bg-zinc-800/80 rounded-xl px-4 py-3 cursor-pointer hover:bg-zinc-800 transition-colors"
+    >
       <div className="flex items-center gap-4">
         <Avatar name={player.name} />
         <div>
@@ -51,7 +69,10 @@ function PlayerRow({ player }: { player: Player }) {
           </div>
         </div>
       </div>
-      <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 transition-colors text-white text-sm font-medium px-4 py-2 rounded-full">
+      <button
+        onClick={handleMessageClick}
+        className="flex items-center gap-2 bg-red-600 hover:bg-red-700 transition-colors text-white text-sm font-medium px-4 py-2 rounded-full"
+      >
         <MessageCircle size={16} />
         Message Agent
       </button>
@@ -63,8 +84,8 @@ const RecommendatePlayer = () => {
   return (
     <div className="bg-[#303030] rounded-lg p-5">
       <div className="flex flex-col gap-3">
-        {players.map((player, idx) => (
-          <PlayerRow key={idx} player={player} />
+        {players.map((player) => (
+          <PlayerRow key={player.id} player={player} />
         ))}
       </div>
     </div>

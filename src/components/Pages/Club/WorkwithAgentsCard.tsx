@@ -180,7 +180,7 @@ const WorkwithAgentsCard = () => {
 
             {/* View Posts Button */}
             <div className="space-y-2 px-2 pb-3">
-              <Link className="block w-full" href={`/posts/${player.id}`}>
+              <Link className="block w-full" href={`/WorkwithAgents/${player.id}`}>
                 <button className="w-full bg-[#E43636] hover:bg-red-700 text-white text-sm font-medium py-2.5 rounded-md transition-colors flex items-center justify-center gap-2">
                   <MessageCircle size={16} />
                   View Posts
