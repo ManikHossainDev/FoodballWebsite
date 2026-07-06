@@ -16,11 +16,6 @@ export const baseApi = createApi({
   tagTypes: [
     "Profile",
     "settings",
-    "Moon",
-    "ZodiacSigns",
-    "Blogs",
-    "Tarot",
-    "Subscription",
   ],
   endpoints: () => ({}),
 });

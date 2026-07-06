@@ -2,6 +2,10 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Button, Input, Checkbox, message } from "antd";
+import { useForgetPasswordMutation, useLoginMutation, useRegisterMutation, useResetPasswordMutation, useVerifyAccountMutation } from "@/redux/features/auth/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -14,14 +18,24 @@ type VerifyPurpose = "signup" | "forgot";
 
 const roles = [
   { value: "player", title: "Football Player", description: "Upload videos & get coaching" },
-  { value: "coach", title: "Scout/ Coach", description: "Review videos & mentor players" },
-  { value: "consultant", title: "Scout/ Consultant", description: "Mentor clubs/academies" },
-  { value: "club", title: "Scout/ Club", description: "Scout & recruit players" },
+  { value: "coach", title: "Coach", description: "Review videos & mentor players" },
+  { value: "agents", title: "Agents", description: "Mentor clubs/academies" },
+  { value: "club", title: "Club", description: "Scout & recruit players" },
 ];
+
 
 const OTP_LENGTH = 6;
 
 const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) => {
+    const dispatch = useAppDispatch();
+    const route = useRouter();
+    const [Register] = useRegisterMutation();
+    const [VerifyAccount] = useVerifyAccountMutation();
+    const [ForgetPassword] = useForgetPasswordMutation();
+    const [ResetPassword] = useResetPasswordMutation();
+    const [loginUser] = useLoginMutation();
+
+
   const [view, setView] = useState<View>(initialTab);
   const [verifyPurpose, setVerifyPurpose] = useState<VerifyPurpose>("signup");
   const [loading, setLoading] = useState(false);
@@ -38,7 +52,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
   });
 
   const [forgotEmail, setForgotEmail] = useState("");
-
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [resendTimer, setResendTimer] = useState(0);
@@ -136,73 +149,95 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
     setSignupData((prev) => ({ ...prev, role: selectedRole }));
   };
 
-  const handleRoleSubmit = () => {
+  const handleRoleSubmit = async () => {
     if (!signupData.role) {
       message.error("Please select a role first");
       return;
     }
     loading_start();
-
-    console.log("1st API Triggered (On Sign Up Button Click):", signupData);
-
-    setTimeout(() => {
-      setLoading(false);
-      message.success("Registration info saved. Verification code sent to your email!");
-      startVerify("signup");
-    }, 1000);
+    const { fullName, email, password, role, } = signupData;
+    const signupPayload = { name:fullName, email, password, role };
+    const res  = await Register(signupPayload);
+    console.log(res)
+    if (res?.data?.statusCode === 201) {    
+        setTimeout(() => {
+        setLoading(false);
+        message.success("Registration info saved. Verification code sent to your email!");
+        startVerify("signup");
+        }, 200);
+    }
   };
 
   const loading_start = () => setLoading(true);
 
-  const handleVerifySubmit = () => {
+  const handleVerifySubmit = async () => {
     const code = otp.join("");
     if (code.length < OTP_LENGTH) {
       message.error("Please enter the full code");
       return;
     }
     loading_start();
-
-    console.log("2nd API Triggered:", { email: signupData.email, code });
-
-    setTimeout(() => {
-      setLoading(false);
-      if (verifyPurpose === "signup") {
-        message.success("Email verified successfully! Please sign in to your account.");
-        setView("signin"); 
-      } else {
-        setView("reset"); 
-      }
-    }, 1000);
+    const res = await VerifyAccount({ email:signupData.email, oneTimeCode:code });
+    console.log("VerifyAccount Response:", res);
+    if(res?.data?.statusCode === 200) {
+        setTimeout(() => {
+        setLoading(false);
+        if (verifyPurpose === "signup") {
+            message.success("Email verified successfully! Please sign in to your account.");
+            setView("signin"); 
+        } else {
+            setView("reset"); 
+        }
+        }, 200);
+    }
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!email || !password) {
       message.error("Email and password are required");
       return;
     }
-    loading_start();
     console.log("Sign in", { email, password });
-    setTimeout(() => {
-      setLoading(false);
-      handleClose();
-    }, 600);
+    const res = await loginUser({ email, password });
+    console.log(res)
+    console.log(res?.data?.data?.role)
+    loading_start();
+    if (res?.data?.statusCode === 200) {
+      dispatch(setUser({ user:res?.data?.data, token:res?.data?.tokens?.accessToken}));
+      setTimeout(() => {
+        setLoading(false);
+        if (res?.data?.data?.role === "player") {
+          route.push("/FootballPlayer");
+        } else if (res?.data?.data?.role === "coach") {
+          route.push("/Couch");
+        }else if (res?.data?.data?.role === "club") {
+          route.push("/Club");
+        }else if (res?.data?.data?.role === "agents") {
+          route.push("/agents");
+        }
+        handleClose();
+      }, 200);
+    }
   };
 
-  const handleForgotSubmit = () => {
+  const handleForgotSubmit = async () => {
     if (!forgotEmail) {
       message.error("Please enter your email");
       return;
     }
     loading_start();
-    console.log("Forgot password for", { forgotEmail });
-    setTimeout(() => {
-      setLoading(false);
-      message.success("Verification code sent to your email");
-      startVerify("forgot");
-    }, 600);
+    const res = await ForgetPassword({ email: forgotEmail });
+    console.log("ForgetPassword Response:", res);
+    if(res?.data?.statusCode === 200) {
+        setTimeout(() => {
+        setLoading(false);
+        message.success("Verification code sent to your email");
+        startVerify("forgot");
+        }, 200);
+    }
   };
 
-  const handleResetSubmit = () => {
+  const handleResetSubmit = async () => {
     if (!newPassword || !confirmNewPassword) {
       message.error("Please fill in both fields");
       return;
@@ -212,20 +247,16 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
       return;
     }
     loading_start();
-    console.log("Reset password", { newPassword });
-    setTimeout(() => {
-      setLoading(false);
-      message.success("Password reset successful, please sign in");
-      resetAllFields();
-      setView("signin");
-    }, 600);
-  };
-
-  const handleResendOtp = () => {
-    if (resendTimer > 0) return;
-    message.success("Verification code resent");
-    setOtp(Array(OTP_LENGTH).fill(""));
-    setResendTimer(30);
+    const res = await ResetPassword({ email:forgotEmail, password:newPassword });
+    console.log("ResetPassword Response:", res);
+    if(res?.data?.statusCode === 200) {
+        setTimeout(() => {
+        setLoading(false);
+        message.success("Password reset successful, please sign in");
+        resetAllFields();
+        setView("signin");
+        }, 600);
+    }
   };
 
   if (!isOpen) return null;
@@ -349,16 +380,13 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
               <input key={i} ref={(el) => { otpRefs.current[i] = el; }} type="text" inputMode="numeric" maxLength={1} value={digit} onChange={(e) => handleOtpChange(i, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(i, e)} className="w-10 h-12 text-center text-lg rounded-md border border-gray-400 text-black focus:border-red-500 focus:outline-none" />
             ))}
           </div>
-          <Button type="primary" size="large" block loading={loading} onClick={handleVerifySubmit} className="rounded-md font-medium" style={{ backgroundColor: "#ef4444", borderColor: "#ef4444", height: "44px" }}>
-            Verify
-          </Button>
-          <div className="text-center text-sm mt-4">
-            {resendTimer > 0 ? <span className="text-white">Resend code in {resendTimer}s</span> : <button type="button" className="text-red-500 hover:text-red-600 font-medium bg-transparent border-none cursor-pointer p-0" onClick={handleResendOtp}>Resend Code</button>}
-          </div>
-          <div className="text-center text-sm">
-            <button type="button" className="text-white/80 hover:text-white bg-transparent border-none cursor-pointer p-0" onClick={() => setView(verifyPurpose === "signup" ? "role" : "forgot")}>
+          <div className="flex justify-between items-center  mt-6">
+            <button type="button" className="text-white/80 border  border-white hover:text-white bg-transparent  cursor-pointer p-[9px] mr-2 rounded-lg" onClick={() => setView(verifyPurpose === "signup" ? "role" : "forgot")}>
               Back
             </button>
+             <Button type="primary" size="large" block loading={loading} onClick={handleVerifySubmit} className="rounded-md font-medium" style={{ backgroundColor: "#ef4444", borderColor: "#ef4444", height: "44px" }}>
+                Verify
+            </Button>
           </div>
         </div>
       )}

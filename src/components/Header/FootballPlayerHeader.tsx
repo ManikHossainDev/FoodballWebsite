@@ -42,13 +42,15 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
               <Menu className="w-4 h-4" />
             </button>
 
-            <Image
+            <Link href="/">
+              <Image
               src={logo}
               alt="Logo"
               width={100}
               height={100}
               className="rounded w-[50px] h-[34px] md:w-[115px] md:h-[68px] object-cover"
             />
+            </Link>
           </div>
 
           {/* Right Section - Icons */}

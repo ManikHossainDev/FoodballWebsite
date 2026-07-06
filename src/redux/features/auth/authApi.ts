@@ -1,19 +1,20 @@
 "use client";
+
 import { baseApi } from "@/redux/api/baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
-        url: "/auth/signin",
+        url: "/auth/login",
         method: "POST",
         body: data,
       }),
     }),
-
+    
     register: builder.mutation({
       query: (data) => ({
-        url: "/auth/signup",
+        url: "/auth/register",
         method: "POST",
         body: data,
       }),
@@ -70,7 +71,6 @@ const authApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
-
     getSingleUser: builder.query({
       query: (id) => ({
         url: `/auth/get-user-details-with-id?user_id=${id}`,
