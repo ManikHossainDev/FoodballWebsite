@@ -2,19 +2,21 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Button, Input, Checkbox, message } from "antd";
+
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialTab?: "signin" | "signup";
 }
+
 type View = "signin" | "signup" | "role" | "forgot" | "verify" | "reset";
 type VerifyPurpose = "signup" | "forgot";
 
 const roles = [
-  { value: "player",  title: "Football Player", description: "Upload videos & get coaching" },
-  { value: "coach",  title: "Scout/ Coach", description: "Review videos & mentor players" },
-  { value: "consultant",  title: "Scout/ Consultant", description: "Mentor clubs/academies" },
-  { value: "club",  title: "Scout/ Club", description: "Scout & recruit players" },
+  { value: "player", title: "Football Player", description: "Upload videos & get coaching" },
+  { value: "coach", title: "Scout/ Coach", description: "Review videos & mentor players" },
+  { value: "consultant", title: "Scout/ Consultant", description: "Mentor clubs/academies" },
+  { value: "club", title: "Scout/ Club", description: "Scout & recruit players" },
 ];
 
 const OTP_LENGTH = 6;
@@ -139,7 +141,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
       message.error("Please select a role first");
       return;
     }
-    setLoading(true);
+    loading_start();
 
     console.log("1st API Triggered (On Sign Up Button Click):", signupData);
 
@@ -150,13 +152,15 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
     }, 1000);
   };
 
+  const loading_start = () => setLoading(true);
+
   const handleVerifySubmit = () => {
     const code = otp.join("");
     if (code.length < OTP_LENGTH) {
       message.error("Please enter the full code");
       return;
     }
-    setLoading(true);
+    loading_start();
 
     console.log("2nd API Triggered:", { email: signupData.email, code });
 
@@ -176,7 +180,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
       message.error("Email and password are required");
       return;
     }
-    setLoading(true);
+    loading_start();
     console.log("Sign in", { email, password });
     setTimeout(() => {
       setLoading(false);
@@ -189,7 +193,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
       message.error("Please enter your email");
       return;
     }
-    setLoading(true);
+    loading_start();
     console.log("Forgot password for", { forgotEmail });
     setTimeout(() => {
       setLoading(false);
@@ -207,7 +211,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
       message.error("Passwords do not match");
       return;
     }
-    setLoading(true);
+    loading_start();
     console.log("Reset password", { newPassword });
     setTimeout(() => {
       setLoading(false);
@@ -237,11 +241,17 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
 
   return (
     <aside className="fixed top-20 right-3 w-[300px] md:w-[400px] backdrop-blur-sm bg-[#C6C6C6] rounded-md shadow-lg z-50 overflow-y-auto max-h-[calc(100vh-100px)] p-[15px] transition-all duration-500 ease-in-out">
-      <button onClick={handleClose} className="absolute top-4 right-4 text-white hover:text-gray-200 font-bold">
+      {/* ✕ Button updated with high z-index and explicit click action */}
+      <button 
+        type="button"
+        onClick={handleClose} 
+        className="absolute top-4 right-4 z-50 text-white hover:text-gray-200 font-bold bg-transparent border-none cursor-pointer p-1 pointer-events-auto"
+        aria-label="Close modal"
+      >
         ✕
       </button>
 
-      <div className="mb-6">
+      <div className="mb-6 relative z-10">
         <h2 className="text-lg font-semibold text-white mb-1" style={{
                 textShadow:
                   "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
