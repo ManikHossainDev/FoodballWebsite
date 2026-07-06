@@ -2,7 +2,7 @@
 "use client"
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Star, Instagram, Heart,  Award, TrendingUp, Users, Globe, FileText, MessageSquare } from 'lucide-react';
+import { Star,  Award, TrendingUp, Users, Globe, FileText, MessageSquare } from 'lucide-react';
 import user from '@/assets/Authentication/user.jpg';
 import { FaRegMessage } from 'react-icons/fa6';
 import Link from 'next/link';

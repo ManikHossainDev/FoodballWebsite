@@ -2,7 +2,7 @@
 "use client"
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Star, Upload, Video } from 'lucide-react';
+import { Star, Upload,  } from 'lucide-react';
 import user from '@/assets/Authentication/user.jpg';
 import { FaRegMessage } from 'react-icons/fa6';
 
@@ -10,13 +10,10 @@ const RequestReviewCard = () => {
   // This would normally come from the video the user selected on the previous step
   const selectedVideo = {
     title: 'Shooting Practice – Match Simulation',
-    description:
-      'This video shows me practicing my shooting under pressure in match situations. I would like feedback on my accuracy and positioning.',
+    description:'This video shows me practicing my shooting under pressure in match situations. I would like feedback on my accuracy and positioning.',
   };
 
-  const [areasToFocus, setAreasToFocus] = useState(
-    'Focus on my shooting accuracy and positioning during breakaways.'
-  );
+  const [areasToFocus, setAreasToFocus] = useState('Focus on my shooting accuracy and positioning during breakaways.');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   // TODO: replace with the user's real wallet balance (from props / API)
