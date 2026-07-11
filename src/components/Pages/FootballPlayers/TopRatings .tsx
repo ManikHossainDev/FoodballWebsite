@@ -132,7 +132,7 @@ const TopRatings = () => {
 
   return (
     <div className="">
-      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Top rated Coach */}
         <div className="space-y-4">
           <div className="flex justify-between items-center mb-4">
