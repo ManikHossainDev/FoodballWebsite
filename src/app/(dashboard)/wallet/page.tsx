@@ -1,5 +1,6 @@
 import WalletPage from "@/components/Pages/FootballPlayers/walletPage";
 const Page = () => {
+  
  return (
  <div>
         <h2

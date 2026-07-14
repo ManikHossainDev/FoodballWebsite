@@ -1,9 +1,10 @@
 import React from 'react';
 import { Star } from 'lucide-react';
-import user from '@/assets/Authentication/user.jpg'
+import user from '@/assets/Authentication/user.jpg';
 import Image from 'next/image';
 import Link from 'next/link';
 const HireCoachProfileCards = () => {
+  
   const profilesData = [
     {
       id: 1,

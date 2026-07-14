@@ -1,15 +1,24 @@
+"use client";
 import { useState } from 'react';
 import Image from 'next/image';
 import { Settings, Bell, MessageSquare, Menu, MoreVertical } from 'lucide-react';
 import logo from '@/assets/logo/logo.png';
-import user from '@/assets/logo/user.jpg';
+import userImg from '@/assets/logo/user.jpg';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
 
 interface FootballPlayerHeaderProps {
   onMenuClick?: () => void;
 }
 
 const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
+  const router = useRouter();
+  // 2. Destructure refetch instead of refresh (RTK Query hook name)
+  const { data, } = useGetProfileQuery({});
+  const user = data?.data;
+  console.log(user?.image);
+
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
 
@@ -25,6 +34,19 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
     { id: 9, message: "Video review request from David Martinez has been accepted", time: "2h ago" },
     { id: 10, message: "Video review request from David Martinez has been accepted", time: "2h ago" },
   ];
+
+  // Role-based route mapping — image click korle role onujayi route hobe
+  const handleProfileClick = () => {
+    if (user.role === "player") {
+      router.push("/profileplayer");
+    } else if (user.role === "coach") {
+      router.push("/couchprofile");
+    } else if (user.role === "club") {
+      router.push("/clubprofile");
+    } else if (user.role === "agents") {
+      router.push("/agentprofile");
+    }
+  };
 
   return (
     <>
@@ -44,12 +66,12 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
 
             <Link href="/">
               <Image
-              src={logo}
-              alt="Logo"
-              width={100}
-              height={100}
-              className="rounded w-[50px] h-[34px] md:w-[115px] md:h-[68px] object-cover"
-            />
+                src={logo}
+                alt="Logo"
+                width={100}
+                height={100}
+                className="rounded w-[50px] h-[34px] md:w-[115px] md:h-[68px] object-cover"
+              />
             </Link>
           </div>
 
@@ -82,21 +104,22 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
               <MessageSquare className="w-5 h-5 md:w-7 md:h-7" />
             </button>
 
-            {/* Profile Avatar */}
-            <Link href="/profileplayer"
+            {/* Profile Avatar - role onujayi route hobe click korle */}
+            <button
+              onClick={handleProfileClick}
               className="relative group"
               aria-label="Profile"
             >
               <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-semibold overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400 transition-all">
                 <Image
-                  src={user}
+                  src={user?.image ? user.image : userImg}
                   alt="Profile"
                   width={200}
                   height={200}
-                  className="w-8 h-8 md:w-[55px] md:h-[55px] "
+                  className="w-8 h-8 md:w-[55px] md:h-[55px] object-cover"
                 />
               </div>
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -114,10 +137,10 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <h2 className="text-xm md:text-2xl font-bold text-white py-3"
-        style={{
-          textShadow:
-            "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-        }}>Notifications</h2>
+            style={{
+              textShadow:
+                "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
+            }}>Notifications</h2>
           <button 
             onClick={() => setIsNotificationOpen(false)}
             className="text-gray-400 hover:text-white p-1 hover:bg-gray-700/50 rounded-lg transition-colors"
@@ -151,7 +174,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
             >
               <div className="relative flex-shrink-0">
                 <Image 
-                  src={user}
+                  src={userImg}
                   alt="User avatar"
                   width={40}
                   height={40}

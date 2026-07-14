@@ -3,8 +3,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Drawer, Modal } from "antd";
+import Cookies from "js-cookie";
 
 import {
   Home,
@@ -15,6 +16,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { LuWalletCards } from "react-icons/lu";
+import { ImVideoCamera } from "react-icons/im";
+
+// TODO: replace with your actual hook that exposes `refetch` (e.g. useAuth, useProfile)
+// import { useProfile } from "@/hooks/useProfile";
 
 interface SidebarProps {
   drawerOpen?: boolean;
@@ -24,6 +29,9 @@ interface SidebarProps {
 const Sidebar = ({ drawerOpen = false, onCloseDrawer }: SidebarProps) => {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // const { refetch } = useProfile(); // uncomment and wire to your real hook
 
   const closeDrawer = () => {
     if (onCloseDrawer) {
@@ -33,17 +41,36 @@ const Sidebar = ({ drawerOpen = false, onCloseDrawer }: SidebarProps) => {
 
   const openLogoutModal = () => setLogoutModalVisible(true);
   const handleLogoutCancel = () => setLogoutModalVisible(false);
+
+  const handleLogout = () => {
+    // Remove the cookie holding your token (replace "token" with your actual cookie name)
+    Cookies.remove("token");
+    Cookies.remove("user");
+
+    // Refetch profile so `user` becomes undefined after cookie is cleared
+    // refetch();
+
+    // Redirect to home page or login screen
+    router.push("/");
+    closeDrawer();
+  };
+
   const handleLogoutConfirm = () => {
     setLogoutModalVisible(false);
-    console.log("User logged out");
+    handleLogout();
   };
 
   // ----- MENU LIST -----
   const menuList = [
     {
       title: "Dashboard Overview",
-      icon: <Home size={20} className="text-red-400" />,
+      icon: <Home size={20} className="" />,
       href: "/FootballPlayer",
+    },
+    {
+      title: "Upload Video",
+      icon: <ImVideoCamera size={20} className="" />,
+      href: "/uploadnew",
     },
     {
       title: "Hire a Coach",

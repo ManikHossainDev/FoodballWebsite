@@ -4,15 +4,23 @@ const Profile = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     GetProfile: builder.query({
       query: () => ({
-        url: "/user/self-profile",
+        url: "/users/self/profile",
         method: "GET",
       }),
       providesTags: ["Profile"],
     }),
     UpdateProfile: builder.mutation({
       query: (data) => ({
-        url: "/user/update-profile",
-        method: "PUT",
+        url: "/users/self/update",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+    UpdateProfileImage: builder.mutation({
+      query: (data) => ({
+        url: "/users/self/image",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["Profile"],
@@ -60,6 +68,7 @@ const Profile = baseApi.injectEndpoints({
 export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useUpdateProfileImageMutation,
   useSupportMutation,
   useGetNotificationsQuery,
   useGetSettingsQuery,

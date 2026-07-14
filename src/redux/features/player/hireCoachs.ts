@@ -1,0 +1,49 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import { baseApi } from "@/redux/api/baseApi";
+
+export const HireCoachs = baseApi.injectEndpoints({
+  overrideExisting: true,
+  endpoints: (builder) => ({
+    getCoaches: builder.query({
+      query: () => ({
+        url: "/users/coaches",
+        method: "GET",
+      }),
+      providesTags: ["coaches"],
+    }),
+
+    getSingleCoaches: builder.query({
+      query: (id) => ({
+        url: `/users/coaches/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["coaches"],
+    }),
+
+    addCoaches: builder.mutation({
+      query: (data) => ({
+        url: "/users/coaches",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["coaches"],
+    }),
+
+    updateCoaches: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/coaches/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["coaches"],
+    }),
+  }),
+});
+
+export const {
+  useGetCoachesQuery,
+  useGetSingleCoachesQuery,
+  useAddCoachesMutation,
+  useUpdateCoachesMutation,
+} = HireCoachs;

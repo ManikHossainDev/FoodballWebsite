@@ -4,10 +4,13 @@ import logo from "@/assets/logo/logo.png";
 import Image from "next/image";
 import ActiveLink from "./ActiveLink";
 import Link from "next/link";
-import { Button, Drawer } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
+import { Button, Drawer, Avatar } from "antd";
+import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { FaRegUser } from "react-icons/fa";
 import AuthModal from "./Authmodal";
+import { useGetProfileQuery } from "@/redux/features/Profile/Profile";
+import Cookies from "js-cookie"; // 1. Import Cookies library
 
 
 const navLink = [
@@ -18,7 +21,11 @@ const navLink = [
 ];
 
 const Navbar = () => {
-  const user = null;
+  const router = useRouter();
+
+  // 2. Destructure refetch instead of refresh (RTK Query hook name)
+  const { data, refetch } = useGetProfileQuery({});
+  const user = data?.data;
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -38,9 +45,37 @@ const Navbar = () => {
     closeDrawer();
   };
 
+  // 3. Logout Handler
+  const handleLogout = () => {
+    // Remove the cookie holding your token (replace "token" with your actual cookie name)
+    Cookies.remove("token");
+    Cookies.remove("user");
+
+    // Refetch profile so `user` becomes undefined after cookie is cleared
+    refetch();
+
+    // Redirect to home page or login screen
+    router.push("/");
+    closeDrawer();
+  };
+
+  const handleProfileRedirect = () => {
+    if (!user?.role) return;
+    if (user.role === "player") {
+      router.push("/FootballPlayer");
+    } else if (user.role === "coach") {
+      router.push("/Couch");
+    } else if (user.role === "club") {
+      router.push("/Club");
+    } else if (user.role === "agents") {
+      router.push("/agents");
+    }
+    closeDrawer();
+  };
+
   return (
     <nav>
-      <div className="border-b border-[#535353] flex justify-between items-center">
+      <div className="border-b border-[#535353] flex justify-between items-center px-4 md:px-8 py-1">
         {/* Logo & Desktop Nav */}
         <div className="flex items-center space-x-2">
           <Link href="/">
@@ -63,37 +98,51 @@ const Navbar = () => {
         </div>
 
         {/* Right Side Buttons */}
-        {!user ? (
-          <div className="hidden md:flex justify-between items-center md:gap-1">
-            <div
-              onClick={() => showAuthModal("signin")}
-              className="rounded-[4px] md:px-6 px-1 md:py-5 py-2 text-white border-none flex space-x-1 items-center cursor-pointer"
-            >
-              <FaRegUser />
-              <h1>Login</h1>
+        <div className="flex items-center gap-3">
+          {!user ? (
+            <div className="hidden md:flex justify-between items-center md:gap-1">
+              <div
+                onClick={() => showAuthModal("signin")}
+                className="rounded-[4px] md:px-6 px-1 md:py-5 py-2 text-white border-none flex space-x-1 items-center cursor-pointer"
+              >
+                <FaRegUser />
+                <h1>Login</h1>
+              </div>
+              <button
+                onClick={() => showAuthModal("signup")}
+                className="bg-[#E43636] space-x-2 py-2 px-4 text-white rounded-md hover:bg-[#c92e2e] transition-colors"
+              >
+                Get Started
+              </button>
             </div>
-            <button
-              onClick={() => showAuthModal("signup")}
-              className="bg-[#E43636] space-x-2 py-1 px-3 text-white rounded-md hover:bg-[#c92e2e] transition-colors"
-            >
-              Get Started
-            </button>
-          </div>
-        ) : (
-          <div>
-            <Link href="/logout" className="w-full">
-              <Button>Logout</Button>
-            </Link>
-          </div>
-        )}
+          ) : (
+            <div className="hidden md:flex items-center gap-4">
+              <div
+                onClick={handleProfileRedirect}
+                className="cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <Avatar
+                  src={user?.image}
+                  icon={!user?.image && <UserOutlined />}
+                  className="border border-white  md:w-10 md:h-10 lg:w-12 lg:h-12"
+                />
+              </div>
 
-        {/* Mobile Drawer Button */}
-        <Button
-          type="text"
-          className="md:hidden"
-          icon={<MenuOutlined className="text-white" />}
-          onClick={showDrawer}
-        />
+              {/* Attached handleLogout to Desktop Button */}
+              <Button size="middle" type="primary" danger onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          )}
+
+          {/* Mobile Drawer Button */}
+          <Button
+            type="text"
+            className="md:hidden"
+            icon={<MenuOutlined className="text-white" />}
+            onClick={showDrawer}
+          />
+        </div>
 
         {/* Mobile Drawer */}
         <Drawer
@@ -101,8 +150,7 @@ const Navbar = () => {
           placement="right"
           onClose={closeDrawer}
           open={isDrawerOpen}
-          width={170}
-          className="mt-10"
+          width={220}
           styles={{
             body: { backgroundColor: "#000000", color: "#ffffff" },
             header: { backgroundColor: "#000000", color: "#ffffff", borderBottom: "1px solid #333" },
@@ -116,13 +164,29 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          <div className="flex flex-col gap-4 mt-4">
+
+          <div className="flex flex-col gap-4 mt-6 border-t border-[#333] pt-4">
             {user ? (
-              <Link href="/logout" onClick={handleLinkClick}>
-                <button className="text-white bg-red-500 px-10 py-3 rounded">
+              <>
+                <div
+                  onClick={handleProfileRedirect}
+                  className="flex items-center gap-2 mb-2 cursor-pointer  p-2 rounded"
+                >
+                  <Avatar src={user?.image} icon={!user?.image && <UserOutlined />} />
+                  <div className="flex flex-col">
+                    <span className="text-white text-sm font-medium truncate w-32">{user?.name}</span>
+                    <span className="text-gray-400 text-xs capitalize">{user?.role}</span>
+                  </div>
+                </div>
+
+                {/* Mobile Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm transition-colors"
+                >
                   Logout
                 </button>
-              </Link>
+              </>
             ) : (
               <>
                 <button
@@ -130,7 +194,7 @@ const Navbar = () => {
                     handleLinkClick();
                     showAuthModal("signin");
                   }}
-                  className="text-white bg-red-500 hover:bg-red-600 px-10 py-3 rounded transition-colors"
+                  className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded transition-colors"
                 >
                   Login
                 </button>
@@ -139,7 +203,7 @@ const Navbar = () => {
                     handleLinkClick();
                     showAuthModal("signup");
                   }}
-                  className="px-8 py-3 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
+                  className="px-4 py-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
                 >
                   Register
                 </button>
@@ -149,7 +213,7 @@ const Navbar = () => {
         </Drawer>
       </div>
 
-      {/* Auth Modal (sign in / sign up / role selection) */}
+      {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={closeAuthModal}
