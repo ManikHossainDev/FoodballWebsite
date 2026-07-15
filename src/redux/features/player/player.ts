@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import { baseApi } from "@/redux/api/baseApi";
-
-
 export const playersApi = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({

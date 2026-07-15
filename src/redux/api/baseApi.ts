@@ -13,6 +13,6 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Profile", "settings", "Players", "coaches"],
+  tagTypes: ["Profile", "settings", "Players", "coaches", "file"],
   endpoints: () => ({}),
 });

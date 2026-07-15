@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { baseApi } from "@/redux/api/baseApi";
-
 export const HireCoachs = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -16,7 +15,6 @@ export const HireCoachs = baseApi.injectEndpoints({
       }),
       providesTags: ["coaches"],
     }),
-
     getSingleCoaches: builder.query({
       query: (id) => ({
         url: `/users/coaches/${id}`,
@@ -24,7 +22,6 @@ export const HireCoachs = baseApi.injectEndpoints({
       }),
       providesTags: ["coaches"],
     }),
-
     getReviewsForAUser: builder.query({
       query: (id) => ({
         url: `/ratings/${id}`,
@@ -32,16 +29,15 @@ export const HireCoachs = baseApi.injectEndpoints({
       }),
       providesTags: ["coaches"],
     }),
-
-    addCoaches: builder.mutation({
+   
+    addVideoRequests: builder.mutation({
       query: (data) => ({
-        url: "/users/coaches",
+        url: "/player-video-request",
         method: "POST",
         body: data,
       }),
       invalidatesTags: ["coaches"],
     }),
-
     updateCoaches: builder.mutation({
       query: ({ id, data }) => ({
         url: `/coaches/${id}`,
@@ -56,7 +52,7 @@ export const HireCoachs = baseApi.injectEndpoints({
 export const {
   useGetCoachesQuery,
   useGetSingleCoachesQuery,
-  useAddCoachesMutation,
+  useAddVideoRequestsMutation,
   useUpdateCoachesMutation,
   useGetReviewsForAUserQuery,
 } = HireCoachs;

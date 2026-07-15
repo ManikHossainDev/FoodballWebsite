@@ -1,5 +1,6 @@
+
 import icon from '@/assets/HeroBannerSection/Icon.png'
-import BookConsultationCard from '@/components/Pages/FootballPlayers/requestreviewCard';
+import RequestReviewCard from '@/components/Pages/FootballPlayers/requestreviewCard';
 import Image from 'next/image';
 import Link from 'next/link';
 const Page = () => {
@@ -18,7 +19,7 @@ const Page = () => {
        </Link>
       </h2>
       <p className="text-[#8F8F8F] mb-2">Select a video from your uploaded videos and add any specific areas you{"'"}d like the coach to focus on.</p>
-      <BookConsultationCard />
+      <RequestReviewCard />
  </div>
  );
 };
