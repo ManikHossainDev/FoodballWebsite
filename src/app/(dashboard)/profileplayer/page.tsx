@@ -38,11 +38,6 @@ interface User {
   profile?: Profile;
 }
 
-interface UserProfileResponse {
-  data?: {
-    data?: User;
-  };
-}
 
 // Small helper: only render a row if the value actually exists
 const DetailRow = ({ label, value }: { label: string; value?: string | number | null }) => {
