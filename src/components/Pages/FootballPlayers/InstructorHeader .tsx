@@ -27,9 +27,37 @@ interface Service {
 interface Review {
   id: string;
   name: string;
+  image?: string;
   rating: number;
   comment: string;
   date: string;
+}
+
+// Shape returned by the reviews API
+interface ApiReview {
+  _id: string;
+  rated: {
+    _id: string;
+    name: string;
+    image?: string;
+  };
+  rating: {
+    value: number;
+    comment: string;
+  };
+  createdAt: string;
+}
+
+interface ApiReviewsResponse {
+  data: {
+    data: ApiReview[];
+    pagination?: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
 }
 
 interface SocialLink {
@@ -37,41 +65,6 @@ interface SocialLink {
   icon: React.JSX.Element;
   label: string;
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Static data                                                               */
-/*  Reviews are intentionally the ONLY static data in this component.        */
-/*  Everything else is rendered directly from the coach API response.        */
-/*  Swap this for a real reviews endpoint (e.g. coach.profile.reviews) once  */
-/*  the backend exposes one.                                                 */
-/* -------------------------------------------------------------------------- */
-
-const STATIC_REVIEWS: Review[] = [
-  {
-    id: "1",
-    name: "Alex W",
-    rating: 5,
-    comment:
-      "Outstanding coach! Really helped me improve my explosiveness and finisher instinct.",
-    date: "Oct 15, 2025",
-  },
-  {
-    id: "2",
-    name: "Jordan P",
-    rating: 5,
-    comment:
-      "Very detailed analysis. The coach pointed out things I never noticed before.",
-    date: "Oct 15, 2025",
-  },
-  {
-    id: "3",
-    name: "Jordan P",
-    rating: 5,
-    comment:
-      "Very detailed analysis. The coach pointed out things I never noticed before.",
-    date: "Oct 10, 2025",
-  },
-];
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                    */
@@ -97,6 +90,29 @@ function buildServices(coach: TCoach): Service[] {
   }
 
   return services;
+}
+
+function formatReviewDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function buildReviews(reviewsResponse?: ApiReviewsResponse): Review[] {
+  const apiReviews = reviewsResponse?.data?.data ?? [];
+
+  return apiReviews.map((review) => ({
+    id: review._id,
+    name: review.rated?.name ?? "Anonymous",
+    image: review.rated?.image,
+    rating: review.rating?.value ?? 0,
+    comment: review.rating?.comment ?? "",
+    date: formatReviewDate(review.createdAt),
+  }));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -249,12 +265,6 @@ const ServicesOffered = ({ services }: { services: Service[] }) => {
                 {service.duration}
               </span>
             )}
-            {/* <button
-              type="button"
-              className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-1.5 rounded transition-colors ml-auto"
-            >
-              Book Now
-            </button> */}
           </div>
         </div>
       ))}
@@ -263,30 +273,41 @@ const ServicesOffered = ({ services }: { services: Service[] }) => {
   );
 };
 
-const RecentReviews = ({ reviews }: { reviews: Review[] }) => (
-  <div className="pb-4">
-    <h3 className="text-xl font-semibold mb-4">Recent Reviews</h3>
-    <div className="space-y-4">
-      {reviews.map((review) => (
-        <div key={review.id} className="bg-[#3F3F3F] p-2 rounded-md">
-          <div className="flex justify-between items-start mb-2">
-            <span className="font-semibold">{review.name}</span>
-            <span className="text-gray-500 text-xs">{review.date}</span>
+const RecentReviews = ({ reviews }: { reviews: Review[] }) => {
+  if (reviews.length === 0) {
+    return (
+      <div className="pb-4">
+        <h3 className="text-xl font-semibold mb-4">Recent Reviews</h3>
+        <p className="text-gray-400 text-sm">No reviews yet.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pb-4">
+      <h3 className="text-xl font-semibold mb-4">Recent Reviews</h3>
+      <div className="space-y-4">
+        {reviews.map((review) => (
+          <div key={review.id} className="bg-[#3F3F3F] p-2 rounded-md">
+            <div className="flex justify-between items-start mb-2">
+              <span className="font-semibold">{review.name}</span>
+              <span className="text-gray-500 text-xs">{review.date}</span>
+            </div>
+            <div className="flex gap-1 mb-2">
+              {Array.from({ length: review.rating }).map((_, i) => (
+                <Star
+                  key={i}
+                  className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                />
+              ))}
+            </div>
+            <p className="text-gray-400 text-sm">{review.comment}</p>
           </div>
-          <div className="flex gap-1 mb-2">
-            {Array.from({ length: review.rating }).map((_, i) => (
-              <Star
-                key={i}
-                className="w-4 h-4 fill-yellow-400 text-yellow-400"
-              />
-            ))}
-          </div>
-          <p className="text-gray-400 text-sm">{review.comment}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const SocialLinks = ({ coach }: { coach: TCoach }) => {
   const socialMedia = coach.profile?.socialMedia;
@@ -342,14 +363,14 @@ const InstructorProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useGetSingleCoachesQuery(id);
   const coach: TCoach | undefined = data?.data;
-  const {data:Reviews} = useGetReviewsForAUserQuery(id);
-  console.log(Reviews)
+
+  const { data: reviewsResponse } = useGetReviewsForAUserQuery(id);
 
   if (isLoading) return <LoadingState />;
   if (isError || !coach) return <ErrorState />;
 
   const services = buildServices(coach);
-  const reviews = STATIC_REVIEWS;
+  const reviews = buildReviews(reviewsResponse as ApiReviewsResponse | undefined);
 
   return (
     <div className="text-white">
