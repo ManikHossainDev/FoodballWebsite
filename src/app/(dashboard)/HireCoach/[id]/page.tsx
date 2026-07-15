@@ -1,3 +1,4 @@
+"use client";
 import icon from '@/assets/HeroBannerSection/Icon.png'
 import InstructorHeader from '@/components/Pages/FootballPlayers/InstructorHeader ';
 import Image from 'next/image';

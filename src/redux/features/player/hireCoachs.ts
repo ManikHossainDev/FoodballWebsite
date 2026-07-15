@@ -5,10 +5,14 @@ import { baseApi } from "@/redux/api/baseApi";
 export const HireCoachs = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getCoaches: builder.query({
-      query: () => ({
+    getCoaches: builder.query<any, { page?: number; limit?: number } | void>({
+      query: (args) => ({
         url: "/users/coaches",
         method: "GET",
+        params: {
+          page: args?.page ?? 1,
+          limit: args?.limit ?? 10,
+        },
       }),
       providesTags: ["coaches"],
     }),
@@ -16,6 +20,14 @@ export const HireCoachs = baseApi.injectEndpoints({
     getSingleCoaches: builder.query({
       query: (id) => ({
         url: `/users/coaches/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["coaches"],
+    }),
+
+    getReviewsForAUser: builder.query({
+      query: (id) => ({
+        url: `/ratings/${id}`,
         method: "GET",
       }),
       providesTags: ["coaches"],
@@ -46,4 +58,5 @@ export const {
   useGetSingleCoachesQuery,
   useAddCoachesMutation,
   useUpdateCoachesMutation,
+  useGetReviewsForAUserQuery,
 } = HireCoachs;

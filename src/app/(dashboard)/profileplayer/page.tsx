@@ -1,9 +1,13 @@
+"use client"
 import { FiEdit2 } from 'react-icons/fi';
 import { FaTwitter } from 'react-icons/fa';
 import Image from 'next/image';
 import user from '@/assets/Authentication/user.jpg';
 import Link from 'next/link';
+import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
 const Page = () => {
+  const {data} = useGetProfileQuery({})
+  console.log(data)
  return (
  <div>
    <h2

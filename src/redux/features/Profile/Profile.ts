@@ -9,6 +9,13 @@ const Profile = baseApi.injectEndpoints({
       }),
       providesTags: ["Profile"],
     }),
+    GetUserProfile: builder.query({
+      query: (id) => ({
+        url: `users/profile/:${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Profile"],
+    }),
     UpdateProfile: builder.mutation({
       query: (data) => ({
         url: "/users/self/update",
@@ -67,6 +74,7 @@ const Profile = baseApi.injectEndpoints({
 
 export const {
   useGetProfileQuery,
+  useGetUserProfileQuery,
   useUpdateProfileMutation,
   useUpdateProfileImageMutation,
   useSupportMutation,
