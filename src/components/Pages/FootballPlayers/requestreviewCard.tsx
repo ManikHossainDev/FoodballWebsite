@@ -39,6 +39,7 @@ const RequestReviewCard = () => {
   const { data } = useGetSingleCoachesQuery(coachId);
   const videoReviewFee = data?.data?.profile?.videoReviewFee ?? 0;
   const profile = data?.data;
+  console.log(profile);
 
   // Step 1: signature data (folder, timestamp, api_key, signature, cloud_name)
   const { data: signatureResponse } = useGetFileUploadSignatureQuery('placementReq');
@@ -247,7 +248,7 @@ const RequestReviewCard = () => {
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 <span className="text-white text-sm font-medium">{profile?.avgRating}</span>
               </div>
-              <span className="text-gray-400 text-xs">({profile?.totalRating} reviews)</span>
+              <span className="text-white text-xs">({profile?.totalRating} reviews)</span>
             </div>
 
             <span className="bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded w-fit">
