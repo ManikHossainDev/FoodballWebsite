@@ -14,7 +14,7 @@ const Page = () => {
       >
        <Link className='flex items-center space-x-1' href="/HireCoach">
           <Image className='w-[80px] h-[50px] object-cove -ml-5'  width={100} height={100} alt='image' src={icon} />
-           Book Consultation with David Martinez
+           Book Consultation 
        </Link>
       </h2>
       <p className="text-[#8F8F8F] mb-2">Schedule a one-on-one consultation session to discuss your football career, training, or any specific questions.</p>

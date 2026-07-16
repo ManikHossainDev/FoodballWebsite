@@ -38,6 +38,7 @@ const RequestReviewCard = () => {
 
   const { data } = useGetSingleCoachesQuery(coachId);
   const videoReviewFee = data?.data?.profile?.videoReviewFee ?? 0;
+  const profile = data?.data;
 
   // Step 1: signature data (folder, timestamp, api_key, signature, cloud_name)
   const { data: signatureResponse } = useGetFileUploadSignatureQuery('placementReq');
@@ -235,22 +236,22 @@ const RequestReviewCard = () => {
 
         <div className="flex items-center gap-4">
           <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0">
-            <Image src={user} fill alt="David Martinez" className="object-cover" />
+            <Image src={profile ? profile?.image : ""} fill alt="David Martinez" className="object-cover" />
           </div>
 
           <div className="flex flex-col gap-1">
-            <h3 className="text-white font-semibold">David Martinez</h3>
+            <h3 className="text-white font-semibold">{profile?.name}</h3>
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-white text-sm font-medium">4.9</span>
+                <span className="text-white text-sm font-medium">{profile?.avgRating}</span>
               </div>
-              <span className="text-gray-400 text-xs">(120 reviews)</span>
+              <span className="text-gray-400 text-xs">({profile?.totalRating} reviews)</span>
             </div>
 
             <span className="bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded w-fit">
-              15 years experience
+              {profile?.profile?.coachExperiences}
             </span>
           </div>
         </div>
