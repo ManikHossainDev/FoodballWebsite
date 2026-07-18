@@ -20,6 +20,7 @@ export const baseApi = createApi({
     "coaches",
     "file",
     "UploadVideo",
+    "Agents",
   ],
   endpoints: () => ({}),
 });

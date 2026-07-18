@@ -1,37 +1,38 @@
 {
    "name": "football-website",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "next dev -p 5000",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^2.12.0",
-    "antd": "^5.21.6",
-    "js-cookie": "^3.0.8",
-    "lucide-react": "^0.460.0",
-    "next": "^15.0.3",
-    "react": "^19.0.0-rc",
-    "react-dom": "^19.0.0-rc",
-    "react-icons": "^5.3.0",
-    "react-redux": "^9.3.0",
-    "react-responsive-pagination": "^2.9.0",
-    "sharp": "^0.33.5"
-  },
-  "devDependencies": {
-    "@types/js-cookie": "^3.0.6",
-    "@types/node": "^20.17.6",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^15.0.3",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15",
-    "typescript": "^5.6.3"
-  }
+   "version": "0.1.0",
+   "private": true,
+   "type": "module",
+   "scripts": {
+      "dev": "next dev -p 5000",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint"
+   },
+   "dependencies": {
+      "@reduxjs/toolkit": "^2.12.0",
+      "antd": "^5.21.6",
+      "js-cookie": "^3.0.8",
+      "lucide-react": "^0.460.0",
+      "next": "^15.0.3",
+      "react": "^19.0.0-rc",
+      "react-dom": "^19.0.0-rc",
+      "react-icons": "^5.3.0",
+      "react-redux": "^9.3.0",
+      "react-responsive-pagination": "^2.9.0",
+      "sharp": "^0.33.5",
+      "sweetalert2": "^11.26.25"
+   },
+   "devDependencies": {
+      "@types/js-cookie": "^3.0.6",
+      "@types/node": "^20.17.6",
+      "@types/react": "^19.0.0",
+      "@types/react-dom": "^19.0.0",
+      "autoprefixer": "^10.4.20",
+      "eslint": "^8.57.1",
+      "eslint-config-next": "^15.0.3",
+      "postcss": "^8.4.49",
+      "tailwindcss": "^3.4.15",
+      "typescript": "^5.6.3"
+   }
 }

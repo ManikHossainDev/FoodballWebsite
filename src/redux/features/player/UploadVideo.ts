@@ -38,9 +38,17 @@ export const UploadVideo = baseApi.injectEndpoints({
 
     updateUploadVideo: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/UploadVideo/${id}`,
+        url: `/player-album/${id}`,
         method: "PATCH",
         body: data,
+      }),
+      invalidatesTags: ["UploadVideo"],
+    }),
+
+    deleteUploadVideo: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/player-album/${id}`,
+        method: "DELETE",
       }),
       invalidatesTags: ["UploadVideo"],
     }),
@@ -51,5 +59,6 @@ export const {
   useGetUploadVideoQuery,
   useGetSingleUploadVideoQuery,
   useUpdateUploadVideoMutation,
-  useAddUploadVideoMutation
+  useAddUploadVideoMutation,
+  useDeleteUploadVideoMutation,
 } = UploadVideo;

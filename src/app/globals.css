@@ -80,3 +80,18 @@ body {
     padding-right: 4rem;
   }
 }
+
+/* Chrome, Edge, Safari */
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+.scroll-hide {
+  scrollbar-width: none;
+}
+
+/* IE/old Edge */
+.scroll-hide {
+  -ms-overflow-style: none;
+}
