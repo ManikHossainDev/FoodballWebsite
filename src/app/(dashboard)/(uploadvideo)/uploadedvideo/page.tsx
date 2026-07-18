@@ -1,7 +1,9 @@
+import UploadedVideo from "@/components/Pages/FootballPlayers/UploadedVideo";
+
 const Page = () => {
  return (
  <div>
- <h2>Welcome to the Page page</h2>
+    <UploadedVideo />
  </div>
  );
 };

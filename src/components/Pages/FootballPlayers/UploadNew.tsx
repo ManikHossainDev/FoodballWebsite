@@ -1,14 +1,66 @@
 "use client"
 
+import { useGetFileUploadSignatureQuery } from "@/redux/features/fileUpload/fileUpload";
+import { useAddUploadVideoMutation } from "@/redux/features/player/UploadVideo";
+import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
-const UploadNew = () => { 
-  
+interface CloudinaryUploadResponse {
+  resource_type: string;
+  duration: number;
+  bytes: number;
+  width: number;
+  height: number;
+  secure_url: string;
+  public_id: string;
+}
+
+interface SignatureData {
+  folder: string;
+  timestamp: number;
+  api_key: string;
+  signature: string;
+  cloud_name: string;
+}
+
+const UploadNew = () => {
+  const { data: signatureResponse } = useGetFileUploadSignatureQuery('placementReq');
+  const [AddUploadVideo] = useAddUploadVideoMutation();
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const uploadVideoToCloudinary = async (
+    fileToUpload: File,
+    signature: SignatureData
+  ): Promise<CloudinaryUploadResponse> => {
+    const { folder, timestamp, api_key, signature: sig, cloud_name } = signature;
+
+    const formData = new FormData();
+    formData.append('folder', folder);
+    formData.append('timestamp', String(timestamp));
+    formData.append('api_key', api_key);
+    formData.append('signature', sig);
+    formData.append('file', fileToUpload);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/auto/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Cloudinary upload failed: ${errText}`);
+    }
+
+    return res.json();
+  };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -27,6 +79,80 @@ const UploadNew = () => {
 
   const handleBrowseClick = () => {
     inputRef.current?.click();
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setFile(null);
+    setUploadProgress("");
+  };
+
+  const handleSubmit = async () => {
+    setError("");
+
+    if (!title.trim()) {
+      setError("Please enter a video title");
+      return;
+    }
+    if (!description.trim()) {
+      setError("Please enter a video Description");
+      return;
+    }
+    if (!file) {
+      setError("Please select a video file");
+      return;
+    }
+    if (!signatureResponse?.data) {
+      setError("Upload signature not ready yet, try again in a moment");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+
+      // Step 1: upload the raw file to Cloudinary using the signed data
+      setUploadProgress("Uploading video to Cloudinary...");
+      const cloudinaryResult = await uploadVideoToCloudinary(
+        file,
+        signatureResponse.data as SignatureData
+      );
+
+      // Step 2: save the returned metadata to your backend
+      setUploadProgress("Saving video info...");
+
+      const payload = {
+        title,
+        description,
+        content: {
+          resource_type: cloudinaryResult.resource_type,
+          duration: cloudinaryResult.duration,
+          bytes: cloudinaryResult.bytes,
+          width: cloudinaryResult.width,
+          height: cloudinaryResult.height,
+          secure_url: cloudinaryResult.secure_url,
+          public_id: cloudinaryResult.public_id,
+        },
+      };
+
+      // 🔍 Debug: check the Network tab too, confirm this payload
+      // actually matches what's sent as the request body
+      console.log("Submitting payload:", payload);
+
+    const res = await AddUploadVideo(payload).unwrap();
+    console.log(res);
+    if(res?.statusCode === 201){
+        setUploadProgress("Upload successful!");
+        resetForm();
+        router.push("/uploadedvideo");
+    }
+
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Upload failed, please try again");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -149,6 +275,21 @@ const UploadNew = () => {
             )}
           </div>
         </div>
+
+        {error && (
+          <p className="text-[#ff4d4d] text-sm mt-3">{error}</p>
+        )}
+        {uploadProgress && !error && (
+          <p className="text-[#8F8F8F] text-sm mt-3">{uploadProgress}</p>
+        )}
+
+        <button
+          onClick={handleSubmit}
+          disabled={isUploading}
+          className="mt-5 w-full bg-[#ff0000] hover:bg-[#cc0000] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-md py-2.5 text-sm transition-colors"
+        >
+          {isUploading ? "Uploading..." : "Upload Video"}
+        </button>
       </div>
     </div>
   );

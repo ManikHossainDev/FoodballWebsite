@@ -2,7 +2,7 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Star, Upload, X, Loader2 } from 'lucide-react';
-import user from '@/assets/Authentication/user.jpg';
+// import user from '@/assets/Authentication/user.jpg';
 import { FaRegMessage } from 'react-icons/fa6';
 import { usePathname } from 'next/navigation';
 import { useGetFileUploadSignatureQuery } from '@/redux/features/fileUpload/fileUpload';
