@@ -21,6 +21,7 @@ export const baseApi = createApi({
     "file",
     "UploadVideo",
     "Agents",
+    "MyOrders",
   ],
   endpoints: () => ({}),
 });
