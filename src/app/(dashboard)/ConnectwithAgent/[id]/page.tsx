@@ -12,7 +12,7 @@ const Page = () => {
             "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
         }}
       >
-       <Link className='flex items-center space-x-1' href="/HireCoach">
+       <Link className='flex items-center space-x-1' href="/ConnectwithAgent">
           <Image className='w-[80px] h-[50px] object-cove -ml-5'  width={100} height={100} alt='image' src={icon} />
         Agent Details
        </Link>

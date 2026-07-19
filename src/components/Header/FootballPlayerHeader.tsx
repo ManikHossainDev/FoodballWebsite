@@ -6,7 +6,7 @@ import logo from '@/assets/logo/logo.png';
 import userImg from '@/assets/logo/user.jpg';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
+import { useGetNotificationsQuery, useGetProfileQuery } from '@/redux/features/Profile/Profile';
 
 interface FootballPlayerHeaderProps {
   onMenuClick?: () => void;
@@ -17,10 +17,14 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
   // 2. Destructure refetch instead of refresh (RTK Query hook name)
   const { data, } = useGetProfileQuery({});
   const user = data?.data;
-  console.log(user?.image);
+
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+
+  const {data:Notifications} = useGetNotificationsQuery({role:user?.role, page:1, limit:10})
+  console.log(Notifications);
+
 
   const notifications = [
     { id: 1, message: "Video review request from David Martinez has been accepted", time: "2h ago" },

@@ -2,12 +2,13 @@
 "use client"
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Star, Award, TrendingUp, Users, Globe, FileText, MessageSquare } from 'lucide-react';
+import { Star, Award,  } from 'lucide-react';
 import userImg from '@/assets/Authentication/user.jpg';
 import { FaRegMessage } from 'react-icons/fa6';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useGetSingleAgentsQuery } from '@/redux/features/player/agents';
+import { useGetReviewsForAUserQuery } from '@/redux/features/player/hireCoachs';
 
 const AgentDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +17,10 @@ const AgentDetails = () => {
   const agent = data?.data;
 
   const [activeTab, setActiveTab] = useState('overview');
+
+  const { data: reviewsResponse, isLoading: isReviewsLoading } = useGetReviewsForAUserQuery(id);
+
+  const reviews = reviewsResponse?.data?.data ?? [];
 
   // Still mocked - your API response doesn't include these yet
   const services = agent?.profile?.service
@@ -29,15 +34,6 @@ const AgentDetails = () => {
 
   const placements = [
     { player: "Marcus Silva", position: "Forward", from: "Valencia B", to: "Athletic Bilbao", year: "2024" },
-  ];
-
-  const reviews = [
-    {
-      name: "Marcus Silva",
-      rating: 5,
-      date: "Oct 2024",
-      text: "Outstanding agent! Helped me secure a contract. Very professional and always kept me informed throughout the process."
-    },
   ];
 
   const expertiseIconMap: Record<string, { icon: React.ReactNode; color: string }> = {
@@ -55,6 +51,14 @@ const AgentDetails = () => {
     return [...Array(rating)].map((_, i) => (
       <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
     ));
+  };
+
+  const formatReviewDate = (dateString: string) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      year: 'numeric',
+    });
   };
 
   const socialLinks = agent?.profile?.socialMedia
@@ -100,10 +104,10 @@ const AgentDetails = () => {
 
               {/* Experience Badge */}
               {agent.profile?.experiences && (
-                <button className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium px-3 py-1 rounded w-fit transition-colors">
-                  {agent.profile.experiences}
-                </button>
-              )}
+  <button className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium px-3 py-1 rounded w-fit transition-colors">
+    {agent.profile.experiences.slice(0, 24)}
+  </button>
+)}
             </div>
           </div>
 
@@ -115,7 +119,7 @@ const AgentDetails = () => {
           {/* Request Agent Button */}
           <div className="mt-4 ">
             <Link
-              href="/ConnectwithAgent/requestagent"
+              href={`/ConnectwithAgent/requestagent?id=${agent._id}`}
               className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-6 py-2.5 rounded-md transition-colors"
             >
               Request Agent
@@ -159,7 +163,7 @@ const AgentDetails = () => {
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 md:gap-6">
             {/* About Section */}
             <div className="bg-[#303030] rounded-xl p-2 md:p-6 shadow-xl mb-4 md:mb-0">
               <h2 className="text-2xl font-bold mb-4 text-[#FFFFFF]">About</h2>
@@ -259,20 +263,44 @@ const AgentDetails = () => {
         {activeTab === 'reviews' && (
           <div className="bg-[#303030] rounded-xl p-2 md:p-6 shadow-xl">
             <h2 className="text-2xl font-bold mb-6 text-white">Client Reviews</h2>
-            <div className="space-y-4">
-              {reviews.map((review, index) => (
-                <div key={index} className="bg-[#3F3F3F] rounded-lg p-2 md:p-4 hover:bg-gray-650 transition-colors">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-bold text-lg text-white">{review.name}</h3>
-                      <div className="flex gap-1 mt-1">{renderRatingStars(review.rating)}</div>
+
+            {isReviewsLoading ? (
+              <p className="text-gray-400 text-sm">Loading reviews...</p>
+            ) : reviews.length > 0 ? (
+              <div className="space-y-4">
+                {reviews.map((review: any) => (
+                  <div
+                    key={review._id}
+                    className="bg-[#3F3F3F] rounded-lg p-2 md:p-4 hover:bg-gray-650 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                          <Image
+                            src={review.rated?.image || userImg}
+                            fill
+                            alt={review.rated?.name || "Reviewer"}
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-white">{review.rated?.name}</h3>
+                          <div className="flex gap-1 mt-1">
+                            {renderRatingStars(review.rating?.value ?? 0)}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-gray-400 text-sm">
+                        {formatReviewDate(review.createdAt)}
+                      </span>
                     </div>
-                    <span className="text-gray-400 text-sm">{review.date}</span>
+                    <p className="text-gray-300 leading-relaxed">{review.rating?.comment}</p>
                   </div>
-                  <p className="text-gray-300 leading-relaxed">{review.text}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">No reviews yet.</p>
+            )}
           </div>
         )}
       </div>

@@ -41,9 +41,22 @@ const Profile = baseApi.injectEndpoints({
       invalidatesTags: ["Profile"],
     }),
     getNotifications: builder.query({
-      query: () => ({
-        url: "/notifications",
+      query: ({
+        page,
+        limit,
+        role,
+      }: {
+        page?: number;
+        limit?: number;
+        role: "player" | "coach" | "agent" | "club";
+      }) => ({
+        url: "/users/all",
         method: "GET",
+        params: {
+          page,
+          limit,
+          role,
+        },
       }),
       providesTags: ["Profile"],
     }),

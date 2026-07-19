@@ -52,7 +52,7 @@ const ConnectwithAgentCards = () => {
   const handleRequestAgent = (e: React.MouseEvent, agentId: string): void => {
     e.preventDefault();
     e.stopPropagation();
-    router.push(`/ConnectwithAgent/${agentId}/requestagent`);
+    router.push(`/ConnectwithAgent/requestagent?id=${agentId}`);
   };
 
   const handleMessage = (e: React.MouseEvent, agentId: string): void => {
