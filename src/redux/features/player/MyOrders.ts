@@ -49,7 +49,7 @@ export const MyOrders = baseApi.injectEndpoints({
     addRateReviewConsultation: builder.mutation<any, { id: string; data: any }>(
       {
         query: ({ data, id }) => ({
-          url: `/player-consultation/${id}`,
+          url: `/player-consultation/${id}/review`,
           method: "POST",
           body: data,
         }),

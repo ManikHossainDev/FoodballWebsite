@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useAddRateReviewConsultationMutation,
   useAddRateReviewVideoMutation,
@@ -8,11 +9,7 @@ import { ConsultationItem, VideoRequestItem } from '@/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-
-// ---------- Types (based on the API responses you shared) ----------
-
-
-
+import Swal from 'sweetalert2';
 
 type OrderCategory = 'videoRequest' | 'consultations';
 
@@ -84,6 +81,7 @@ const MyOrdersCard = () => {
 
   const videoRequests: VideoRequestItem[] = videoRequestData?.data ?? [];
   const consultations: ConsultationItem[] = consultationData?.data ?? [];
+  
 
   // Adjust these two lines if your API's pagination meta uses different field names
   const videoMeta = videoRequestData?.meta ?? { total: videoRequests.length, totalPage: 1 };
@@ -97,8 +95,8 @@ const MyOrdersCard = () => {
     useAddRateReviewVideoMutation();
 
   const tabs: Tab[] = [
-    { id: 'videoRequest', label: 'Video Requests', count: videoRequests.length },
-    { id: 'consultations', label: 'Consultations', count: consultations.length },
+    { id: 'videoRequest', label: 'Video Request', count: videoRequests.length },
+    { id: 'consultations', label: 'Consultation', count: consultations.length },
   ];
 
   const openRatingModal = (type: OrderCategory, id: string) => {
@@ -122,8 +120,14 @@ const MyOrdersCard = () => {
         await addRateReviewConsultation({ id: ratingModal.id, data: body }).unwrap();
       }
       closeRatingModal();
-    } catch (err) {
-      console.error('Failed to submit review', err);
+    } catch (err:any) {
+      console.error('Failed to submit review', err?.data?.message);
+      Swal.fire({
+      title: "Something",
+      text: `${err?.data?.message}`,
+      icon: "error"
+    });
+
     }
   };
 
@@ -133,13 +137,13 @@ const MyOrdersCard = () => {
     <div className="bg-[#303030] p-1 md:p-4 rounded-md">
       <div>
         {/* Tabs + filter */}
-        <div className="flex justify-between mb-6 bg-[#1F1F1F]  py-3 px-2 md:px-3 rounded-lg">
+        <div className="flex justify-between mb-6 bg-[#1F1F1F]  py-3 px-1 md:px-3 rounded-lg">
           <div className="flex gap-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`px-2 text-[10px] md:text-md md:px-6 py-2.5 rounded-lg font-medium transition-all ${
+                className={`px-1 text-[10px] md:text-md md:px-6 py-2.5 rounded-lg font-medium transition-all ${
                   activeTab === tab.id
                     ? 'bg-white text-red-500 shadow-[0_0_20px_rgba(255,0,0,0.5)]'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
@@ -154,7 +158,7 @@ const MyOrdersCard = () => {
             <select
               value={statusFilter}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className="bg-gray-800 text-gray-200 text-sm rounded-md px-3 py-2"
+              className="bg-gray-800 text-gray-200 text-sm rounded-md px-1 md:px-3 py-2"
             >
               {STATUS_OPTIONS.map((s) => (
                 <option key={s} value={s}>
@@ -196,7 +200,7 @@ const MyOrdersCard = () => {
                   )}
                 </div>
 
-                <div className="p-4 space-y-2">
+                <div className="p-4 space-x-2 flex">
                   <button
                     onClick={() => openDetailsModal('videoRequest', item)}
                     className="block w-full text-center bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 rounded transition-colors"
@@ -205,18 +209,14 @@ const MyOrdersCard = () => {
                   </button>
 
                   {item.status === 'completed' &&
-                    (item.isReviewed ? (
-                      <div className="w-full text-center text-green-400 text-sm py-2.5">
-                        ✓ Reviewed
-                      </div>
-                    ) : (
                       <button
                         onClick={() => openRatingModal('videoRequest', item._id)}
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-medium py-2.5 rounded transition-colors"
+                        disabled={item.isReviewed}
+                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-medium py-2.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-yellow-500"
                       >
-                        ★ Rate & Review
+                        {item.isReviewed ? '★ Reviewed' : '★ Rate & Review'}
                       </button>
-                    ))}
+                    }
                 </div>
               </div>
             ))}
@@ -258,7 +258,7 @@ const MyOrdersCard = () => {
                   </div>
                 </div>
 
-                <div className="p-4 space-y-2">
+                <div className="p-4 space-x-2 flex s">
                   <button
                     onClick={() => openDetailsModal('consultations', item)}
                     className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 rounded transition-colors"
@@ -267,18 +267,14 @@ const MyOrdersCard = () => {
                   </button>
 
                   {item.status === 'completed' &&
-                    (item.isReviewed ? (
-                      <div className="w-full text-center text-green-400 text-sm py-2.5">
-                        ✓ Reviewed
-                      </div>
-                    ) : (
                       <button
                         onClick={() => openRatingModal('consultations', item._id)}
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-medium py-2.5 rounded transition-colors"
+                        disabled={item.isReviewed}
+                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-medium py-2.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-yellow-500"
                       >
-                        ★ Rate & Review
+                        {item.isReviewed ? '★ Reviewed' : '★ Rate & Review'}
                       </button>
-                    ))}
+                  }
                 </div>
               </div>
             ))}
@@ -494,3 +490,5 @@ const MyOrdersCard = () => {
 };
 
 export default MyOrdersCard;
+
+
