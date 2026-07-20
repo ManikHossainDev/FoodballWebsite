@@ -1,135 +1,78 @@
-import { FiCheck } from "react-icons/fi";
+import Group from "@/assets/Authentication/Group.png";
+import Image from "next/image";
 
 const ChooseYourPlan = () => {
-    const plans = [
-    {
-      name: 'Player Basic',
-      price: 29,
-      description: 'Perfect for aspiring players starting their journey',
-      features: [
-        'Upload up to 5 videos/month',
-        '2 coach reviews/month',
-        'Basic performance analytics',
-        'Text messaging with coaches',
-        'Profile visible to clubs'
-      ],
-      popular: false
-    },
-    {
-      name: 'Player Pro',
-      price: 29,
-      description: 'For serious players ready to advance their career',
-      features: [
-        'Upload up to 5 videos/month',
-        'Upload up to 5 videos/month',
-        'Upload up to 5 videos/month',
-        'Upload up to 5 videos/month',
-        'Upload up to 5 videos/month'
-      ],
-      popular: true
-    },
-    {
-      name: 'Mentor Couch',
-      price: 29,
-      description: 'Perfect for aspiring players starting their journey',
-      features: [
-        'Upload up to 5 videos/month',
-        '2 coach reviews/month',
-        'Basic performance analytics',
-        'Text messaging with coaches',
-        'Profile visible to clubs'
-      ],
-      popular: false
-    },
-    {
-      name: 'Consultation expert',
-      price: 29,
-      description: 'Perfect for aspiring players starting their journey',
-      features: [
-        'Upload up to 5 videos/month',
-        '2 coach reviews/month',
-        'Basic performance analytics',
-        'Text messaging with coaches',
-        'Profile visible to clubs'
-      ],
-      popular: false
-    }
-  ];
- return (
- <div className="responsive-padding py-10 lg:py-20">
-    <h2
+  const donationAmounts = ["$ 05", "$ 10", "$ 15", "$ 20", "$ 25", "$ 30"];
+
+  return (
+    <div className="responsive-padding py-10 lg:py-20">
+      <h2
         className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
         style={{
           textShadow:
-            '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000',
+            "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
         }}
       >
-        Choose Your Plan
+        Make Donation
       </h2>
 
-      <div className="flex justify-center ">
-        <h1 className="text-center text-xs  lg:max-w-md md:text-base lg:text-lg  py-3 text-gray-300 mb-10">
-          Select the perfect plan for your needs. All plans include a
-14-day free trial.
+      <div className="flex justify-center">
+        <h1 className="text-center text-xs md:text-base lg:text-md py-3 text-gray-300 mb-10">
+          As its a not profit site, so you can make donation if you want.
         </h1>
       </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, index) => (
-            <div
-              key={index}
-              className={`relative bg-neutral-950 border-2 rounded-xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-red-500/20 cursor-pointer group ${
-                plan.popular 
-                  ? 'border-red-500' 
-                  : 'border-neutral-900 hover:border-red-500'
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-black border border-red-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-              
-              <div className="mb-6">
-                <h3 className="text-white text-lg font-semibold mb-2">
-                  {plan.name}
-                </h3>
-                <div className="flex items-baseline mb-3">
-                  <span className="text-white text-3xl font-bold">
-                    ${plan.price}
-                  </span>
-                  <span className="text-neutral-400 text-sm ml-1">
-                    /month
-                  </span>
-                </div>
-                <p className="text-neutral-400 text-sm leading-relaxed">
-                  {plan.description}
-                </p>
-              <hr className="border-b border-neutral-700 mt-5" />
-              </div>
-
-
-              <div className="space-y-3 mb-8">
-                {plan.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <FiCheck className="text-neutral-400 flex-shrink-0 mt-0.5" size={18} />
-                    <span className="text-neutral-300 text-sm">
-                      {feature}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <button className="w-full bg-neutral-900/50 hover:bg-neutral-800 text-white font-medium py-3 rounded-lg transition-colors duration-200 border border-neutral-800 ">
-                Get Started
-              </button>
-            </div>
-          ))}
+      <div className="flex flex-col lg:flex-row items-center gap-10">
+        {/* Left side image */}
+        <div className="w-full lg:w-1/3 flex justify-center">
+          <Image
+            width={500}
+            height={500}
+            src={Group}
+            alt="Donate"
+            className="max-w-[280px] md:max-w-[320px] w-full h-auto"
+          />
         </div>
- </div>
- );
+
+        {/* Right side donation form */}
+        <div className="w-full lg:w-2/3">
+          <p className="text-gray-300 text-sm mb-3">Amount Of Donation</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+            {donationAmounts.map((amount) => (
+              <button
+                key={amount}
+                type="button"
+                className="border border-red-600/60 text-white rounded-md py-3 text-sm
+                           hover:bg-red-600/20 hover:border-red-500 transition-colors
+                           focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                {amount}
+              </button>
+            ))}
+          </div>
+
+          <input
+            type="text"
+            placeholder="Enter Amount Manually"
+            className="w-full bg-transparent border border-red-600/60 rounded-md
+                       px-4 py-3 text-sm text-gray-300 placeholder-gray-500 mb-8
+                       focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 transition-colors text-white
+                         font-medium rounded-md px-10 py-3"
+            >
+              Donate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ChooseYourPlan;

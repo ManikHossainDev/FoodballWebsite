@@ -14,7 +14,7 @@ const HomePage = () => {
         <OurMission />
       </div>
 
-      <div className="">
+      <div id='explore' className="">
         <h2
           className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
           style={{
@@ -25,7 +25,7 @@ const HomePage = () => {
           Explore Players Video
         </h2>
         <h1 className="text-xs md:text-base lg:text-lg text-center py-3 text-gray-300 mb-10">
-          Explore players video and connect with them if needed.
+          Explore players video and connect  with them if needed.
         </h1>
 
         <ExplorePlayersVideo />

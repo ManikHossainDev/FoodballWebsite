@@ -45,12 +45,13 @@ const formatDuration = (seconds: number) => {
 
 const VideoCard = ({ video }: { video: VideoItem }) => {
   const [duration, setDuration] = useState<string>("");
+  console.log(duration)
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="flex lg:w-[430px] shrink-0 flex-col overflow-hidden rounded-2xl bg-[#2b2b2b] shadow-lg">
-      {/* Thumbnail - fixed height, video orientation যাই হোক না কেন সবসময় একই height */}
-      <div className="relative h-[340px] w-full bg-black">
+    <div className="flex w-[280px] sm:w-[340px] lg:w-[430px] shrink-0 flex-col overflow-hidden rounded-2xl bg-[#2b2b2b] shadow-lg">
+      {/* Thumbnail - fixed height, responsive per breakpoint */}
+      <div className="relative h-[220px] sm:h-[280px] lg:h-[340px] w-full bg-black">
         <video
           src={video.content.secure_url}
           className="h-full w-full object-cover"
@@ -63,12 +64,6 @@ const VideoCard = ({ video }: { video: VideoItem }) => {
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         />
-
-        {/* {duration && (
-          <span className="absolute left-2 top-2 rounded bg-black/70 px-2 py-0.5 text-xs font-medium text-white">
-            {duration}
-          </span>
-        )} */}
 
         {!isPlaying && (
           <button
@@ -95,7 +90,6 @@ const VideoCard = ({ video }: { video: VideoItem }) => {
           {video.description}
         </p>
 
-        {/* Player info + Contact button - always pinned to bottom */}
         <div className="mt-auto flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <Image
@@ -123,7 +117,6 @@ const VideoCard = ({ video }: { video: VideoItem }) => {
 };
 
 // ---------------- Main Component ----------------
-
 const ExplorePlayersVideo = () => {
   const { data, isLoading, isError } = useGetUploadVideoQuery({
     page: 1,
@@ -184,10 +177,7 @@ const ExplorePlayersVideo = () => {
         className="flex gap-4 overflow-x-auto scroll-hide scroll-smooth pb-2"
       >
         {videos.map((video) => (
-          // items-stretch এর জন্য parent flex row এ h-full কাজ করবে, card গুলো সমান height হবে
-          <div key={video._id} className="flex">
-            <VideoCard video={video} />
-          </div>
+          <VideoCard key={video._id} video={video} />
         ))}
       </div>
     </div>

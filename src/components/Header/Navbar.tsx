@@ -15,7 +15,7 @@ import Cookies from "js-cookie"; // 1. Import Cookies library
 
 const navLink = [
   { href: "/", label: "Home" },
-  { href: "/#ourmission", label: "About US" },
+  { href: "/#explore", label: "Explore" },
   { href: "/#features", label: "Features" },
   { href: "/#communitysays", label: "Testimonials" },
 ];
