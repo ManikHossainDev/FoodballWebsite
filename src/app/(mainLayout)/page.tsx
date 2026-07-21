@@ -4,6 +4,7 @@ import HeroBannerSection from "@/components/Pages/Home/HeroBannerSection";
 import OurMission from "@/components/Pages/Home/OurMission";
 import PowerfulFeatures from "@/components/Pages/Home/PowerfulFeatures";
 import WhatOurCommunitySays from "@/components/Pages/Home/WhatOurCommunitySays";
+import Link from "next/link";
 import React from "react";
 
 const HomePage = () => {
@@ -25,7 +26,7 @@ const HomePage = () => {
           Explore Players Video
         </h2>
         <h1 className="text-xs md:text-base lg:text-lg text-center py-3 text-gray-300 mb-10">
-          Explore players video and connect  with them if needed.
+          Explore players video and connect  with them if needed. <Link className="text-red-500 underline" href="/exploreplayersvideo">see more</Link>
         </h1>
 
         <ExplorePlayersVideo />

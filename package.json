@@ -21,6 +21,7 @@
       "react-redux": "^9.3.0",
       "react-responsive-pagination": "^2.9.0",
       "sharp": "^0.33.5",
+      "sonner": "^2.0.7",
       "sweetalert2": "^11.26.25"
    },
    "devDependencies": {
