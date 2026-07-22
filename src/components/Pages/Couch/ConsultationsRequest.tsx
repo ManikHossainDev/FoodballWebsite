@@ -1,72 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import React from "react";
+import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import user from '@/assets/Authentication/user.jpg'
-import { useGetConsultationsQuery, useGetVideoRequestsQuery } from "@/redux/features/coach/coach";
+import { useActionConsultationMutation, useActionVideoReqMutation, useGetConsultationsQuery, useGetVideoRequestsQuery } from "@/redux/features/coach/coach";
+import Swal from "sweetalert2";
+import { Consultation, ConsultationsResponse, VideoRequest, VideoRequestsResponse } from "@/types/types";
 
-interface Player {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  image: string;
-}
 
-interface VideoContent {
-  resource_type: string;
-  duration: number;
-  secure_url: string;
-}
-
-interface VideoRequest {
-  _id: string;
-  player: Player;
-  title: string;
-  description: string;
-  areaOfFocus: string;
-  status: string;
-  coachFeedback: string;
-  isReviewed: boolean;
-  cancelledBy: string | null;
-  content: VideoContent;
-}
-
-interface Consultation {
-  _id: string;
-  coach: string;
-  player: Player;
-  consultationTopic: string;
-  bookingSlot: string;
-  questions: string;
-  status: string;
-  coachFeedback: string;
-  isReviewed: boolean;
-}
-
-interface VideoRequestsResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: VideoRequest[];
-}
-
-interface ConsultationsResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: Consultation[];
-}
 
 const ConsultationsRequest: React.FC = () => {
-  const { data: VideoRequests } = useGetVideoRequestsQuery("pending") as {
+  const { data: VideoRequests, refetch: refetchVideoRequests } = useGetVideoRequestsQuery("pending") as {
     data?: VideoRequestsResponse;
-  };
-  const { data: Consultations } = useGetConsultationsQuery({ status: "pending" }) as {
-    data?: ConsultationsResponse;
+    refetch: () => void;
   };
 
-  
+  const [ActionVideoReq] = useActionVideoReqMutation();
+
+  const { data: Consultations, refetch: refetchConsultations } = useGetConsultationsQuery({ status: "pending" }) as {
+    data?: ConsultationsResponse;
+    refetch: () => void;
+  };
+
+  const [ActionConsultation] = useActionConsultationMutation();
+
+  // track which item is currently being actioned, so we can disable just that button
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const videoReviewData: VideoRequest[] = VideoRequests?.data || [];
   const consultationsData: Consultation[] = Consultations?.data || [];
@@ -74,6 +34,102 @@ const ConsultationsRequest: React.FC = () => {
   const getAvatarSrc = (image?: string): string | StaticImageData => {
     return image && image.trim() !== "" ? image : user;
   };
+
+  const handleVideoAction = async (
+  e: React.MouseEvent,
+  id: string,
+  status: "accept" | "decline"
+) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  try {
+    setProcessingId(id);
+
+    const res = await ActionVideoReq({
+      id,
+      data: {
+        status,
+      },
+    }).unwrap();
+    if (res?.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: res.message || "Video request updated successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      refetchVideoRequests();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Failed!",
+        text: res.message || "Failed to update video request.",
+      });
+    }
+  } catch (error: any) {
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text:
+        error?.data?.message ||
+        error?.message ||
+        "Something went wrong.",
+    });
+  } finally {
+    setProcessingId(null);
+  }
+};
+
+  const handleConsultationAction = async (
+  e: React.MouseEvent,
+  id: string,
+  status: "accept" | "decline"
+) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  try {
+    setProcessingId(id);
+
+    const res = await ActionConsultation({
+      id,
+      data: {
+        status,
+      },
+    }).unwrap();
+    if (res?.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: res.message || "Consultation updated successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      refetchConsultations();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Failed!",
+        text: res.message || "Failed to update consultation.",
+      });
+    }
+  } catch (error: any) {
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text:
+        error?.data?.message ||
+        error?.message ||
+        "Something went wrong.",
+    });
+  } finally {
+    setProcessingId(null);
+  }
+};
 
   return (
     <div className="">
@@ -128,10 +184,18 @@ const ConsultationsRequest: React.FC = () => {
                   </div>
 
                   <div className="flex justify-between md:justify-end gap-2">
-                    <button className="bg-[#ef4444] hover:bg-[#dc2626] text-white px-6 py-2 rounded-md text-sm font-medium transition">
+                    <button
+                      disabled={processingId === item._id}
+                      onClick={(e) => handleVideoAction(e, item._id, "accept")}
+                      className="bg-[#ef4444] hover:bg-[#dc2626] disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md text-sm font-medium transition"
+                    >
                       Accept
                     </button>
-                    <button className="bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white px-6 py-2 rounded-md text-sm font-medium transition">
+                    <button
+                      disabled={processingId === item._id}
+                      onClick={(e) => handleVideoAction(e, item._id, "decline")}
+                      className="bg-[#3a3a3a] hover:bg-[#4a4a4a] disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md text-sm font-medium transition"
+                    >
                       Decline
                     </button>
                   </div>
@@ -191,10 +255,18 @@ const ConsultationsRequest: React.FC = () => {
                     </div>
 
                     <div className="flex justify-between md:justify-end gap-2">
-                      <button className="bg-[#ef4444] hover:bg-[#dc2626] text-white px-6 py-2 rounded-md text-sm font-medium transition">
+                      <button
+                        disabled={processingId === item._id}
+                        onClick={(e) => handleConsultationAction(e, item._id, "accept")}
+                        className="bg-[#ef4444] hover:bg-[#dc2626] disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md text-sm font-medium transition"
+                      >
                         Accept
                       </button>
-                      <button className="bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white px-6 py-2 rounded-md text-sm font-medium transition">
+                      <button
+                        disabled={processingId === item._id}
+                        onClick={(e) => handleConsultationAction(e, item._id, "decline")}
+                        className="bg-[#3a3a3a] hover:bg-[#4a4a4a] disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md text-sm font-medium transition"
+                      >
                         Decline
                       </button>
                     </div>

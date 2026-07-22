@@ -29,7 +29,13 @@ export const HireCoachs = baseApi.injectEndpoints({
       }),
       providesTags: ["coaches"],
     }),
-
+    getCoachesTimesLots: builder.query({
+      query: (id) => ({
+        url: `/coaches/slots/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["coaches"],
+    }),
     addVideoRequests: builder.mutation({
       query: (data) => ({
         url: "/player-video-request",
@@ -65,5 +71,6 @@ export const {
   useAddVideoRequestsMutation,
   useUpdateCoachesMutation,
   useGetReviewsForAUserQuery,
-  useBookConsultationMutation
+  useBookConsultationMutation,
+  useGetCoachesTimesLotsQuery,
 } = HireCoachs;

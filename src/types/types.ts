@@ -85,3 +85,56 @@ export interface ConsultationItem {
   isReviewed: boolean;
   meetingLink?: string;
 }
+
+interface Player {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  image: string;
+}
+
+interface VideoContent {
+  resource_type: string;
+  duration: number;
+  secure_url: string;
+}
+
+export interface VideoRequest {
+  _id: string;
+  player: Player;
+  title: string;
+  description: string;
+  areaOfFocus: string;
+  status: string;
+  coachFeedback: string;
+  isReviewed: boolean;
+  cancelledBy: string | null;
+  content: VideoContent;
+}
+
+export interface Consultation {
+  _id: string;
+  coach: string;
+  player: Player;
+  consultationTopic: string;
+  bookingSlot: string;
+  questions: string;
+  status: string;
+  coachFeedback: string;
+  isReviewed: boolean;
+}
+
+export interface VideoRequestsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: VideoRequest[];
+}
+
+export interface ConsultationsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: Consultation[];
+}

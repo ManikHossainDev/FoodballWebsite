@@ -1,24 +1,66 @@
 "use client";
-
+import { useState } from "react";
 import Link from "next/link";
-import {
-  FiArrowLeft,
-  FiMail,
-  FiPhone,
-  FiCheck,
-  FiX,
-  FiAward,
-  FiUsers,
-} from "react-icons/fi";
+import Swal from "sweetalert2";
+import {FiArrowLeft, FiMail, FiPhone, FiCheck, FiX, FiAward, FiUsers,} from "react-icons/fi";
 import { MdSportsSoccer } from "react-icons/md";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useSingleVideoRequestQuery } from "@/redux/features/coach/coach";
+import { useActionVideoReqMutation, useSingleVideoRequestQuery,} from "@/redux/features/coach/coach";
 
+// ─────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────
 
+type RequestStatus = "pending" | "accept" | "decline" | string;
 
-// Convert seconds (e.g. 32.298933) -> "0:32"
+interface Player {
+  _id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  image?: string;
+}
 
+interface VideoContent {
+  secure_url?: string;
+  public_id?: string;
+  duration?: number;
+}
+
+interface VideoRequest {
+  _id: string;
+  title: string;
+  description?: string;
+  status: RequestStatus;
+  isReviewed: boolean;
+  areaOfFocus?: string;
+  coachFeedback?: string;
+  player?: Player;
+  content?: VideoContent;
+}
+
+interface SingleVideoRequestResponse {
+  success: boolean;
+  message?: string;
+  data: VideoRequest;
+}
+
+interface ActionVideoReqResponse {
+  success: boolean;
+  message?: string;
+}
+
+interface ActionVideoReqPayload {
+  id: string;
+  data: {
+    status: "accept" | "decline";
+  };
+}
+
+// ─────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────
 
 // Turn a single areaOfFocus string into bullet points.
 // Splits on newlines, or on ". " if it's one long sentence.
@@ -39,13 +81,74 @@ const getFocusAreas = (areaOfFocus?: string): string[] => {
   return bySentence.length > 0 ? bySentence : [areaOfFocus];
 };
 
+// ─────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────
+
 const CoachDetails = () => {
-  const params = useParams();
+  const params = useParams<{ id: string | string[] }>();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
-  const { data, isLoading, isError } = useSingleVideoRequestQuery(id as string) 
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+  } = useSingleVideoRequestQuery(id as string);
 
-  const request = data?.data;
+  const [ActionVideoReq] = useActionVideoReqMutation();
+  const [processingId, setProcessingId] = useState<string | null>(null);
+
+  const handleVideoAction = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    videoId: string,
+    status: "accept" | "decline"
+  ): Promise<void> => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      setProcessingId(videoId);
+
+      const payload: ActionVideoReqPayload = {
+        id: videoId,
+        data: { status },
+      };
+
+      const res: ActionVideoReqResponse = await ActionVideoReq(payload).unwrap();
+
+      if (res?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: res.message || "Video request updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        refetch();
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed!",
+          text: res.message || "Failed to update video request.",
+        });
+      }
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string }; message?: string };
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: err?.data?.message || err?.message || "Something went wrong.",
+      });
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const request: VideoRequest | undefined = (
+    data as SingleVideoRequestResponse | undefined
+  )?.data;
   const player = request?.player;
   const content = request?.content;
   const focusAreas = getFocusAreas(request?.areaOfFocus);
@@ -155,11 +258,19 @@ const CoachDetails = () => {
 
               {/* Actions */}
               <div className="mt-auto flex gap-3">
-                <button className="flex-1 flex items-center justify-center gap-2 bg-[#e53e3e] hover:bg-red-500 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
+                <button
+                  disabled={processingId === request._id}
+                  onClick={(e) => handleVideoAction(e, request._id, "accept")}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#e53e3e] hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-2.5 rounded-lg transition-colors"
+                >
                   <FiCheck className="w-4 h-4" />
-                  Accept
+                  {processingId === request._id ? "Processing..." : "Accept"}
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white/70 text-sm font-semibold py-2.5 rounded-lg transition-colors">
+                <button
+                  disabled={processingId === request._id}
+                  onClick={(e) => handleVideoAction(e, request._id, "decline")}
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed text-white/70 text-sm font-semibold py-2.5 rounded-lg transition-colors"
+                >
                   <FiX className="w-4 h-4" />
                   Decline
                 </button>
@@ -182,7 +293,6 @@ const CoachDetails = () => {
                   <MdSportsSoccer className="w-16 h-16 text-white/10" />
                 </div>
               )}
-              
             </div>
 
             {/* Video Info */}

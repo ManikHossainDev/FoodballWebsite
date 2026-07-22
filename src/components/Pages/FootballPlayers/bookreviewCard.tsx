@@ -5,12 +5,29 @@ import Image from 'next/image';
 import { Star, ChevronDown } from 'lucide-react';
 import { FaRegMessage } from 'react-icons/fa6';
 import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
-import { useBookConsultationMutation, useGetSingleCoachesQuery } from '@/redux/features/player/hireCoachs';
+import { useBookConsultationMutation, useGetCoachesTimesLotsQuery, useGetSingleCoachesQuery } from '@/redux/features/player/hireCoachs';
 import { usePathname } from 'next/navigation';
+
+interface CoachSlot {
+  _id: string;
+  author: string;
+  day: string;
+  startTime: string; // ISO string, only the time-of-day portion is meaningful
+  endTime: string;   // ISO string, only the time-of-day portion is meaningful
+  __v?: number;
+}
+
+interface DaySlots {
+  day: string; // e.g. "Mon", "Sun"
+  slots: CoachSlot[];
+}
 
 const BookreviewCard = () => {
   const pathname = usePathname();
   const coachId = pathname.split('/')[2];
+
+  const { data: TimesLots } = useGetCoachesTimesLotsQuery(coachId);
+  const AvailableTime: DaySlots[] = TimesLots?.data ?? [];
 
   const { data: userData } = useGetProfileQuery({});
   const walletBalance = userData?.data?.walletBalance ?? 0;
@@ -34,10 +51,26 @@ const BookreviewCard = () => {
   });
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedDayLabel, setSelectedDayLabel] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<CoachSlot | null>(null);
+  // Only one booking mode is active at a time: pick from the coach's listed
+  // slots, or suggest a custom time. Switching modes clears the other one.
+  const [bookingMode, setBookingMode] = useState<'slot' | 'custom'>('slot');
+  const [customDateTime, setCustomDateTime] = useState<string>('');
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
+
+  const handleSwitchBookingMode = (mode: 'slot' | 'custom') => {
+    setBookingMode(mode);
+    if (mode === 'slot') {
+      setCustomDateTime('');
+    } else {
+      setSelectedDate(null);
+      setSelectedDayLabel(null);
+      setSelectedSlot(null);
+    }
+  };
 
   const handleInputChange = (e: any) => {
     const { name, value, type, checked } = e.target;
@@ -47,62 +80,119 @@ const BookreviewCard = () => {
     }));
   };
 
-  const getAvailableDates = () => {
-    const days = [];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() + i);
-      days.push({
-        value: d.toISOString().split("T")[0],
-        dayLabel: dayNames[d.getDay()],
-        dateLabel: `${d.getDate()} ${monthNames[d.getMonth()]}`,
-      });
-    }
-    return days;
+  // Extracts the time-of-day (hours/minutes) from an API slot's ISO string.
+  // The API encodes slot times with a placeholder date, so we read the
+  // UTC hours/minutes rather than treating the date portion as meaningful.
+  const getTimeParts = (iso: string) => {
+    const d = new Date(iso);
+    return { hours: d.getUTCHours(), minutes: d.getUTCMinutes() };
   };
 
-  const availableDates = getAvailableDates();
+  const formatTime = (iso: string) => {
+    const { hours, minutes } = getTimeParts(iso);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+    return `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}${period}`;
+  };
 
-  const timeSlots = [
-    "09:00AM-09:30AM",
-    "09:30AM-10:00AM",
-    "10:00AM-10:30AM",
-    "10:30AM-11:00AM",
-    "11:00AM-11:30AM",
-    "11:30AM-12:00PM",
+  const formatSlotLabel = (slot: CoachSlot) => `${formatTime(slot.startTime)}-${formatTime(slot.endTime)}`;
+
+  const dayNameToIndex: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
 
-  // Converts a selected date ("YYYY-MM-DD") + slot ("09:00AM-09:30AM")
-  // into a full ISO datetime string for the booking's start time.
-  const buildBookingSlotISO = (dateStr: string, slotStr: string): string | null => {
-    const startPart = slotStr.split('-')[0]; // e.g. "09:00AM"
-    const match = startPart.match(/(\d{1,2}):(\d{2})(AM|PM)/i);
-    if (!match) return null;
+  // Finds the next real calendar date (today or later) that falls on the
+  // given day-of-week name, e.g. "Mon" -> the coming Monday's Date object.
+  const getNextDateForDay = (dayLabel: string) => {
+    const targetIndex = dayNameToIndex[dayLabel];
+    const today = new Date();
+    if (targetIndex === undefined) return today;
+    let diff = targetIndex - today.getDay();
+    if (diff < 0) diff += 7;
+    const result = new Date(today);
+    result.setDate(today.getDate() + diff);
+    return result;
+  };
 
-    let hours = parseInt(match[1], 10);
-    const minutes = parseInt(match[2], 10);
-    const period = match[3].toUpperCase();
+  // The picker is driven entirely by whatever days/slots the API returns —
+  // only days actually present in AvailableTime show up here, each mapped
+  // to the next real calendar date that falls on that day-of-week.
+  const availableDates = AvailableTime.map((entry) => {
+    const nextDate = getNextDateForDay(entry.day);
+    return {
+      value: nextDate.toISOString().split("T")[0],
+      dayLabel: entry.day,
+      dateLabel: `${nextDate.getDate()} ${monthNames[nextDate.getMonth()]}`,
+      slots: entry.slots ?? [],
+    };
+  });
 
-    if (period === 'PM' && hours !== 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
+  const slotsForSelectedDay = selectedDayLabel
+    ? availableDates.find((d) => d.dayLabel === selectedDayLabel)?.slots ?? []
+    : [];
 
-    const date = new Date(dateStr);
-    date.setHours(hours, minutes, 0, 0);
+  const handleSelectDate = (dateValue: string, dayLabel: string) => {
+    setSelectedDate(dateValue);
+    setSelectedDayLabel(dayLabel);
+    setSelectedSlot(null); // reset slot when the date changes
+  };
+
+  const handleSelectSlot = (slot: CoachSlot) => {
+    setSelectedSlot(slot);
+  };
+
+  const handleCustomDateTimeChange = (value: string) => {
+    setCustomDateTime(value);
+  };
+
+  // Combines the selected calendar date with the chosen slot's time-of-day
+  // (from the API) into a full ISO datetime string for the booking.
+  // Returns null if the slot doesn't actually belong to the selected day —
+  // that mismatch should never be sent to the backend.
+  const buildBookingSlotISO = (dateStr: string, dayLabel: string, slot: CoachSlot): string | null => {
+    if (slot.day !== dayLabel) return null;
+    const { hours, minutes } = getTimeParts(slot.startTime);
+    const date = new Date(`${dateStr}T00:00:00.000Z`);
+    date.setUTCHours(hours, minutes, 0, 0);
     return date.toISOString();
   };
 
   const handleSubmit = async () => {
     setBookingError(null);
 
-    if (!selectedDate || !selectedSlot) {
-      setBookingError('Please select a date and time slot.');
+    let bookingSlot: string | null = null;
+
+    if (bookingMode === 'custom') {
+      if (!customDateTime) {
+        setBookingError('Please suggest a date and time.');
+        return;
+      }
+      // User typed their own preferred time — trust it as-is, no slot to validate against.
+      const parsed = new Date(customDateTime);
+      if (isNaN(parsed.getTime())) {
+        setBookingError('Please enter a valid custom date and time.');
+        return;
+      }
+      bookingSlot = parsed.toISOString();
+    } else {
+      if (!selectedDate || !selectedDayLabel || !selectedSlot) {
+        setBookingError('Please select a date and time slot.');
+        return;
+      }
+      bookingSlot = buildBookingSlotISO(selectedDate, selectedDayLabel, selectedSlot);
+      if (!bookingSlot) {
+        setBookingError('Selected time slot does not match the selected day. Please pick again.');
+        return;
+      }
+    }
+
+    if (!formData.areasToFocus.trim()) {
+      setBookingError('Please enter your questions or goals for this session.');
       return;
     }
+
     if (!formData.agreeToTerms) {
       setBookingError('Please agree to the Terms and Conditions.');
       return;
@@ -111,13 +201,11 @@ const BookreviewCard = () => {
     // Wallet balance check: sufficient (>=) -> proceed & show success modal,
     // insufficient (<) -> show the insufficient balance modal.
     if (walletBalance >= consultationFee) {
-      const bookingSlot = buildBookingSlotISO(selectedDate, selectedSlot);
-
       const payload = {
         coach: coachId,
         consultationTopic: formData.consultationTopic,
         bookingSlot,
-        questions: formData.areasToFocus,
+        questions: formData.areasToFocus.trim(),
       };
 
       try {
@@ -200,50 +288,108 @@ const BookreviewCard = () => {
               </div>
 
               <div>
-                <label className="text-gray-300 text-sm mb-2 block">Book Your Slot From Available Slot</label>
+                <label className="text-gray-300 text-sm mb-2 block">Book  time Slot </label>
 
-                {/* Date row */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex-1 grid grid-cols-7 gap-1.5">
-                    {availableDates.map((date) => (
-                      <button
-                        key={date.value}
-                        type="button"
-                        onClick={() => setSelectedDate(date.value)}
-                        className={`text-[10px] leading-tight text-center py-2 px-1 rounded border transition-colors ${
-                          selectedDate === date.value
-                            ? "border-green-500 text-white"
-                            : "border-gray-600 text-gray-400 hover:border-gray-400"
-                        }`}
-                      >
-                        <div>{date.dayLabel},</div>
-                        <div>{date.dateLabel}</div>
-                      </button>
-                    ))}
-                  </div>
-                  <ChevronDown className="text-gray-400 shrink-0" size={16} />
+                {/* Mode toggle - only one of "pick a slot" / "suggest your own" is active at a time */}
+                <div className="flex gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => handleSwitchBookingMode('slot')}
+                    className={`text-xs px-3 py-1.5 rounded border transition-colors ${
+                      bookingMode === 'slot'
+                        ? "border-red-500 bg-red-500/10 text-white"
+                        : "border-gray-600 text-gray-400 hover:border-gray-400"
+                    }`}
+                  >
+                    Book couch time Slot
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSwitchBookingMode('custom')}
+                    className={`text-xs px-3 py-1.5 rounded border transition-colors ${
+                      bookingMode === 'custom'
+                        ? "border-red-500 bg-red-500/10 text-white"
+                        : "border-gray-600 text-gray-400 hover:border-gray-400"
+                    }`}
+                  >
+                    Suggest your own time
+                  </button>
                 </div>
 
-                {/* Time slot row */}
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 grid grid-cols-4 gap-1.5">
-                    {timeSlots.slice(0, 4).map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        onClick={() => setSelectedSlot(slot)}
-                        className={`text-[10px] text-center py-2 px-1 rounded border transition-colors ${
-                          selectedSlot === slot
-                            ? "border-green-500 text-white"
-                            : "border-gray-600 text-gray-400 hover:border-gray-400"
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
+                {bookingMode === 'slot' ? (
+                  <>
+                    {/* Date row - only dates that have slots in AvailableTime are selectable */}
+                    <div className="flex items-center gap-2 mb-3">
+                      {availableDates.length === 0 && (
+                        <span className="text-[11px] text-gray-500">No available days for this coach yet.</span>
+                      )}
+                      <div className="flex-1 grid grid-cols-7 gap-1.5">
+                        {availableDates.map((date) => {
+                          const hasSlots = date.slots.length > 0;
+                          return (
+                            <button
+                              key={date.value}
+                              type="button"
+                              disabled={!hasSlots}
+                              onClick={() => handleSelectDate(date.value, date.dayLabel)}
+                              className={`text-[10px] leading-tight text-center py-2 px-1 rounded border transition-colors ${
+                                selectedDate === date.value
+                                  ? "border-green-500 text-white"
+                                  : hasSlots
+                                    ? "border-gray-600 text-gray-400 hover:border-gray-400"
+                                    : "border-gray-800 text-gray-600 cursor-not-allowed opacity-50"
+                              }`}
+                            >
+                              <div>{date.dayLabel},</div>
+                              <div>{date.dateLabel}</div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <ChevronDown className="text-gray-400 shrink-0" size={16} />
+                    </div>
+
+                    {/* Time slot row - populated from AvailableTime for the selected day */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 grid grid-cols-4 gap-1.5">
+                        {slotsForSelectedDay.length > 0 ? (
+                          slotsForSelectedDay.map((slot) => (
+                            <button
+                              key={slot._id}
+                              type="button"
+                              onClick={() => handleSelectSlot(slot)}
+                              className={`text-[10px] text-center py-2 px-1 rounded border transition-colors ${
+                                selectedSlot?._id === slot._id
+                                  ? "border-green-500 text-white"
+                                  : "border-gray-600 text-gray-400 hover:border-gray-400"
+                              }`}
+                            >
+                              {formatSlotLabel(slot)}
+                            </button>
+                          ))
+                        ) : (
+                          <span className="col-span-4 text-[11px] text-gray-500">
+                            {selectedDate ? "No slots available for this day." : "Select a date to see available time slots."}
+                          </span>
+                        )}
+                      </div>
+                      <ChevronDown className="text-gray-400 shrink-0" size={16} />
+                    </div>
+                  </>
+                ) : (
+                  /* Custom time - only shown when the user chose "Suggest your own time" */
+                  <div>
+                    <label className="text-gray-400 text-xs mb-1 block">
+                      Pick a date and time that works for you:
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={customDateTime}
+                      onChange={(e) => handleCustomDateTimeChange(e.target.value)}
+                      className="w-full bg-[#252525] text-white text-xs px-3 py-2 rounded border border-gray-600 focus:border-red-500 focus:outline-none [color-scheme:dark]"
+                    />
                   </div>
-                  <ChevronDown className="text-gray-400 shrink-0" size={16} />
-                </div>
+                )}
               </div>
             </div>
           </div>
