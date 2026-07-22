@@ -1,5 +1,26 @@
+"use client"
 import ConsultationsRequest from "@/components/Pages/Couch/ConsultationsRequest";
+import { useGetCoachStatisticsQuery } from "@/redux/features/coach/coach";
+
+interface CoachStatisticsData {
+  videoRequestCount: number;
+  consultationRequestCount: number;
+  completedOrder: number;
+  totalIncome: number;
+}
+
+interface CoachStatisticsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: CoachStatisticsData;
+}
+
 const Page = () => {
+  const { data } = useGetCoachStatisticsQuery() as {
+    data?: CoachStatisticsResponse;
+  };
+  const stats = data?.data;
   return (
     <div>
       <h2
@@ -11,24 +32,26 @@ const Page = () => {
       >
         Welcome, Coach – Your Coaching Hub
       </h2>
-      <p className="text-[#8F8F8F]">Manage Your Progress, Connect with Experts, and Advance Your Career</p>
+      <p className="text-[#8F8F8F]">
+        Manage Your Progress, Connect with Experts, and Advance Your Career
+      </p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 my-5">
-          <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
-            <p>Video Review Request</p>
-          </div>
-          <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
-            <p>Consultations Request</p>
-          </div>
-          <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
-            <p>Completed Order </p>
-          </div>
-          <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
-            <p>Total Income</p>
-          </div>
+        <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
+          <h1 className="text-xl">{stats?.videoRequestCount ?? 0}</h1>
+          <p>Video Review Request</p>
+        </div>
+        <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
+          <h1 className="text-xl">{stats?.consultationRequestCount ?? 0}</h1>
+          <p>Consultations Request</p>
+        </div>
+        <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
+          <h1 className="text-xl">{stats?.completedOrder ?? 0}</h1>
+          <p>Completed Order </p>
+        </div>
+        <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
+          <h1 className="text-xl">${stats?.totalIncome ?? 0}</h1>
+          <p>Total Income</p>
+        </div>
       </div>
       <ConsultationsRequest />
     </div>

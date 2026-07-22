@@ -5,7 +5,7 @@ export const coachApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCoachStatistics: builder.query<any, void>({
       query: () => ({
-        url: "/Coach/statistics",
+        url: "/coaches/statistics",
         method: "GET",
       }),
       providesTags: ["Coach"],
@@ -13,7 +13,7 @@ export const coachApi = baseApi.injectEndpoints({
 
     getVideoRequests: builder.query<any, string | undefined>({
       query: (status) => ({
-        url:`/player-video-request?status=${status}`,
+        url: `/player-video-request?status=${status}`,
         method: "GET",
       }),
       providesTags: ["Coach"],
@@ -54,8 +54,8 @@ export const coachApi = baseApi.injectEndpoints({
     }),
 
     getConsultations: builder.query<any, { status?: string }>({
-      query: ({status}) => ({
-        url:`/player-consultation?status=${status}`,
+      query: ({ status }) => ({
+        url: `/player-consultation?status=${status}`,
         method: "GET",
       }),
       providesTags: ["Coach"],

@@ -5,7 +5,6 @@ import {
   FiArrowLeft,
   FiMail,
   FiPhone,
-  FiMapPin,
   FiCheck,
   FiX,
   FiAward,
@@ -16,48 +15,10 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useSingleVideoRequestQuery } from "@/redux/features/coach/coach";
 
-interface Player {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  image: string;
-}
 
-interface VideoContent {
-  resource_type: string;
-  duration: number;
-  secure_url: string;
-}
-
-interface VideoRequestData {
-  _id: string;
-  player: Player;
-  coach: string;
-  title: string;
-  description: string;
-  areaOfFocus: string;
-  status: string;
-  coachFeedback: string;
-  isReviewed: boolean;
-  cancelledBy: string | null;
-  content: VideoContent;
-}
-
-interface VideoRequestResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: VideoRequestData;
-}
 
 // Convert seconds (e.g. 32.298933) -> "0:32"
-const formatDuration = (seconds?: number): string => {
-  if (!seconds && seconds !== 0) return "0:00";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-};
+
 
 // Turn a single areaOfFocus string into bullet points.
 // Splits on newlines, or on ". " if it's one long sentence.
