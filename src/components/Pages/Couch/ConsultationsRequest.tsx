@@ -1,100 +1,79 @@
+"use client"
 import React from "react";
-import user from '@/assets/Authentication/user.jpg'
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import user from '@/assets/Authentication/user.jpg'
+import { useGetConsultationsQuery, useGetVideoRequestsQuery } from "@/redux/features/coach/coach";
 
-const ConsultationsRequest = () => {
-  // JSON data structure for Video Review Requests
-  const videoReviewData = [
-    {
-      id: 1,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      type: "video"
-    },
-    {
-      id: 2,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      type: "video"
-    },
-    {
-      id: 3,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      type: "video"
-    },
-    {
-      id: 4,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      type: "video"
-    },
-    {
-      id: 5,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      type: "video"
-    },
-    {
-      id: 6,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      type: "video"
-    }
-  ];
+interface Player {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  image: string;
+}
 
-  // JSON data structure for Consultations Requests
-  const consultationsData = [
-    {
-      id: 1,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Technical Skills Improvement",
-      badge: "197 Huq • 21 Huq"
-    },
-    {
-      id: 2,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Match Highlights - Oct 3",
-      badge: "197 Huq • 21 Huq"
-    },
-    {
-      id: 3,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Technical Skills Improvement",
-      badge: "197 Huq • 21 Huq"
-    },
-    {
-      id: 4,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Technical Skills Improvement",
-      badge: "197 Huq • 21 Huq"
-    },
-    {
-      id: 5,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Technical Skills Improvement",
-      badge: "197 Huq • 21 Huq"
-    },
-    {
-      id: 6,
-      name: "Marcus Silva",
-      avatar: user,
-      specialty: "Technical Skills Improvement",
-      badge: "197 Huq • 21 Huq"
-    }
-  ];
+interface VideoContent {
+  resource_type: string;
+  duration: number;
+  secure_url: string;
+}
+
+interface VideoRequest {
+  _id: string;
+  player: Player;
+  title: string;
+  description: string;
+  areaOfFocus: string;
+  status: string;
+  coachFeedback: string;
+  isReviewed: boolean;
+  cancelledBy: string | null;
+  content: VideoContent;
+}
+
+interface Consultation {
+  _id: string;
+  coach: string;
+  player: Player;
+  consultationTopic: string;
+  bookingSlot: string;
+  questions: string;
+  status: string;
+  coachFeedback: string;
+  isReviewed: boolean;
+}
+
+interface VideoRequestsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: VideoRequest[];
+}
+
+interface ConsultationsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: Consultation[];
+}
+
+const ConsultationsRequest: React.FC = () => {
+  const { data: VideoRequests } = useGetVideoRequestsQuery("pending") as {
+    data?: VideoRequestsResponse;
+  };
+  const { data: Consultations } = useGetConsultationsQuery({ status: "pending" }) as {
+    data?: ConsultationsResponse;
+  };
+
+  
+
+  const videoReviewData: VideoRequest[] = VideoRequests?.data || [];
+  const consultationsData: Consultation[] = Consultations?.data || [];
+
+  const getAvatarSrc = (image?: string): string | StaticImageData => {
+    return image && image.trim() !== "" ? image : user;
+  };
 
   return (
     <div className="">
@@ -103,11 +82,13 @@ const ConsultationsRequest = () => {
           {/* Video Review Request Section */}
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg md:text-xl font-bold text-white "
-              style={{
-                textShadow:
-                  "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-              }}>
+              <h2
+                className="text-lg md:text-xl font-bold text-white "
+                style={{
+                  textShadow:
+                    "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
+                }}
+              >
                 Video Review Request
               </h2>
               <button className="text-gray-400 hover:text-white text-sm">
@@ -116,27 +97,33 @@ const ConsultationsRequest = () => {
             </div>
 
             <div className="space-y-3 bg-[#303030] p-3 rounded-md">
+              {videoReviewData.length === 0 && (
+                <p className="text-gray-400 text-sm text-center py-4">
+                  No pending video review requests
+                </p>
+              )}
+
               {videoReviewData.map((item) => (
                 <Link
-                   href={`/Couch/${item.id}`}
-                  key={item.id}
+                  href={`/Couch/${item._id}`}
+                  key={item._id}
                   className="bg-[#3F3F3F] rounded-lg p-4 md:flex items-center justify-between  transition"
                 >
                   <div className="flex items-center gap-3 pb-2 md:pb-0">
                     <div className="w-12 h-12 rounded-lg overflow-hidden">
-                      <Image 
-                        width={48} 
-                        height={48} 
-                        src={item.avatar} 
-                        className='rounded-md object-cover' 
-                        alt='user' 
+                      <Image
+                        width={48}
+                        height={48}
+                        src={getAvatarSrc(item.player?.image)}
+                        className='rounded-md object-cover'
+                        alt={item.player?.name || 'user'}
                       />
                     </div>
                     <div>
                       <h3 className="text-white font-medium text-sm">
-                        {item.name}
+                        {item.player?.name}
                       </h3>
-                      <p className="text-gray-400 text-xs">{item.specialty}</p>
+                      <p className="text-gray-400 text-xs">{item.title}</p>
                     </div>
                   </div>
 
@@ -156,11 +143,13 @@ const ConsultationsRequest = () => {
           {/* Consultations Request Section */}
           <div className="space-y-4 ">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg md:text-xl font-bold text-white "
-              style={{
-                textShadow:
-                  "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-              }}>
+              <h2
+                className="text-lg md:text-xl font-bold text-white "
+                style={{
+                  textShadow:
+                    "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
+                }}
+              >
                 Consultations Request
               </h2>
               <button className="text-gray-400 hover:text-white text-sm">
@@ -169,28 +158,34 @@ const ConsultationsRequest = () => {
             </div>
 
             <div className="space-y-3 bg-[#303030] p-3 rounded-md">
+              {consultationsData.length === 0 && (
+                <p className="text-gray-400 text-sm text-center py-4">
+                  No pending consultation requests
+                </p>
+              )}
+
               {consultationsData.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id}
                   className="bg-[#3F3F3F] rounded-lg p-4  transition"
                 >
                   <div className="md:flex items-center justify-between">
                     <div className="flex items-center gap-3 mb-2 md:mb-0">
                       <div className="w-12 h-12 rounded-lg overflow-hidden">
-                        <Image 
-                          width={48} 
-                          height={48} 
-                          src={item.avatar} 
-                          className='rounded-md object-cover' 
-                          alt='user' 
+                        <Image
+                          width={48}
+                          height={48}
+                          src={getAvatarSrc(item.player?.image)}
+                          className='rounded-md object-cover'
+                          alt={item.player?.name || 'user'}
                         />
                       </div>
                       <div>
                         <h3 className="text-white font-medium text-sm">
-                          {item.name}
+                          {item.player?.name}
                         </h3>
                         <p className="text-gray-400 text-xs">
-                          {item.specialty}
+                          {item.consultationTopic}
                         </p>
                       </div>
                     </div>
