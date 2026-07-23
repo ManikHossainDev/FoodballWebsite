@@ -111,6 +111,14 @@ export const coachApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Coach"],
     }),
+
+    submitReview: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/video-request/${id}/review`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -128,4 +136,5 @@ export const {
   useConsultationMeetingMutation,
   useCancelConsultationMutation,
   useConsultationCompleteMutation,
+  useSubmitReviewMutation
 } = coachApi;

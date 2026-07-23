@@ -23,6 +23,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
   const [activeTab, setActiveTab] = useState('all');
 
   const {data:Notifications} = useGetNotificationsQuery({role:user?.role, page:1, limit:10})
+  
   console.log(Notifications);
 
 

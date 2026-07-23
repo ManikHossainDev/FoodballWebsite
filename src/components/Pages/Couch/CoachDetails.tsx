@@ -73,32 +73,26 @@ const getFocusAreas = (areaOfFocus?: string): string[] => {
     .map((s) => s.trim())
     .filter(Boolean);
   if (byNewline.length > 1) return byNewline;
-
   const bySentence = areaOfFocus
     .split(/(?<=[.!?])\s+/)
     .map((s) => s.trim())
     .filter(Boolean);
   return bySentence.length > 0 ? bySentence : [areaOfFocus];
 };
-
 // ─────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────
-
 const CoachDetails = () => {
   const params = useParams<{ id: string | string[] }>();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
-
   const {
     data,
     isLoading,
     isError,
     refetch,
   } = useSingleVideoRequestQuery(id as string);
-
   const [ActionVideoReq] = useActionVideoReqMutation();
   const [processingId, setProcessingId] = useState<string | null>(null);
-
   const handleVideoAction = async (
     e: React.MouseEvent<HTMLButtonElement>,
     videoId: string,
