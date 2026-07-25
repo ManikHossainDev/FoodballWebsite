@@ -147,9 +147,9 @@ const ConsultationsRequest: React.FC = () => {
               >
                 Video Review Request
               </h2>
-              <button className="text-gray-400 hover:text-white text-sm">
+              <Link href="/Requests" className="text-gray-400 hover:text-white text-sm">
                 See all
-              </button>
+              </Link>
             </div>
 
             <div className="space-y-3 bg-[#303030] p-3 rounded-md">
@@ -159,7 +159,7 @@ const ConsultationsRequest: React.FC = () => {
                 </p>
               )}
 
-              {videoReviewData.map((item) => (
+              {videoReviewData?.slice(0, 10).map((item) => (
                 <Link
                   href={`/Couch/${item._id}`}
                   key={item._id}
@@ -216,9 +216,9 @@ const ConsultationsRequest: React.FC = () => {
               >
                 Consultations Request
               </h2>
-              <button className="text-gray-400 hover:text-white text-sm">
+              <Link href="/Requests" className="text-gray-400 hover:text-white text-sm">
                 See all
-              </button>
+              </Link>
             </div>
 
             <div className="space-y-3 bg-[#303030] p-3 rounded-md">
@@ -228,7 +228,7 @@ const ConsultationsRequest: React.FC = () => {
                 </p>
               )}
 
-              {consultationsData.map((item) => (
+              {consultationsData?.slice(0, 10).map((item) => (
                 <div
                   key={item._id}
                   className="bg-[#3F3F3F] rounded-lg p-4  transition"
