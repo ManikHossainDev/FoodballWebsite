@@ -8,8 +8,6 @@ import { useActionConsultationMutation, useActionVideoReqMutation, useGetConsult
 import Swal from "sweetalert2";
 import { Consultation, ConsultationsResponse, VideoRequest, VideoRequestsResponse } from "@/types/types";
 
-
-
 const ConsultationsRequest: React.FC = () => {
   const { data: VideoRequests, refetch: refetchVideoRequests } = useGetVideoRequestsQuery("pending") as {
     data?: VideoRequestsResponse;
@@ -208,7 +206,7 @@ const ConsultationsRequest: React.FC = () => {
           <div className="space-y-4 ">
             <div className="flex justify-between items-center mb-4">
               <h2
-                className="text-lg md:text-xl font-bold text-white "
+                className="text-lg md:text-xl font-bold text-white"
                 style={{
                   textShadow:
                     "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
