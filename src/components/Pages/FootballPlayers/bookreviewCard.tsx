@@ -206,6 +206,7 @@ const BookreviewCard = () => {
         consultationTopic: formData.consultationTopic,
         bookingSlot,
         questions: formData.areasToFocus.trim(),
+        meetingLink: formData.meetingLink.trim(), 
       };
 
       try {
@@ -412,7 +413,7 @@ const BookreviewCard = () => {
               </div>
 
               <div>
-                <label className="text-gray-300 text-sm mb-2 block">Schedule meeting link</label>
+                <label className="text-gray-300 text-sm mb-2 block">Schedule meeting link (Optional)</label>
                 <textarea
                   name="meetingLink"
                   value={formData.meetingLink}

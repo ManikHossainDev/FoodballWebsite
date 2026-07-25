@@ -59,7 +59,7 @@ const BookedConsultationscard = () => {
 
     try {
       const res = await StartConsultation({ id: consultation._id }).unwrap();
-      console.log(res);
+      console.log(res?.data?.meetingLink);
       if (res?.success === true) {
         Swal.fire({
           icon: "success",
@@ -68,6 +68,12 @@ const BookedConsultationscard = () => {
           timer: 2000,
           showConfirmButton: false,
         });
+
+        setTimeout(() => {
+          if (res?.data?.meetingLink) {
+            window.location.href = res.data.meetingLink;
+          }
+        }, 2000);
       }
     } catch (error: any) {
       if (error?.status === 400) {
@@ -136,7 +142,7 @@ const BookedConsultationscard = () => {
                         alt={consultation.consultationTopic}
                         width={144}
                         height={80}
-                        className="w-full h-full object-fill"
+                        className="w-full h-full object-center lg:object-cover lg:object-top"
                       />
                     </div>
                   </div>

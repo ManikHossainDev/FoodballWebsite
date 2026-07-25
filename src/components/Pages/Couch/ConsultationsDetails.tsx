@@ -22,16 +22,21 @@ const ConsultationsDetails = () => {
     setIsJoining(true);
     try {
       const res = await StartConsultation({ id: sessionId }).unwrap();
-      console.log(res)
-      if (res?.success === true) {
-        Swal.fire({
-          icon: "success",
-          title: "Join Session",
-          text: res.message || "Your Join Session has been complete",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      }
+          if (res?.success === true) {
+              Swal.fire({
+                icon: "success",
+                title: "Join Session",
+                text: res.message || "Your Join Session has been complete",
+                timer: 2000,
+                showConfirmButton: false,
+              });
+      
+              setTimeout(() => {
+                if (res?.data?.meetingLink) {
+                  window.location.href = res.data.meetingLink;
+                }
+              }, 2000);
+            }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error?.status === 400) {
