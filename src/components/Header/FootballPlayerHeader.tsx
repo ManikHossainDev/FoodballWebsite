@@ -22,7 +22,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
 
-  const {data:Notifications} = useGetNotificationsQuery({role:user?.role, page:1, limit:10})
+  const {data:Notifications} = useGetNotificationsQuery({isViewed:false, page:1, limit:10})
   
   console.log(Notifications);
 

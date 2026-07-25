@@ -44,18 +44,18 @@ const Profile = baseApi.injectEndpoints({
       query: ({
         page,
         limit,
-        role,
+        isViewed,
       }: {
         page?: number;
         limit?: number;
-        role: "player" | "coach" | "agent" | "club";
+        isViewed?: boolean;
       }) => ({
-        url: "/users/all",
+        url: "/notifications",
         method: "GET",
         params: {
           page,
           limit,
-          role,
+          isViewed,
         },
       }),
       providesTags: ["Profile"],
