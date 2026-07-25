@@ -41,15 +41,7 @@ const Profile = baseApi.injectEndpoints({
       invalidatesTags: ["Profile"],
     }),
     getNotifications: builder.query({
-      query: ({
-        page,
-        limit,
-        isViewed,
-      }: {
-        page?: number;
-        limit?: number;
-        isViewed?: boolean;
-      }) => ({
+      query: ({ page, limit, isViewed }) => ({
         url: "/notifications",
         method: "GET",
         params: {
@@ -60,6 +52,23 @@ const Profile = baseApi.injectEndpoints({
       }),
       providesTags: ["Profile"],
     }),
+
+    UpdateNotifications: builder.mutation({
+      query: (id) => ({
+        url: `/notifications/${id}/viewed`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+
+    DeleteAllNotifications: builder.mutation<void, void>({
+      query: () => ({
+        url: "/notifications/all",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+
     getSettings: builder.query({
       query: (params) => ({
         url: `/settings/${params}`,
@@ -92,6 +101,8 @@ export const {
   useUpdateProfileImageMutation,
   useSupportMutation,
   useGetNotificationsQuery,
+  useUpdateNotificationsMutation,
+  useDeleteAllNotificationsMutation,
   useGetSettingsQuery,
   useGetDashboardMutation,
   useCosmicBlueprintMutation,
