@@ -269,7 +269,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
             route.push("/Couch");
           } else if (res?.data?.data?.role === "club") {
             route.push("/Club");
-          } else if (res?.data?.data?.role === "agents") {
+          } else if (res?.data?.data?.role === "agent") {
             route.push("/agents");
           }
           handleClose();

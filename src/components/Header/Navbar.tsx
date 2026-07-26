@@ -67,7 +67,7 @@ const Navbar = () => {
       router.push("/Couch");
     } else if (user.role === "club") {
       router.push("/Club");
-    } else if (user.role === "agents") {
+    } else if (user.role === "agent") {
       router.push("/agents");
     }
     closeDrawer();

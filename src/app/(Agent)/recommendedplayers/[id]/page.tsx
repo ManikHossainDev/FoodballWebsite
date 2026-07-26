@@ -1,7 +1,9 @@
+"use client"
 import RecommendedPlayersDetails from "@/components/Pages/Agents/RecommendedPlayersDetails";
 import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 const Page = () => {
+ 
  return (
         <div>
         {/* ── Top Nav ── */}

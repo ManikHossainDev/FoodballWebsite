@@ -46,13 +46,9 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
     isFetching,
     refetch: refetchNotifications,
   } = useGetNotificationsQuery(queryArgs);
-
-  console.log(notificationRes)
-
+  
   const [deleteAllNotifications, { isLoading: isDeleting }] = useDeleteAllNotificationsMutation();
-
   const fetchedNotifications = notificationRes?.data?.data ?? notificationRes?.data ?? [];
-  console.log(fetchedNotifications)
   const meta = notificationRes?.data?.meta;
   const hasMore = meta?.totalPage ? page < meta.totalPage : fetchedNotifications.length === limit;
 
@@ -168,7 +164,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
       router.push('/couchprofile');
     } else if (user.role === 'club') {
       router.push('/clubprofile');
-    } else if (user.role === 'agents') {
+    } else if (user.role === 'agent') {
       router.push('/agentprofile');
     }
   };

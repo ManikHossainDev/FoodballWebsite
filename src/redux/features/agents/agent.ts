@@ -30,7 +30,7 @@ export const Agent = baseApi.injectEndpoints({
 
     placementsAction: builder.mutation<any, { id: string; data: any }>({
       query: ({ id, data }) => ({
-        url: `/player-placement/${id}`,
+        url: `/player-placement/${id}/status`,
         method: "PATCH",
         body: data,
       }),
@@ -71,12 +71,20 @@ export const Agent = baseApi.injectEndpoints({
     }),
 
     // was typed <any, void> but takes an id — fixed to <any, string>
-    getOneHiringResponses: builder.query<any, string>({
+    getRecommendationResponses: builder.query<any, string>({
       query: (id) => ({
-        url: `/club-hiring/${id}/responses`,
+        url: `/club-hiring/recommendation/${id}`,
         method: "GET",
       }),
       providesTags: ["Agent"],
+    }),
+
+    cancelRecommendation: builder.mutation<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `/club-hiring/${id}/cancel-recommendation`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Agent"],
     }),
 
     getAgents: builder.query<any, void>({
@@ -107,7 +115,8 @@ export const {
   useGetSingleClubHiringQuery,
   useAddHiringRecommendMutation,
   useGetClubHiringMyResponsesQuery,
-  useGetOneHiringResponsesQuery,
+  useGetRecommendationResponsesQuery,
   useGetAgentsQuery,
   useGetAgentsDetailsQuery,
+  useCancelRecommendationMutation
 } = Agent;
