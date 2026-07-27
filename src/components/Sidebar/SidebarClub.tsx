@@ -65,16 +65,16 @@ const SidebarClub = ({ drawerOpen = false, onCloseDrawer }: SidebarClubProps) =>
       icon: <LuLayoutDashboard size={20} className="text-red-400" />,
       href: "/Club",
     },
-    {
-      title: "Browse Players",
+      {
+      title: "Hirer Players",
       icon: <FiUsers  size={18} />,
-      href: "/BrowsePlayers",
+      href: "/hirerplayers",
     },
-     {
+    {
       title: "Recommendate Player",
       icon: <TbUsersGroup  size={18} />,
       href: "/clubrecommendateplayer",
-    },
+    }, 
     {
       title: "Work with Agents",
       icon: <MdWork  size={18} />,

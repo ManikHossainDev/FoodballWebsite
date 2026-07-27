@@ -5,6 +5,8 @@ import { useGetClubStatisticsQuery } from "@/redux/features/club/club";
 const Page = () => {
   const { data } = useGetClubStatisticsQuery(undefined as any);
   const allData = data?.data;
+  
+
   return (
     <div>
       <h2

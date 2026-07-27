@@ -147,7 +147,7 @@ const Page = () => {
       const res = await updateProfile(payload).unwrap();
       if (res?.success === true) {
         setSaveSuccess(true);
-        router.push("/agentprofile");
+        router.push("/clubprofile");
       }
     } catch (err: any) {
       Swal.fire({

@@ -13,9 +13,12 @@ export const Club = baseApi.injectEndpoints({
       providesTags: ["Club"],
     }),
 
-    getClub: builder.query<any, { page?: number; limit?: number } | void>({
+    getClubHirings: builder.query<
+      any,
+      { page?: number; limit?: number } | void
+    >({
       query: (args) => ({
-        url: "/users/Club",
+        url: "/club-hiring/mine",
         method: "GET",
         params: {
           page: args?.page ?? 1,
@@ -33,9 +36,17 @@ export const Club = baseApi.injectEndpoints({
       providesTags: ["Club"],
     }),
 
+    getClubRecommendations: builder.query<any, string>({
+      query: (id) => ({
+        url: `/club-hiring/${id}/recommendations`,
+        method: "GET",
+      }),
+      providesTags: ["Club"],
+    }),
+
     addClub: builder.mutation<any, Partial<any>>({
       query: (data) => ({
-        url: "/users/Club",
+        url: "/club-hiring",
         method: "POST",
         body: data,
       }),
@@ -44,7 +55,7 @@ export const Club = baseApi.injectEndpoints({
 
     updateClub: builder.mutation<any, { id: string; data: Partial<any> }>({
       query: ({ id, data }) => ({
-        url: `/users/Club/${id}`,
+        url: `/club-hiring/recommendations/${id}/status`,
         method: "PATCH",
         body: data,
       }),
@@ -62,8 +73,9 @@ export const Club = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetClubQuery,
   useGetClubStatisticsQuery,
+  useGetClubRecommendationsQuery,
+  useGetClubHiringsQuery,
   useGetSingleClubQuery,
   useAddClubMutation,
   useUpdateClubMutation,

@@ -1,56 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-
-import React from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import user from '@/assets/Authentication/user.jpg'
-import Image from "next/image";
-
+import { Pagination, Spin, Empty } from "antd";
+import { useGetClubHiringsQuery } from "@/redux/features/club/club";
 const Club = () => {
   const router = useRouter();
-
-  // JSON data structure for Player Placements Requests
-  const videoReviewData = [
-    {
-      id: 1,
-      name: "Marcus Silva",
-      avatar: user,
-      position: "Forward",
-      experience: "5 years",
-      preferredClub: "Barcelona FC"
-    },
-    {
-      id: 2,
-      name: "Marcus Silva",
-      avatar: user,
-      position: "Forward",
-      experience: "5 years",
-      preferredClub: "Barcelona FC"
-    },
-    {
-      id: 3,
-      name: "Marcus Silva",
-      avatar: user,
-      position: "Forward",
-      experience: "5 years",
-      preferredClub: "Barcelona FC"
-    },
-    {
-      id: 4,
-      name: "Marcus Silva",
-      avatar: user,
-      position: "Forward",
-      experience: "5 years",
-      preferredClub: "Barcelona FC"
-    },
-    {
-      id: 5,
-      name: "Marcus Silva",
-      avatar: user,
-      position: "Forward",
-      experience: "5 years",
-      preferredClub: "Barcelona FC"
-    }
-  ];
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const { data: clubHiringRes, isLoading, isFetching } =   useGetClubHiringsQuery({page, limit});
+  const hiringPosts = clubHiringRes?.data?.data ?? [];
+  const pagination = clubHiringRes?.data?.pagination;
+  const handlePageChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    setLimit(newPageSize);
+  };
 
   return (
     <div className="">
@@ -59,11 +23,13 @@ const Club = () => {
           {/* Player Placements Requests Section */}
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg md:text-xl font-bold text-white "
-              style={{
-                textShadow:
-                  "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-              }}>
+              <h2
+                className="text-lg md:text-xl font-bold text-white "
+                style={{
+                  textShadow:
+                    "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
+                }}
+              >
                 Hiring Post
               </h2>
               <button
@@ -74,59 +40,80 @@ const Club = () => {
               </button>
             </div>
 
-            <div className="space-y-3 bg-[#303030] p-3 rounded-md">
-              {videoReviewData.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => router.push(`/Club/${item.id}`)}
-                  className="bg-[#3F3F3F] rounded-lg p-3 md:flex items-center gap-3 transition cursor-pointer"
-                >
-                  <div className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
-                    <Image 
-                      width={100} 
-                      height={100} 
-                      src={item.avatar} 
-                      className='rounded-md object-cover w-full h-full' 
-                      alt='user' 
-                    />
-                  </div>
-                  
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold text-sm mb-1">
-                      {item.name}
-                    </h3>
-                    <div className="space-y-0.5">
-                      <div className="flex items-center text-xs">
-                        <p className="text-gray-500">Position :</p>
-                        <p className="text-gray-400 ml-2">{item.position}</p>
-                      </div>
-                      <div className="flex items-center text-xs">
-                        <p className="text-gray-500">Experience :</p>
-                        <p className="text-gray-400 ml-2">{item.experience}</p>
-                      </div>
-                      <div className="flex items-center text-xs">
-                        <p className="text-gray-500">Preferred Club :</p>
-                        <p className="text-gray-400 ml-2">{item.preferredClub}</p>
+            <div className="space-y-3 bg-[#303030] p-3 rounded-md min-h-[200px]">
+              {isLoading || isFetching ? (
+                <div className="flex justify-center items-center py-10">
+                  <Spin size="large" />
+                </div>
+              ) : hiringPosts.length === 0 ? (
+                <div className="py-10">
+                  <Empty
+                    description={<span className="text-gray-400">No hiring posts found</span>}
+                  />
+                </div>
+              ) : (
+                hiringPosts.map((item: any) => (
+                  <div
+                    key={item._id}
+                    onClick={() => router.push(`/Club/${item._id}`)}
+                    className="bg-[#3F3F3F] rounded-lg p-3 md:flex items-center gap-3 transition cursor-pointer"
+                  >
+                    
+
+                    <div className="flex-1">
+                      <h3 className="text-white font-semibold text-sm mb-1">
+                        {item.positionTitle}
+                      </h3>
+                      <div className="space-y-0.5">
+                        <div className="flex items-center text-xs">
+                          <p className="text-gray-500">Employment Type :</p>
+                          <p className="text-gray-400 ml-2">{item.employmentType}</p>
+                        </div>
+                        <div className="flex items-center text-xs">
+                          <p className="text-gray-500">Open Positions :</p>
+                          <p className="text-gray-400 ml-2">{item.openPositions}</p>
+                        </div>
+                        <div className="flex items-center text-xs">
+                          <p className="text-gray-500">Salary Range :</p>
+                          <p className="text-gray-400 ml-2">{item.salaryRange}</p>
+                        </div>
+                        <div className="flex items-center text-xs">
+                          <p className="text-gray-500">Status :</p>
+                          <p className="text-gray-400 ml-2 capitalize">{item.status}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-col gap-2 flex-shrink-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevents triggering the card's onClick
-                        router.push(`/Club/${item.id}`);
-                      }}
-                      className="bg-[#ef4444] hover:bg-[#dc2626] flex items-center space-x-2 text-white px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap"
-                    >
-                      View
-                    </button>
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevents triggering the card's onClick
+                          router.push(`/Club/${item._id}/seerecommended`);
+                        }}
+                        className="bg-[#ef4444] hover:bg-[#dc2626] flex items-center space-x-2 text-white px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap"
+                      >
+                        See Recommended Player
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
+               {/* Ant Design Pagination */}
+            {pagination && pagination.total > 0 && (
+              <div className="flex justify-end pt-2 ">
+                <Pagination
+                  current={pagination.page}
+                  pageSize={pagination.limit}
+                  total={pagination.total}
+                  onChange={handlePageChange}
+                  className="ant-pagination-dark"
+                />
+              </div>
+            )}
             </div>
-          </div>
 
+           
+          </div>
         </div>
       </div>
     </div>
