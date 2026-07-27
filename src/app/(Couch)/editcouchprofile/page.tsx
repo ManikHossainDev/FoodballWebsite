@@ -58,12 +58,10 @@ const Page = () => {
   const id = currentUser?._id || currentUser?.id;
 
   const { data, isLoading: isProfileLoading } = useGetUserProfileQuery(id);
-  const [updateProfileImage, { isLoading: isImageUploading }] =
-    useUpdateProfileImageMutation();
+  const [updateProfileImage, { isLoading: isImageUploading }] =useUpdateProfileImageMutation();
   const [updateProfile, { isLoading: isSaving }] = useUpdateProfileMutation();
   const router = useRouter();
   const profile = data?.data;
-
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [areaOfExpertise, setAreaOfExpertise] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState<string>("");

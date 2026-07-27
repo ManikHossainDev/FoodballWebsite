@@ -53,9 +53,17 @@ export const Agent = baseApi.injectEndpoints({
       providesTags: ["Agent"],
     }),
 
+    getSuggestionsList: builder.query<any, void>({
+      query: () => ({
+        url: "/player-placement/suggestions/list",
+        method: "GET",
+      }),
+      providesTags: ["Agent"],
+    }),
+
     addHiringRecommend: builder.mutation<any, { id: string; data: any }>({
       query: ({ id, data }) => ({
-        url: `/club-hiring/${id}`,
+        url: `/club-hiring/${id}/recommend`,
         method: "POST",
         body: data,
       }),
@@ -66,6 +74,18 @@ export const Agent = baseApi.injectEndpoints({
       query: () => ({
         url: "/club-hiring/my-responses",
         method: "GET",
+      }),
+      providesTags: ["Agent"],
+    }),
+
+    getClubHiringMyResponse: builder.query<
+      any,
+      { page?: number; limit?: number; status?: string }
+    >({
+      query: ({ page, limit, status }) => ({
+        url: "/club-hiring/my-responses",
+        method: "GET",
+        params: { page, limit, status },
       }),
       providesTags: ["Agent"],
     }),
@@ -118,5 +138,7 @@ export const {
   useGetRecommendationResponsesQuery,
   useGetAgentsQuery,
   useGetAgentsDetailsQuery,
-  useCancelRecommendationMutation
+  useCancelRecommendationMutation,
+  useGetClubHiringMyResponseQuery,
+  useGetSuggestionsListQuery
 } = Agent;
