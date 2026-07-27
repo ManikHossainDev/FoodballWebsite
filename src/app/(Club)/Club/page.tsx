@@ -1,6 +1,10 @@
-
+"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Club from "@/components/Pages/Club/Club";
+import { useGetClubStatisticsQuery } from "@/redux/features/club/club";
 const Page = () => {
+  const { data } = useGetClubStatisticsQuery(undefined as any);
+  const allData = data?.data;
   return (
     <div>
       <h2
@@ -15,15 +19,15 @@ const Page = () => {
       <p className="text-[#8F8F8F]">Find Top Talent, Manage Players, and Connect with Agents</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 md:gap-8 my-5">
           <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
+            <h1 className="text-xl">{allData?.openPositions}</h1>
             <p>Open Positions</p>
           </div>
           <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
+            <h1 className="text-xl">{allData?.totalHire}</h1>
             <p>Applications </p>
           </div>
           <div className="bg-[#303030] p-3 rounded-lg w-full text-white font-semibold">
-            <h1 className="text-xl">16</h1>
+            <h1 className="text-xl">{allData?.totalRecommendation}</h1>
             <p>Total Recommendation</p>
           </div>
       </div>

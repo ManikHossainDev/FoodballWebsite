@@ -24,6 +24,7 @@ export const baseApi = createApi({
     "MyOrders",
     "Coach",
     "Agent",
+    "Club",
   ],
   endpoints: () => ({}),
 });
