@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { Settings, Bell, MessageSquare, Menu, MoreVertical, X } from 'lucide-react';
+import {Bell, MessageSquare, Menu, MoreVertical, X } from 'lucide-react';
 import logo from '@/assets/logo/logo.png';
 import userImg from '@/assets/logo/user.jpg';
 import Link from 'next/link';
@@ -196,13 +196,13 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
 
           {/* Right Section - Icons */}
           <div className="flex items-center gap-2 md:gap-4">
-            <button
+            {/* <button
               className="text-gray-400 flex space-x-1 items-center hover:text-white transition-colors p-2 hover:bg-gray-700/50 rounded-lg"
               aria-label="Settings"
             >
               <Settings className="w-5 h-5 md:w-8 md:h-8" />
               <h1 className="hidden md:block">Settings</h1>
-            </button>
+            </button> */}
 
             <button
               onClick={() => setIsNotificationOpen(!isNotificationOpen)}

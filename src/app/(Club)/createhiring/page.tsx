@@ -5,12 +5,12 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { useAddClubMutation } from "@/redux/features/club/club";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [addClub, { isLoading }] = useAddClubMutation();
-
   const [positionInput, setPositionInput] = useState("");
-
+  const route = useRouter();
   const [form, setForm] = useState({
     clubOverview: "",
     playerRequirements: "",
@@ -71,32 +71,61 @@ const Page = () => {
     setPositionInput("");
   };
 
+  const isFormValid = () => {
+    return (
+      form.clubOverview.trim() !== "" &&
+      form.playerRequirements.trim() !== "" &&
+      form.benefits.trim() !== "" &&
+      form.openPositions.length > 0 &&
+      form.positionTitle.trim() !== "" &&
+      form.employmentType.trim() !== "" &&
+      form.packageRange.trim() !== "" &&
+      form.dateLine.trim() !== ""
+    );
+  };
+
   const handleSubmit = async () => {
+    if (!isFormValid()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill in all fields and add at least one open position before submitting.",
+      });
+      return;
+    }
+
     const payload = {
       overview: form.clubOverview,
       requirements: form.playerRequirements,
       facilities: form.benefits,
-      openPositions: form.openPositions,
+      openPositions: form.openPositions.length,
+      positions: form.openPositions,
       positionTitle: form.positionTitle,
       employmentType: form.employmentType,
       salaryRange: form.packageRange,
       dateLine: form.dateLine,
     };
 
-    console.log("Payload =>", payload);
-
     try {
       const res = await addClub(payload).unwrap();
+      console.log(res);
 
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: res?.message || "Hiring post created successfully.",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-
-      resetForm();
+      if (res?.success) {
+        route.push("/hirerplayers");
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: res?.message || "Hiring post created successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: res?.message || "Something went wrong. Please try again.",
+        });
+      }
     } catch (error: any) {
       console.error(error);
 
@@ -272,17 +301,13 @@ const Page = () => {
               <label className={labelClass}>Employment Type</label>
 
               <div className={fieldWrapClass}>
-                <select
+                <input
+                  type="text"
                   className={inputClass}
+                  placeholder="Full-time"
                   value={form.employmentType}
                   onChange={update("employmentType")}
-                >
-                  <option value="">Select Employment Type</option>
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Loan">Loan</option>
-                  <option value="Trial">Trial</option>
-                </select>
+                />
               </div>
             </div>
 

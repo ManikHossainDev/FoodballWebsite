@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { Pagination, Spin, Empty } from "antd";
 import { useGetClubHiringsQuery } from "@/redux/features/club/club";
 import Link from "next/link";
-const Club = () => {
+const HirerPlayersCard = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const { data: clubHiringRes, isLoading, isFetching } =   useGetClubHiringsQuery({page, limit});
@@ -21,24 +21,7 @@ const Club = () => {
         <div className="">
           {/* Player Placements Requests Section */}
           <div className="space-y-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2
-                className="text-lg md:text-xl font-bold text-white"
-                style={{
-                  textShadow:
-                    "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-                }}
-              >
-                Hiring Post
-              </h2>
-              <Link
-                href={`/hirerplayers`}
-                className="text-gray-400 hover:text-white text-sm"
-              >
-                See all
-              </Link>
-            </div>
-
+            
             <div className="space-y-3 bg-[#303030] p-3 rounded-md min-h-[200px]">
               {isLoading || isFetching ? (
                 <div className="flex justify-center items-center py-10">
@@ -52,13 +35,11 @@ const Club = () => {
                 </div>
               ) : (
                 hiringPosts.map((item: any) => (
-                  <Link
+                  <div
                     key={item._id}
-                    href={`/Club/${item._id}`}
                     className="bg-[#3F3F3F] rounded-lg p-3 md:flex items-center gap-3 transition cursor-pointer"
                   >
-                    
-
+        
                     <div className="flex-1">
                       <h3 className="text-white font-semibold text-sm mb-1">
                         {item.positionTitle}
@@ -86,12 +67,15 @@ const Club = () => {
                     <div className="flex flex-col gap-2 flex-shrink-0">
                       <Link
                         href={`/Club/${item._id}/seerecommended`}
-                        className="bg-[#ef4444] hover:bg-[#dc2626] flex items-center space-x-2 text-white px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap"
+                        className="bg-[#ef4444] hover:bg-[#dc2626] flex items-center space-x-2 text-white px-4 py-2 rounded text-xs font-medium transition whitespace-nowrap"
                       >
                         See Recommended Player
                       </Link>
+                      <Link href={`/Club/${item._id}`} className=" px-3 py-2 flex text-xs items-center text-white rounded-lg  border border-red-500">
+                       Player Hiring Post Details
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 ))
               )}
                {/* Ant Design Pagination */}
@@ -116,4 +100,4 @@ const Club = () => {
   );
 };
 
-export default Club;
+export default HirerPlayersCard;

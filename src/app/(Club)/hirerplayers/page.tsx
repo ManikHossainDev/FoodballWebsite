@@ -1,5 +1,6 @@
 import { AiOutlineUserAdd } from "react-icons/ai";
 import Link from "next/link";
+import HirerPlayersCard from "@/components/Pages/Club/hirerplayersCard";
 
 const Page = () => {
   return (
@@ -23,6 +24,7 @@ const Page = () => {
            </Link>
         </div>
       </div>
+      <HirerPlayersCard />
     </div>
   );
 };

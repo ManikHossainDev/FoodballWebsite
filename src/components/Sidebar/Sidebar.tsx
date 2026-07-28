@@ -3,7 +3,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, } from "next/navigation";
 import { Drawer, Modal } from "antd";
 import Cookies from "js-cookie";
 
@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { LuWalletCards } from "react-icons/lu";
 import { ImVideoCamera } from "react-icons/im";
+import { logout } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 // TODO: replace with your actual hook that exposes `refetch` (e.g. useAuth, useProfile)
 // import { useProfile } from "@/hooks/useProfile";
@@ -29,10 +31,8 @@ interface SidebarProps {
 const Sidebar = ({ drawerOpen = false, onCloseDrawer }: SidebarProps) => {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
-  // const { refetch } = useProfile(); // uncomment and wire to your real hook
-
+  const dispatch = useAppDispatch();
+  // const { refetch } = useProfile(); 
   const closeDrawer = () => {
     if (onCloseDrawer) {
       onCloseDrawer();
@@ -43,16 +43,11 @@ const Sidebar = ({ drawerOpen = false, onCloseDrawer }: SidebarProps) => {
   const handleLogoutCancel = () => setLogoutModalVisible(false);
 
   const handleLogout = () => {
-    // Remove the cookie holding your token (replace "token" with your actual cookie name)
+    dispatch(logout());
     Cookies.remove("token");
     Cookies.remove("user");
-
-    // Refetch profile so `user` becomes undefined after cookie is cleared
-    // refetch();
-
-    // Redirect to home page or login screen
-    router.push("/");
     closeDrawer();
+    window.location.href = "/";
   };
 
   const handleLogoutConfirm = () => {

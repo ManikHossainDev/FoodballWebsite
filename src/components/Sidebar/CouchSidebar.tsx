@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, } from "next/navigation";
 import { Drawer, Modal } from "antd";
 import Cookies from "js-cookie";
 import {
@@ -14,6 +14,8 @@ import { RiVideoLine } from "react-icons/ri";
 import { PiHeadsetFill } from "react-icons/pi";
 import { TbClipboardCheck } from "react-icons/tb";
 import { LuWalletCards } from "react-icons/lu";
+import { logout } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 // TODO: replace with your actual hook that exposes `refetch` (e.g. useAuth, useProfile)
 // import { useProfile } from "@/hooks/useProfile";
@@ -26,9 +28,7 @@ interface CouchSidebarProps {
 const CouchSidebar = ({ drawerOpen = false, onCloseDrawer }: CouchSidebarProps) => {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
-  // const { refetch } = useProfile(); // আপনার actual hook দিয়ে uncomment করুন
+  const dispatch = useAppDispatch();
 
   const closeDrawer = () => {
     if (onCloseDrawer) {
@@ -39,16 +39,11 @@ const CouchSidebar = ({ drawerOpen = false, onCloseDrawer }: CouchSidebarProps) 
   const handleLogoutCancel = () => setLogoutModalVisible(false);
 
   const handleLogout = () => {
-    // Remove the cookie holding your token (replace "token" with your actual cookie name)
+    dispatch(logout());
     Cookies.remove("token");
     Cookies.remove("user");
-
-    // Refetch profile so `user` becomes undefined after cookie is cleared
-    // refetch();
-
-    // Redirect to home page or login screen
-    router.push("/");
     closeDrawer();
+    window.location.href = "/";
   };
 
   const handleLogoutConfirm = () => {

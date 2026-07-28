@@ -55,7 +55,6 @@ interface Coach {
   image: string;
 }
 
-
 export interface VideoRequestItem {
   _id: string;
   coach: Coach;
@@ -138,3 +137,12 @@ export interface ConsultationsResponse {
   message: string;
   data: Consultation[];
 }
+
+export type TUser = {
+  name: string;
+  email: string;
+  password: string;
+  _id?: string;
+  id: string;
+  role: "player" | "coach" | "club" | "agent"; 
+};

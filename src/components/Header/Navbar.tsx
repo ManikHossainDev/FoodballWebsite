@@ -11,6 +11,8 @@ import { FaRegUser } from "react-icons/fa";
 import AuthModal from "./Authmodal";
 import { useGetProfileQuery } from "@/redux/features/Profile/Profile";
 import Cookies from "js-cookie"; // 1. Import Cookies library
+import { logout } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 
 const navLink = [
@@ -22,7 +24,7 @@ const navLink = [
 
 const Navbar = () => {
   const router = useRouter();
-
+  const dispatch = useAppDispatch();
   // 2. Destructure refetch instead of refresh (RTK Query hook name)
   const { data, refetch } = useGetProfileQuery({});
   const user = data?.data;
@@ -47,16 +49,12 @@ const Navbar = () => {
 
   // 3. Logout Handler
   const handleLogout = () => {
-    // Remove the cookie holding your token (replace "token" with your actual cookie name)
+    dispatch(logout());
     Cookies.remove("token");
     Cookies.remove("user");
-
-    // Refetch profile so `user` becomes undefined after cookie is cleared
     refetch();
-
-    // Redirect to home page or login screen
-    router.push("/");
     closeDrawer();
+    window.location.href = "/";
   };
 
   const handleProfileRedirect = () => {
