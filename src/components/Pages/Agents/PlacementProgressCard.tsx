@@ -38,7 +38,7 @@ const PlacementProgressCard = () => {
 
   // Real data from API, no mock fallback
   const recommendList = response?.data?.data ?? [];
-
+ console.log(recommendList)
   // Actual response shape uses `pagination`, not `meta`
   // const totalItems: number = response?.data?.pagination?.total ?? 0;
   const totalPages: number = response?.data?.pagination?.totalPages ?? 1;

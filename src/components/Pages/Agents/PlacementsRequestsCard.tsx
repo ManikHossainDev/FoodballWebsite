@@ -113,9 +113,9 @@ const PlacementsRequestsCard = () => {
               </button>
             )}
           </div>
-          <button className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white px-4 py-1.5 rounded text-xs font-medium transition">
+              <Link href={`/messaging/${item?._id}`} className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white px-4 py-1.5 rounded text-xs font-medium transition">
             Message
-          </button>
+          </Link>
         </div>
       </div>
     </Link>

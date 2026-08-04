@@ -12,6 +12,7 @@ const Agents = () => {
   // Player Placement Requests (from API)
   const { data: PlacementRequests, isLoading: placementsLoading } = useGetPlayerPlacementQuery();
   const placementList = PlacementRequests?.data?.data || [];
+  console.log(placementList)
   const [PlacementsAction] = usePlacementsActionMutation();
   // body: { status: "accept" | "decline" }
   const handlePlacements = async (id: string, status: "accept" | "decline") => {
@@ -132,9 +133,9 @@ const Agents = () => {
                   </div>
 
                   <div className="flex  gap-2 items-end">
-                    <button className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white  rounded text-xs font-medium transition">
+                    <Link href={`/messaging/${item?._id}`} className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white  rounded text-xs font-medium transition">
                       <LuMessageSquareMore size={40} className="text-white"/>
-                    </button>
+                    </Link>
                     <div className="flex flex-col gap-2 flex-shrink-0">
                     {item.status === "pending" && (
                       <button

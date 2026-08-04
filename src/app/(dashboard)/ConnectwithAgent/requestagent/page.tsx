@@ -1,6 +1,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from "react";
 import icon from '@/assets/HeroBannerSection/Icon.png'
 import Agentrequestinfo from '@/components/Pages/FootballPlayers/agentrequestinfo';
 const Page = () => {
@@ -20,7 +21,9 @@ const Page = () => {
        </Link>
       </h2>
       <p className="text-[#8F8F8F] mb-2">Detailed information about this agent and their expertise</p>
+      <Suspense fallback={<div className="text-white p-6">Loading...</div>}>
       <Agentrequestinfo />
+      </Suspense>
  </div>
  );
 };

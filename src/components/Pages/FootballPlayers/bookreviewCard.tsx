@@ -7,6 +7,7 @@ import { FaRegMessage } from 'react-icons/fa6';
 import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
 import { useBookConsultationMutation, useGetCoachesTimesLotsQuery, useGetSingleCoachesQuery } from '@/redux/features/player/hireCoachs';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 interface CoachSlot {
   _id: string;
@@ -34,9 +35,8 @@ const BookreviewCard = () => {
 
   const { data } = useGetSingleCoachesQuery(coachId);
   const consultationFee = data?.data?.profile?.consultationFee ?? 0;
-
   const profile = data?.data;
-
+  console.log(profile);
   const [BookConsultation, { isLoading: isBooking }] = useBookConsultationMutation();
 
   const [formData, setFormData] = useState({
@@ -261,9 +261,9 @@ const BookreviewCard = () => {
         <div>
           <div className='flex space-x-2 py-2 justify-end'>
             {/* Message Button */}
-            <button className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
+            <Link href={`/messaging/${profile?._id}`} className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
               <FaRegMessage className="w-5 h-5 text-white" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

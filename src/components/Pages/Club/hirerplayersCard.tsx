@@ -61,8 +61,12 @@ const HirerPlayersCard = () => {
                           <p className="text-gray-500">Status :</p>
                           <p className="text-gray-400 ml-2 capitalize">{item.status}</p>
                         </div>
+                        <div className="flex items-center text-xs">
+                          <p className="text-gray-500">response Count :</p>
+                          <p className="text-gray-400 ml-2 capitalize">{item.responseCount}</p>
+                        </div>
                       </div>
-                    </div>
+                    </div>  
 
                     <div className="flex flex-col gap-2 flex-shrink-0">
                       <Link

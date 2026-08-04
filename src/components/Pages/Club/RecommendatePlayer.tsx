@@ -1,7 +1,9 @@
 "use client";
 
+// import { useGetClubHiringsAcceptQuery,  } from "@/redux/features/club/club";
 import { MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+// import { useState } from "react";
 
 interface Player {
   id: string;
@@ -81,6 +83,16 @@ function PlayerRow({ player }: { player: Player }) {
 }
 
 const RecommendatePlayer = () => {
+  // const [page, setPage] = useState(1);
+    // const [limit, setLimit] = useState(10);
+    // const { data: clubHiringRes, } =   useGetClubHiringsAcceptQuery({page, limit, status:'accepted'});
+    // console.log(clubHiringRes);
+    // const hiringPosts = clubHiringRes?.data?.data ?? [];
+    // const pagination = clubHiringRes?.data?.pagination;
+    // const handlePageChange = (newPage: number, newPageSize: number) => {
+    //   setPage(newPage);
+    //   setLimit(newPageSize);
+    // };
   return (
     <div className="bg-[#303030] rounded-lg p-5">
       <div className="flex flex-col gap-3">

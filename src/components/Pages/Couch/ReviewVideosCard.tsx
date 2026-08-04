@@ -18,7 +18,7 @@ const ReviewVideosCard = () => {
     isLoading: boolean;
     refetch: () => void;
   };
-
+  
   const requests = VideoRequests?.data ?? [];
 
   const router = useRouter();
@@ -28,7 +28,7 @@ const ReviewVideosCard = () => {
   };
 
   const handleMessage = (id: string) => {
-    console.log(`Message for video ${id}`);
+    router.push(`/messaging/${id}`);
   };
 
   if (isLoading) {

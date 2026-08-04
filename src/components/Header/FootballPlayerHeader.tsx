@@ -22,6 +22,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
   const router = useRouter();
   const { data } = useGetProfileQuery({});
   const user = data?.data;
+  
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'unviewed' | 'viewed'>('unviewed');
@@ -88,7 +89,6 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
     if (!el || isLoading || isFetching || !hasMore) return;
 
     const { scrollTop, scrollHeight, clientHeight } = el;
-    // trigger a bit before the very bottom for a smoother feel
     if (scrollHeight - scrollTop - clientHeight < 100) {
       setPage((p) => p + 1);
     }
@@ -107,14 +107,9 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
 
   const handleTabChange = (tab: 'viewed' | 'unviewed') => {
     setActiveTab(tab);
-    // always bump this, even if it's the same tab clicked again, so the
-    // effect below re-runs and forces a fresh fetch every single click
     setRefreshTick((t) => t + 1);
   };
 
-  // Card click -> open full detail view AND mark as viewed at the same time.
-  // API shape uses viewedBy: string[] (array of user ids who have seen it),
-  // not a boolean isViewed flag. Mutation only takes the id.
   const handleNotificationClick = async (notification: any) => {
     const id = notification._id || notification.id;
     if (!id) return;
@@ -129,8 +124,9 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
     if (alreadyViewed) return;
 
     try {
+      
       await updateNotifications(id).unwrap();
-
+      
       const updatedViewedBy = user?._id
         ? Array.from(new Set([...(notification.viewedBy || []), user._id]))
         : notification.viewedBy;
@@ -139,7 +135,6 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
       setSelectedNotification((prev: any) =>
         prev && (prev._id || prev.id) === id ? { ...prev, viewedBy: updatedViewedBy } : prev
       );
-
       // Optimistically update the list so it doesn't wait for a refetch
       if (activeTab === 'unviewed') {
         // it's no longer unviewed, so drop it from this list
@@ -213,12 +208,12 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             </button>
 
-            <button
+            <Link href={`/messaging/${user?._id}`}
               className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700/50 rounded-lg"
               aria-label="Messages"
             >
               <MessageSquare className="w-5 h-5 md:w-7 md:h-7" />
-            </button>
+            </Link>
 
             <button onClick={handleProfileClick} className="relative group" aria-label="Profile">
               <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-semibold overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400 transition-all">

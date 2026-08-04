@@ -110,9 +110,9 @@ const PlacementsRequestsDetails = () => {
               </button>
             )}
           </div>
-          <button className="flex-1 bg-transparent text-[#ccc] text-sm font-medium py-2 px-4 rounded-md border border-[#666] hover:bg-[#444] transition-colors">
+          <Link href={`/messaging/${id}`} className="flex-1 bg-transparent text-[#ccc] text-sm font-medium py-2 px-4 rounded-md border border-[#666] hover:bg-[#444] transition-colors">
             Message
-          </button>
+          </Link>
         </div>
       </div>
 

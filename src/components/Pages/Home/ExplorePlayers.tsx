@@ -115,7 +115,7 @@ const ExplorePlayers = () => {
       {videos.length === 0 ? (
         <p className="mt-10 text-center text-gray-400">No videos found.</p>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
           {videos.map((video) => (
             <VideoCard key={video._id} video={video} />
           ))}
