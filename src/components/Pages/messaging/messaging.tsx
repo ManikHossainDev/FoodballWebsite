@@ -106,7 +106,7 @@ const Message = ({ receiverId }: { receiverId: string }) => {
         page: 1,
         limit: 20,
       });
-      socket.emit("seen", receiverId);
+      socket.emit("Message", receiverId);
 
       const handleAnyEvent = (event: string, ...args: any[]) => {
         console.log("📩 [onAny] Received event:", event, args);
@@ -116,7 +116,7 @@ const Message = ({ receiverId }: { receiverId: string }) => {
       const handleConversation = (data: any) => {
         const convoId = data?.data?.conversation?._id ?? null;
         const list = data?.data?.messages?.data ?? [];
-
+        console.log(list)
         if (convoId) setConversationId(convoId);
 
         const sortedList = Array.isArray(list)

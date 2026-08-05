@@ -82,7 +82,6 @@ const Chats = () => {
     const handleSingleConversationUpdate = (payload: IChat | { data: IChat }) => {
       const data: IChat = (payload as any)?.data ?? (payload as IChat);
       if (!data?._id) return;
-
       setConversations((prev) => {
         const exists = prev.some((c) => c._id === data._id);
         if (exists) {

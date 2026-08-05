@@ -133,7 +133,7 @@ const Agents = () => {
                   </div>
 
                   <div className="flex  gap-2 items-end">
-                    <Link href={`/messaging/${item?._id}`} className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white  rounded text-xs font-medium transition">
+                    <Link href={`/messaging/${item?.author?._id}`} className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white  rounded text-xs font-medium transition">
                       <LuMessageSquareMore size={40} className="text-white"/>
                     </Link>
                     <div className="flex flex-col gap-2 flex-shrink-0">
