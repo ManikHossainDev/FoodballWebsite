@@ -28,7 +28,22 @@ export const Club = baseApi.injectEndpoints({
       providesTags: ["Club"],
     }),
 
-    getClubHiringsAccept: builder.query <any, { page?: number; limit?: number; status?: string } | void>({
+    getClubAgentsConnected: builder.query<any,{ page?: number; limit?: number } | void>({
+      query: (args) => ({
+        url: "/clubs/connected-agents",
+        method: "GET",
+        params: {
+          page: args?.page ?? 1,
+          limit: args?.limit ?? 10,
+        },
+      }),
+      providesTags: ["Club"],
+    }),
+
+    getClubHiringsAccept: builder.query<
+      any,
+      { page?: number; limit?: number; status?: string } | void
+    >({
       query: (args) => ({
         url: "/club-hiring/mine",
         method: "GET",
@@ -87,6 +102,7 @@ export const Club = baseApi.injectEndpoints({
 
 export const {
   useGetClubStatisticsQuery,
+  useGetClubAgentsConnectedQuery,
   useGetClubRecommendationsQuery,
   useGetClubHiringsQuery,
   useGetSingleClubQuery,

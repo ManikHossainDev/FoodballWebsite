@@ -9,6 +9,7 @@ import { useGetFileUploadSignatureQuery } from '@/redux/features/fileUpload/file
 import { useAddVideoRequestsMutation, useGetSingleCoachesQuery } from '@/redux/features/player/hireCoachs';
 import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
 import Swal from 'sweetalert2';
+import Link from 'next/link';
 
 interface CloudinaryUploadResponse {
   resource_type: string;
@@ -253,9 +254,9 @@ const RequestReviewCard = () => {
     <div className="text-white">
       {/* Profile Card */}
       <div className="relative bg-[#262626] px-5 py-4 rounded-lg mb-6">
-        <button className="absolute top-4 right-4 w-8 h-8 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
+        <Link href={`/messaging/${profile?._id}`} className="absolute top-4 right-4 w-8 h-8 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
           <FaRegMessage className="w-4 h-4 text-white" />
-        </button>
+        </Link>
 
         <div className="flex items-center gap-4">
           <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0">

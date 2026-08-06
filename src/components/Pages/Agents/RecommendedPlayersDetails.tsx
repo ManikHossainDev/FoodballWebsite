@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { FiMail, FiPhone, FiUser } from "react-icons/fi";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 const RecommendedPlayersDetails = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const RecommendedPlayersDetails = () => {
 
   const recommendation = data?.data;
   const player = recommendation?.player;
+  
 
   const [CancelRecommendation] = useCancelRecommendationMutation();
 
@@ -94,9 +96,9 @@ const RecommendedPlayersDetails = () => {
           >
             {recommendation?.status === "cancelled" ? "Cancelled" : "Cancel"}
           </button>
-          <button className="flex-1 bg-transparent text-[#ccc] text-sm font-medium py-2 px-4 rounded-md border border-[#666] hover:bg-[#444] transition-colors">
+          <Link href={`/messaging/${player?._id}`} className="flex-1 bg-transparent text-[#ccc] text-sm font-medium py-2 px-4 rounded-md border border-[#666] hover:bg-[#444] transition-colors">
             Message
-          </button>
+          </Link>
         </div>
       </div>
 

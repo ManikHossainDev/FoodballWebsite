@@ -4,6 +4,7 @@ import { useState } from 'react';
 import user from '@/assets/Authentication/user.jpg';
 import Image from 'next/image';
 import { useGetClubHiringMyResponseQuery } from '@/redux/features/agents/agent';
+import Link from 'next/link';
 
 type OrderCategory = 'Profile Recommended' | 'Placement Completed';
 
@@ -139,12 +140,12 @@ const PlacementProgressCard = () => {
                   </div>
 
                   <div className="flex flex-col gap-2 justify-center">
-                    <button className="bg-[#2C2C2C] hover:bg-[#3C3C3C] border border-[#E43636] text-white px-4 py-2 rounded text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-2">
+                    <Link href={`/messaging/${item?.player?._id}`} className="bg-[#2C2C2C] hover:bg-[#3C3C3C] border border-[#E43636] text-white px-4 py-2 rounded text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                       </svg>
                       Message Player
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

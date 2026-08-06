@@ -193,13 +193,13 @@ const RequestsCardDetails = () => {
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
-                  className="object-cover opacity-60"
+                  className="object-fill opacity-60"
                 />
               ) : null}
               {/* Fallback icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
+              {/* <div className="absolute inset-0 flex items-center justify-center">
                 <MdSportsSoccer className="w-16 h-16 text-white/10" />
-              </div>
+              </div> */}
             </div>
 
             {/* Info */}

@@ -6,6 +6,7 @@ import {
   useGetTopRatedClubsQuery,
   useGetTopRatedCoachesQuery,
 } from "@/redux/features/player/player";
+import Link from "next/link";
 
 const FALLBACK_AVATAR = "/assets/Authentication/user.jpg";
 
@@ -44,9 +45,10 @@ const RatingRow = ({ rating, reviews }: RatingRowProps) => (
 
 interface SectionHeaderProps {
   title: string;
+  link:string;
 }
 
-const SectionHeader = ({ title }: SectionHeaderProps) => (
+const SectionHeader = ({ title, link }: SectionHeaderProps) => (
   <div className="flex justify-between items-center mb-4">
     <h2
       className="text-lg md:text-xl font-bold text-white "
@@ -57,7 +59,7 @@ const SectionHeader = ({ title }: SectionHeaderProps) => (
     >
       {title}
     </h2>
-    <button className="text-gray-400 hover:text-white text-sm">See all</button>
+    <Link href={link} className="text-gray-400 hover:text-white text-sm">See all</Link>
   </div>
 );
 
@@ -86,7 +88,7 @@ const TopRatings = () => {
       <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Top rated Coach */}
         <div className="space-y-4">
-          <SectionHeader title="Top rated Coach" />
+          <SectionHeader link="/HireCoach" title="Top rated Coach" />
 
           <div className="space-y-3 bg-[#303030] rounded-md p-2">
             {coachesLoading && (
@@ -153,7 +155,7 @@ const TopRatings = () => {
 
         {/* Top Rated Club */}
         <div className="space-y-4">
-          <SectionHeader title="Top Rated Agents" />
+          <SectionHeader link="/ConnectwithAgent" title="Top Rated Agents" />
 
           <div className="space-y-3 bg-[#303030] rounded-md p-2">
             {clubsLoading && (

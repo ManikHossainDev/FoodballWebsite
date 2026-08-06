@@ -6,6 +6,7 @@ import { FaRegMessage } from 'react-icons/fa6';
 import { useSearchParams } from "next/navigation";
 import { useAddAgentsMutation, useGetSingleAgentsQuery } from '@/redux/features/player/agents';
 import { useGetFileUploadSignatureQuery } from '@/redux/features/fileUpload/fileUpload';
+import Link from 'next/link';
 
 interface CloudinaryVideoContent {
   resource_type: string;
@@ -63,7 +64,7 @@ const Agentrequestinfo = () => {
   const id = searchParams.get("id");
   const { data } = useGetSingleAgentsQuery(id ?? "");
   const agent = data?.data;
-
+  console.log(agent)
   const { data: signatureResponse } = useGetFileUploadSignatureQuery('placementReq');
   const [AddAgents, { isLoading: isSubmitting }] = useAddAgentsMutation();
 
@@ -186,9 +187,9 @@ const Agentrequestinfo = () => {
         <div>
           <div className='flex space-x-2 py-2 justify-end'>
             {/* Favorite Button */}
-            <button className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
+            <Link href={`/messaging/${agent?._id}`} className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
               <FaRegMessage className="w-4 h-4 text-white" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

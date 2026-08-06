@@ -36,7 +36,6 @@ const BookreviewCard = () => {
   const { data } = useGetSingleCoachesQuery(coachId);
   const consultationFee = data?.data?.profile?.consultationFee ?? 0;
   const profile = data?.data;
-  console.log(profile);
   const [BookConsultation, { isLoading: isBooking }] = useBookConsultationMutation();
 
   const [formData, setFormData] = useState({

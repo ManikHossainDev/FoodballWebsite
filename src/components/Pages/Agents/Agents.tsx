@@ -11,8 +11,8 @@ import { LuMessageSquareMore } from "react-icons/lu";
 const Agents = () => {
   // Player Placement Requests (from API)
   const { data: PlacementRequests, isLoading: placementsLoading } = useGetPlayerPlacementQuery();
+  console.log(PlacementRequests)
   const placementList = PlacementRequests?.data?.data || [];
-  console.log(placementList)
   const [PlacementsAction] = usePlacementsActionMutation();
   // body: { status: "accept" | "decline" }
   const handlePlacements = async (id: string, status: "accept" | "decline") => {
@@ -171,7 +171,7 @@ const Agents = () => {
                     "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
                 }}
               >
-                Recommend Player
+                Recommend Players
               </h2>
               <Link href="/recommendedplayers" className="text-gray-400 hover:text-white text-sm">
                 See all

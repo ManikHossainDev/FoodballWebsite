@@ -13,15 +13,10 @@ import { useGetReviewsForAUserQuery } from '@/redux/features/player/hireCoachs';
 const AgentDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useGetSingleAgentsQuery(id);
-
   const agent = data?.data;
-
   const [activeTab, setActiveTab] = useState('overview');
-
   const { data: reviewsResponse, isLoading: isReviewsLoading } = useGetReviewsForAUserQuery(id);
-
   const reviews = reviewsResponse?.data?.data ?? [];
-
   // Still mocked - your API response doesn't include these yet
   const services = agent?.profile?.service
     ? [
@@ -112,9 +107,9 @@ const AgentDetails = () => {
           </div>
 
           {/* Message Icon Button */}
-          <button className="absolute top-4 right-6 w-8 h-8 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
+          <Link href={`/messaging/${agent?._id}`} className="absolute top-4 right-6 w-8 h-8 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors">
             <FaRegMessage className="w-4 h-4 text-white" />
-          </button>
+          </Link>
 
           {/* Request Agent Button */}
           <div className="mt-4 ">

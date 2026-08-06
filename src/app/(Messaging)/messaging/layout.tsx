@@ -4,7 +4,8 @@ import Chats from "@/components/Pages/messaging/chat/chats";
 import { useParams } from "next/navigation";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { receiverId } = useParams();
+  const params = useParams();
+  const receiverId = Array.isArray(params.receiverId) ? params.receiverId[0] : params.receiverId;
   return (
     <section className="w-full md:responsive-padding xl:container mx-auto h-full flex flex-col">
       <Navbar />
