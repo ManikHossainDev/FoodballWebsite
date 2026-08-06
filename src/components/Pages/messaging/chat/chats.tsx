@@ -46,7 +46,24 @@ interface IConversationListResponse {
   };
 }
 
-const Chats = () => {
+interface ChatsProps {
+  // dynamic route ([id]/page.tsx) theke pathano receiverId param
+  receiverId?: string;
+}
+
+// helper: currentUserId bade je user ta array-e ache setai asol otherUser.
+// na pele (rare/fallback case) index 0 use hobe jate crash na hoy.
+const getOtherUser = (
+  chat: IChat | undefined | null,
+  currentUserId: string
+): IChatUser | undefined => {
+  if (!chat?.users?.length) return undefined;
+  return chat.users.find((u) => u?._id !== currentUserId) ?? chat.users[0];
+};
+
+// FIX: age `(receiverI: any)` diye pura props object newa hocchilo, destructure kora hoyni.
+// ekhon props theke sorasori receiverId ber kora hocche.
+const Chats = ({ receiverId }: ChatsProps) => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const [conversations, setConversations] = useState<IChat[]>([]);
@@ -79,15 +96,17 @@ const Chats = () => {
       }
     };
 
+    // FIX: kono conversation-e notun message ashle (existing hok ba notun),
+    // sheita list-er sobar upore (top-e) move kore deoya hocche - jemon
+    // WhatsApp/Messenger-e sobcheye recent chat upore thake.
     const handleSingleConversationUpdate = (payload: IChat | { data: IChat }) => {
       const data: IChat = (payload as any)?.data ?? (payload as IChat);
       if (!data?._id) return;
       setConversations((prev) => {
-        const exists = prev.some((c) => c._id === data._id);
-        if (exists) {
-          return prev.map((c) => (c._id === data._id ? data : c));
-        }
-        return [data, ...prev];
+        // age theke thakle purono entry ta bad diye dao (position matters na)
+        const withoutOld = prev.filter((c) => c._id !== data._id);
+        // notun/updated data ta shobar shamne (top-e) boshiye dao
+        return [data, ...withoutOld];
       });
     };
 
@@ -135,9 +154,31 @@ const Chats = () => {
     };
   }, []);
 
-  // ✅ receiverId param navigate করলেই Layout.tsx এ Chats hide হয়ে Message দেখাবে (mobile এ)
+  // FIX (mul bug): header-er message icon theke `/messaging/${user._id}` (nijer id) pass hoye ashe.
+  // Conversations list load hoye gele check kora hocche - receiverId === currentUserId hole
+  // mane eta invalid/self-id case, tokhon conversations[0] theke real otherUser id ber kore
+  // router.replace() diye URL thik kore deoya hocche. receiverId already valid (onno user-er) hole kichu korar dorkar nei.
+  useEffect(() => {
+    if (loading) return; // conversations list asha porjonto opekkha koro
+    if (!receiverId || !currentUserId) return;
+
+    if (receiverId === currentUserId) {
+      const firstChat = conversations?.[0];
+      const fallbackOtherUser = getOtherUser(firstChat, currentUserId);
+
+      if (fallbackOtherUser?._id) {
+        router.replace(`/messaging/${fallbackOtherUser._id}`);
+      }
+      // conversations khali thakle kono conversation e nei,
+      // tokhon kichu na kore default "no chat selected" state e thakte dao
+    }
+    // receiverId !== currentUserId hole eta already valid, kono action lagbe na
+  }, [receiverId, currentUserId, conversations, loading, router]);
+
+  // receiverId param navigate korle Layout.tsx e Chats hide hoye Message dekhabe (mobile e)
+  // FIX: users[0] blindly na dhore, currentUserId bade asol otherUser ber kora hocche
   const handleChatSelect = (chat: IChat) => {
-    const otherUser = chat?.users?.[0];
+    const otherUser = getOtherUser(chat, currentUserId);
     if (otherUser?._id) {
       router.push(`/messaging/${otherUser._id}`);
     }
@@ -220,7 +261,8 @@ const Chats = () => {
         >
           {conversations && conversations?.length > 0 ? (
             conversations?.map((chat) => {
-              const otherUser = chat?.users?.[0];
+              // FIX: users[0] blindly na dhore, currentUserId bade asol otherUser ber kora hocche
+              const otherUser = getOtherUser(chat, currentUserId);
               const isOnline = otherUser?._id
                 ? onlineUserIds.includes(String(otherUser._id))
                 : false;
@@ -229,6 +271,7 @@ const Chats = () => {
                 <ChatCard
                   key={chat?._id ?? Math.random().toString()}
                   chat={chat}
+                  otherUser={otherUser}
                   currentUserId={currentUserId || ""}
                   isOnline={isOnline}
                   onClick={() => handleChatSelect(chat)}

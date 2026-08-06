@@ -12,7 +12,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="w-full  flex gap-6 bg-[#1a1a1a] shadow-lg h-[90vh] rounded-xl border border-gray-800">
           <div
             className={`w-full md:w-[35%] lg:w-[30%] h-full transition-transform duration-300 ease-in-out ${receiverId ? "hidden md:block" : "block"}`}>
-            <Chats />
+            <Chats receiverId={receiverId}/>
           </div>
           <div
             className={`w-full md:w-[65%] lg:w-[70%] h-full transition-transform duration-300 ease-in-out ${receiverId ? "block" : "hidden md:block"}`}>

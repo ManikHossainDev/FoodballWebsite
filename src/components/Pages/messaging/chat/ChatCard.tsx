@@ -1,15 +1,19 @@
 import Avatars from "../Avatars";
-import { IChat } from "./chats";
+import { IChat, IChatUser } from "./chats";
 
 interface ChatCardProps {
   chat: IChat;
+  // ✅ FIX: age eikhane `chat?.users?.[0]` diye blindly otherUser dhora hoto,
+  // jate currentUserId nijer array-e first thakle nijer image/name dekhato.
+  // Ekhon Chats.tsx theke already-correct otherUser (currentUserId bad diye ber kora)
+  // prop hisebe pathano hocche, tai eikhane আর kono guess korte hobe na.
+  otherUser?: IChatUser;
   currentUserId: string;
   isOnline?: boolean;
   onClick: () => void;
 }
 
-const ChatCard = ({ chat, currentUserId, isOnline = false, onClick }: ChatCardProps) => {
-  const otherUser = chat?.users?.[0];
+const ChatCard = ({ chat, otherUser, currentUserId, isOnline = false, onClick }: ChatCardProps) => {
   const formatTime = (dateString: string | undefined) => {
     if (!dateString) return '';
     try {

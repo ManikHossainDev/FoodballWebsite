@@ -38,9 +38,7 @@ const ConnectwithAgentCards = () => {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const router = useRouter();
-
   const { data, isLoading, isFetching } = useGetAgentsQuery({ page, limit });
-
   const agents: Agent[] = data?.data?.data || [];
   const pagination: AgentsPagination = data?.data?.pagination || { total: 0, page: 1, limit: 10, totalPages: 1 };
 
@@ -59,7 +57,7 @@ const ConnectwithAgentCards = () => {
     e.preventDefault();
     e.stopPropagation();
     // TODO: wire up real messaging navigation / modal here
-    router.push(`/ConnectwithAgent/${agentId}/message`);
+    router.push(`/messaging/${agentId}`);
   };
 
   return (
