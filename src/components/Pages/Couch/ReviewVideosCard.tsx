@@ -20,7 +20,7 @@ const ReviewVideosCard = () => {
   };
   
   const requests = VideoRequests?.data ?? [];
-
+  console.log(requests);
   const router = useRouter();
 
   const handleReviewVideo = (id: string) => {
@@ -95,7 +95,7 @@ const ReviewVideosCard = () => {
                 Review Video
               </button>
               <button
-                onClick={() => handleMessage(request._id)}
+                onClick={() => handleMessage(request?.player?._id)}
                 className="border-2 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-2 md:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
               >
                 Message

@@ -76,7 +76,7 @@ function PlayerRow({ player }: { player: Player }) {
         className="flex items-center gap-2 bg-red-600 hover:bg-red-700 transition-colors text-white text-sm font-medium px-4 py-2 rounded-full"
       >
         <MessageCircle size={16} />
-        Message Agent
+        Message 
       </button>
     </div>
   );

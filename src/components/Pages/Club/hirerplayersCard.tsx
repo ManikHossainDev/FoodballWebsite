@@ -73,10 +73,10 @@ const HirerPlayersCard = () => {
                         href={`/Club/${item._id}/seerecommended`}
                         className="bg-[#ef4444] hover:bg-[#dc2626] flex items-center space-x-2 text-white px-4 py-2 rounded text-xs font-medium transition whitespace-nowrap"
                       >
-                        See Recommended Player
+                         Recommended Player
                       </Link>
                       <Link href={`/Club/${item._id}`} className=" px-3 py-2 flex text-xs items-center text-white rounded-lg  border border-red-500">
-                       Player Hiring Post Details
+                         Hiring Post Details
                       </Link>
                     </div>
                   </div>

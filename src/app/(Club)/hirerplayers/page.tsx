@@ -14,7 +14,7 @@ const Page = () => {
             "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
         }}
       >
-        Hire the Right Player!
+        Hiring Post
       </h2>
       <p className="text-[#8F8F8F] mb-5">Find and recruit the perfect player for your team.</p>
         </div>

@@ -116,7 +116,6 @@ const Message = ({ receiverId }: { receiverId: string }) => {
       const handleConversation = (data: any) => {
         const convoId = data?.data?.conversation?._id ?? null;
         const list = data?.data?.messages?.data ?? [];
-        console.log(list)
         if (convoId) setConversationId(convoId);
 
         const sortedList = Array.isArray(list)

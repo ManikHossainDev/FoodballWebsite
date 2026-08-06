@@ -99,7 +99,7 @@ const Page = () => {
             "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
         }}
       >
-        Hiring Post Details
+        Hiring Recommended players
       </h2>
       <p className="text-[#8F8F8F] mb-4">
         See the hiring post details and recommended player
