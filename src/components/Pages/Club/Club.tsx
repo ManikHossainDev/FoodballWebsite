@@ -55,11 +55,11 @@ const Club = () => {
                   <Link
                     key={item._id}
                     href={`/Club/${item._id}`}
-                    className="bg-[#3F3F3F] rounded-lg p-3 md:flex items-center gap-3 transition cursor-pointer"
+                    className="md:bg-[#3F3F3F]   rounded-lg p-3 md:flex md:items-center gap-3 transition cursor-pointer"
                   >
                     
 
-                    <div className="flex-1">
+                    <div className="md:flex-1">
                       <h3 className="text-white font-semibold text-sm mb-1">
                         {item.positionTitle}
                       </h3>
@@ -83,7 +83,7 @@ const Club = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 flex-shrink-0">
+                    <div className="flex flex-col gap-2 flex-shrink-0 mt-2 md:mt-0">
                       <Link
                         href={`/Club/${item._id}/seerecommended`}
                         className="bg-[#ef4444] hover:bg-[#dc2626] flex items-center space-x-2 text-white px-4 py-1.5 rounded text-xs font-medium transition whitespace-nowrap"

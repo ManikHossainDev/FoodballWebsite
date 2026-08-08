@@ -47,6 +47,8 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
     isFetching,
     refetch: refetchNotifications,
   } = useGetNotificationsQuery(queryArgs);
+
+  console.log(notificationRes)
   
   const [deleteAllNotifications, { isLoading: isDeleting }] = useDeleteAllNotificationsMutation();
   const fetchedNotifications = notificationRes?.data?.data ?? notificationRes?.data ?? [];
