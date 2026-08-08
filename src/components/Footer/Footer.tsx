@@ -16,61 +16,59 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="responsive-padding py-10 text-white">
+    <footer className="responsive-padding text-white ">
       {/* Main Footer Content */}
-      <div className="py-5 md:py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="py-5 md:py-10 px-3 lg:px-0">
+        <div className="grid grid-cols-12 gap-8  xl:gap-2 2xl:gap-24 ">
           {/* Brand Section */}
-          <div className="space-y-4">
-            <div className="pb-1">
-              <div className="w-48 h-32 md:-mt-7 md:-ml-5">
-                <Image src={logo} alt="Logo" />
-              </div>
+          <div className="col-span-11 lg:col-span-3 xl:col-span-4">
+            <div className="w-48 h-32 md:-mt-16 md:-ml-5">
+              <Image src={logo} alt="Logo" />
             </div>
 
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-gray-400 text-base md:text-[18px] py-1 w-full md:w-[62%]">
               Connecting football talent with opportunities worldwide. Your
               journey to professional football starts here.
             </p>
 
             {/* Social Media Icons */}
             <div className="flex space-x-4">
-              <a
+              <Link
                 href="#"
                 aria-label="Facebook"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
               >
                 <FaFacebookF className="text-sm" />
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="#"
                 aria-label="Twitter"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
               >
                 <FaTwitter className="text-sm" />
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="#"
                 aria-label="Instagram"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
               >
                 <FaInstagram className="text-sm" />
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="#"
                 aria-label="LinkedIn"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
               >
                 <FaLinkedinIn className="text-sm" />
-              </a>
+              </Link>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className='col-span-5  md:col-span-4 lg:col-span-2 xl:col-span-3 '>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
 
             <ul className="space-y-3">
@@ -93,7 +91,7 @@ const Footer = () => {
           </div>
 
           {/* For Users */}
-          <div>
+          <div className='col-span-5 md:col-span-4 lg:col-span-2 xl:col-span-3'>
             <h4 className="text-lg font-semibold mb-4">For Users</h4>
 
             <ul className="space-y-3">
@@ -128,12 +126,12 @@ const Footer = () => {
           </div>
 
           {/* Contact Us */}
-          <div>
+          <div className='col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-2'>
             <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
 
             <ul className="space-y-4">
               <li>
-                <a
+                <Link
                   href="mailto:info@visionstriker.com"
                   className="flex items-start space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group"
                 >
@@ -141,21 +139,21 @@ const Footer = () => {
                   <span className="text-sm break-all">
                     info@visionstriker.com
                   </span>
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a
+                <Link
                   href="tel:+12345678901"
                   className="flex items-start space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group"
                 >
                   <FaPhone className="text-red-600 mt-1 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
                   <span className="text-sm">+1 (234) 567-890</span>
-                </a>
+                </Link>
               </li>
 
               <li>
-                <a
+                <Link
                   href="https://maps.google.com"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -167,7 +165,7 @@ const Footer = () => {
                     <br />
                     Sports City, SC 12345
                   </span>
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -177,40 +175,10 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="border-t border-gray-800">
         <div className="py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
               © {currentYear} VISION STRIKER. All rights reserved.
             </p>
-
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              <Link
-                href="/privacy-policy"
-                className="text-gray-400 hover:text-white text-sm transition-colors duration-300"
-              >
-                Privacy Policy
-              </Link>
-
-              <Link
-                href="/terms-condition"
-                className="text-gray-400 hover:text-white text-sm transition-colors duration-300"
-              >
-                Terms & Conditions
-              </Link>
-
-              <Link
-                href="/faq"
-                className="text-gray-400 hover:text-white text-sm transition-colors duration-300"
-              >
-                FAQ
-              </Link>
-
-              <Link
-                href="/contact-us"
-                className="text-gray-400 hover:text-white text-sm transition-colors duration-300"
-              >
-                Contact Us
-              </Link>
-            </div>
           </div>
         </div>
       </div>
