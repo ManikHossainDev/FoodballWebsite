@@ -232,7 +232,7 @@ const BookreviewCard = () => {
               src={profile ? profile?.image : ""}
               fill
               alt="David Martinez"
-              className="object-fill"
+              className="object-fill object-center"
             />
           </div>
 

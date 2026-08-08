@@ -201,7 +201,7 @@ const ReviewDetails = () => {
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
-                  className="object-fill opacity-60"
+                  className="object-fill object-center opacity-60"
                 />
               ) : null}
               {/* Fallback icon */}

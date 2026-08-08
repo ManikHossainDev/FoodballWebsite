@@ -2,6 +2,9 @@
 "use client";
 import { baseApi } from "@/redux/api/baseApi";
 
+
+
+
 export const Club = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -28,9 +31,39 @@ export const Club = baseApi.injectEndpoints({
       providesTags: ["Club"],
     }),
 
-    getClubAgentsConnected: builder.query<any,{ page?: number; limit?: number } | void>({
+    getClubAgentsConnected: builder.query<
+      any,
+      { page?: number; limit?: number } | void
+    >({
       query: (args) => ({
         url: "/clubs/connected-agents",
+        method: "GET",
+        params: {
+          page: args?.page ?? 1,
+          limit: args?.limit ?? 10,
+        },
+      }),
+      providesTags: ["Club"],
+    }),
+
+    getClubAgentsStatistics: builder.query<
+      any,
+      { page?: number; limit?: number; id: string } | void
+    >({
+      query: (args) => ({
+        url: `/clubs/agent-recommended-list/${args?.id}`,
+        method: "GET",
+        params: {
+          page: args?.page ?? 1,
+          limit: args?.limit ?? 10,
+        },
+      }),
+      providesTags: ["Club"],
+    }),
+
+    getClubPlayerList: builder.query<any, { page?: number; limit?: number; id: string } | void>({
+      query: (args) => ({
+        url: "/clubs/club-player-list",
         method: "GET",
         params: {
           page: args?.page ?? 1,
@@ -103,7 +136,9 @@ export const Club = baseApi.injectEndpoints({
 export const {
   useGetClubStatisticsQuery,
   useGetClubAgentsConnectedQuery,
+  useGetClubAgentsStatisticsQuery,
   useGetClubRecommendationsQuery,
+  useGetClubPlayerListQuery,
   useGetClubHiringsQuery,
   useGetSingleClubQuery,
   useAddClubMutation,

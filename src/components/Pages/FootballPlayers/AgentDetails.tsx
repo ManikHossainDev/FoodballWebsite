@@ -80,7 +80,7 @@ const AgentDetails = () => {
                 src={agent.image || userImg}
                 fill
                 alt={agent.name || "Agent"}
-                className="object-fill"
+                className="object-fill object-center"
               />
             </div>
 

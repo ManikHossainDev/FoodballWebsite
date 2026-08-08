@@ -14,7 +14,7 @@ const HeroBannerSection = () => {
           src={ImageHero}
           alt="Football stadium"
           fill
-          className="object-fill md:animate-[kenBurns_20s_ease-in-out_infinite_alternate]"
+          className="object-fill object-center md:animate-[kenBurns_20s_ease-in-out_infinite_alternate]"
           priority
         />
         <div className="absolute inset-0 bg-white/5 animate-[pulse_3s_ease-in-out_infinite]"></div>

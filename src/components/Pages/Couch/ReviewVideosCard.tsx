@@ -64,7 +64,7 @@ const ReviewVideosCard = () => {
                     alt={request.title}
                     width={144}
                     height={80}
-                    className="w-full h-full object-fill"
+                    className="w-full h-full object-fill object-center"
                   />
                 </div>
               </div>

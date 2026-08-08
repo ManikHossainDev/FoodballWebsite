@@ -156,7 +156,7 @@ const Agentrequestinfo = () => {
               src={agent?.image}
               fill
               alt="David Martinez"
-              className="object-fill"
+              className="object-fill object-center"
             />
           </div>
 
