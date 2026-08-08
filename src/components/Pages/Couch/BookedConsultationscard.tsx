@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React, { useState } from 'react';
-import image from "@/assets/Authentication/Container.png";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useGetConsultationsQuery, useStartConsultationMutation } from '@/redux/features/coach/coach';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-
 interface Player {
   _id: string;
   name: string;
@@ -15,7 +13,6 @@ interface Player {
   phone: string;
   image: string;
 }
-
 interface Consultation {
   _id: string;
   coach: string;
@@ -27,18 +24,15 @@ interface Consultation {
   coachFeedback: string;
   isReviewed: boolean;
 }
-
 const BookedConsultationscard = () => {
   const router = useRouter();
   const { data, isLoading, isError } = useGetConsultationsQuery({ status: "accept" });
   const consultations: Consultation[] = data?.data || [];
-
   // ✅ id-based state instead of storing the whole object.
   // selectedId  -> which card is currently selected/active (card click or reschedule click)
   // joiningId   -> which card's "Join Session" is currently in-flight (for loading state)
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [joiningId, setJoiningId] = useState<string | null>(null);
-
   const formatDate = (dateString: string) => {
     if (!dateString) return "N/A";
     const d = new Date(dateString);
@@ -48,15 +42,12 @@ const BookedConsultationscard = () => {
     const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     return `${day}/${month}/${year} - ${time}`;
   };
-
   const [StartConsultation] = useStartConsultationMutation();
-
   const handleJoinSession = async (e: React.MouseEvent, consultation: Consultation) => {
     e.preventDefault();
     e.stopPropagation();
-    setSelectedId(consultation._id); // ✅ mark this card active by id
-    setJoiningId(consultation._id);  // ✅ mark this card's button as "in progress" by id
-
+    setSelectedId(consultation._id);
+    setJoiningId(consultation._id);
     try {
       const res = await StartConsultation({ id: consultation._id }).unwrap();
       console.log(res?.data?.meetingLink);
@@ -68,7 +59,6 @@ const BookedConsultationscard = () => {
           timer: 2000,
           showConfirmButton: false,
         });
-
         setTimeout(() => {
           if (res?.data?.meetingLink) {
             window.location.href = res.data.meetingLink;
@@ -119,17 +109,17 @@ const BookedConsultationscard = () => {
     <div className="bg-[#303030] rounded-md p-4">
       <div className="">
         {consultations.map((consultation) => {
-          const isSelected = selectedId === consultation._id; // ✅ id-based comparison
-          const isJoining = joiningId === consultation._id;   // ✅ id-based comparison
+          const isSelected = selectedId === consultation._id; 
+          const isJoining = joiningId === consultation._id;   
 
           return (
             <Link
               href={`/BookedConsultations/${consultation._id}`}
               key={consultation._id}
-              onClick={() => setSelectedId(consultation._id)} // ✅ set by id on card click
+              onClick={() => setSelectedId(consultation._id)} 
               className={`block w-full rounded-xl mb-2 p-2 shadow-lg hover:shadow-xl ${
                 isSelected
-                  ? "bg-[#4A4A4A] ring-2 ring-red-500" // ✅ active/selected styling
+                  ? "bg-[#4A4A4A] ring-2 ring-red-500" 
                   : "bg-[#3F3F3F]"
               }`}
             >
@@ -138,7 +128,7 @@ const BookedConsultationscard = () => {
                   <div className="relative group cursor-pointer">
                     <div className="w-full sm:w-36 md:h-24 bg-gray-700 rounded-lg overflow-hidden">
                       <Image
-                        src={consultation.player?.image || image}
+                        src={consultation.player?.image}
                         alt={consultation.consultationTopic}
                         width={144}
                         height={80}
@@ -175,7 +165,7 @@ const BookedConsultationscard = () => {
                     href={`/BookedConsultations/reschedulebooked?id=${consultation._id}&coachId=${consultation.coach}`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedId(consultation._id); // ✅ set by id on reschedule click
+                      setSelectedId(consultation._id); 
                     }}
                     className="border-2 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-2 md:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                   >

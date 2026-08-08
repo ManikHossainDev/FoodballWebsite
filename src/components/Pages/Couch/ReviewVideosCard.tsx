@@ -1,7 +1,6 @@
 'use client';
 import { useRouter } from "next/navigation";
 import React from 'react';
-import image from "@/assets/Authentication/Container.png";
 import Image from 'next/image';
 import { VideoRequestsResponse } from "@/types/types";
 import { useGetVideoRequestsQuery } from "@/redux/features/coach/coach";
@@ -60,7 +59,7 @@ const ReviewVideosCard = () => {
               <div className="relative group cursor-pointer">
                 <div className="w-36 h-24 bg-gray-700 rounded-lg overflow-hidden">
                   <Image
-                    src={request.player?.image || image}
+                    src={request.player?.image}
                     alt={request.title}
                     width={144}
                     height={80}
