@@ -2,7 +2,6 @@
 import { useGetSingleClubHiringQuery } from "@/redux/features/agents/agent";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
 // Helper to turn a sentence-style string into bullet points
 const toBulletList = (text?: string) => {
   if (!text) return [];
@@ -11,24 +10,18 @@ const toBulletList = (text?: string) => {
     .map((s) => s.trim().replace(/\.$/, ""))
     .filter(Boolean);
 };
-
 const ExploreClubsDetails = () => {
   const { id } = useParams();
   const { data, isLoading, isError } = useGetSingleClubHiringQuery(id as string);
-
   const post = data?.data;
-
   if (isLoading) {
     return <div className="text-white py-10 text-center">Loading...</div>;
   }
-
   if (isError || !post) {
     return <div className="text-white py-10 text-center">Failed to load hiring post.</div>;
   }
-
   const requirementsList = toBulletList(post.requirements);
   const facilitiesList = toBulletList(post.facilities);
-
   return (
     <div className="lg:flex space-y-2 lg:space-x-10 py-3">
       {/* Left Panel */}
@@ -61,18 +54,15 @@ const ExploreClubsDetails = () => {
             )}
           </div>
         </div>
-
         {/* Info */}
         <div className="px-4 pt-3">
           <p className="text-white text-base font-medium text-center mb-3">
             {post.author?.name}
           </p>
-
           <p className="text-[#aaa] text-xs leading-relaxed mb-4">
             {post.positionTitle} – &ldquo;{post.overview?.slice(0, 90)}
             {post.overview && post.overview.length > 90 ? "..." : ""}&rdquo;
           </p>
-
           <div className="mb-3">
             <div className="flex justify-between">
               <p className="text-[#888] text-xs mb-1.5">Open Position</p>
@@ -86,7 +76,6 @@ const ExploreClubsDetails = () => {
               </span>
             </div>
           </div>
-
           <div className="flex items-center justify-between mt-4 mb-1">
             <span className="text-[#888] text-xs">Type</span>
             <span className="text-[#ccc] text-xs">{post.employmentType}</span>
@@ -96,7 +85,6 @@ const ExploreClubsDetails = () => {
             <span className="text-[#ccc] text-xs">{post.salaryRange}</span>
           </div>
         </div>
-
         {/* Buttons */}
         <div className="flex flex-col gap-2.5 px-4 pb-4 mt-auto">
           <Link
@@ -105,12 +93,11 @@ const ExploreClubsDetails = () => {
           >
             Recommend Player
           </Link>
-          <button className="w-full bg-transparent text-[#e57373] text-sm font-medium py-2.5 px-4 rounded-md border border-[#a33] hover:bg-[#3a2a2a] transition-colors">
+          <Link href={`/messaging/${post?.author?._id}`} className="w-full bg-transparent text-[#e57373] text-sm font-medium py-2.5 px-4 rounded-md border border-[#a33] hover:bg-[#3a2a2a] transition-colors">
             Messages
-          </button>
+          </Link>
         </div>
       </div>
-
       {/* Right Panel */}
       <div className="w-full lg:w-[65%] rounded-lg flex-1 bg-[#3F3F3F] px-7 py-6">
         {/* Club Overview */}
@@ -118,7 +105,6 @@ const ExploreClubsDetails = () => {
           <p className="text-white text-sm font-semibold mb-2.5">Overview</p>
           <p className="text-[#bbb] text-[13px] leading-relaxed">{post.overview}</p>
         </div>
-
         {/* Player Requirements */}
         <div className="mb-6">
           <p className="text-white text-sm font-semibold mb-2.5">Player Requirements</p>
@@ -131,7 +117,6 @@ const ExploreClubsDetails = () => {
             ))}
           </ul>
         </div>
-
         {/* Benefits & Perks */}
         <div>
           <p className="text-white text-sm font-semibold mb-2.5">Benefits & Perks</p>

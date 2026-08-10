@@ -193,6 +193,7 @@ const FootballPlayerHeader = ({ onMenuClick }: FootballPlayerHeaderProps) => {
 
           {/* Right Section - Icons */}
           <div className="flex items-center gap-2 md:gap-4">
+          
             {/* <button
               className="text-gray-400 flex space-x-1 items-center hover:text-white transition-colors p-2 hover:bg-gray-700/50 rounded-lg"
               aria-label="Settings"

@@ -91,6 +91,15 @@ const Profile = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    GetWallet: builder.query<unknown, { page?: number; limit?: number } | void>(
+      {
+        query: ({ page, limit } = {}) => ({
+          url: `/wallet?page=${page}&limit=${limit}`,
+          method: "GET",
+        }),
+        providesTags: ["Profile"],
+      },
+    ),
   }),
 });
 
@@ -106,4 +115,5 @@ export const {
   useGetSettingsQuery,
   useGetDashboardMutation,
   useCosmicBlueprintMutation,
+  useGetWalletQuery,
 } = Profile;
