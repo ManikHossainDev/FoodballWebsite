@@ -91,6 +91,22 @@ const Profile = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    AddMoney: builder.mutation({
+      query: (data) => ({
+        url: "/payments/add-money",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+    donation: builder.mutation({
+      query: (data) => ({
+        url: "/payments/donation",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Profile"],
+    }),
     GetWallet: builder.query<unknown, { page?: number; limit?: number } | void>(
       {
         query: ({ page, limit } = {}) => ({
@@ -116,4 +132,6 @@ export const {
   useGetDashboardMutation,
   useCosmicBlueprintMutation,
   useGetWalletQuery,
+  useAddMoneyMutation,
+  useDonationMutation
 } = Profile;

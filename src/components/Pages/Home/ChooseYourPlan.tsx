@@ -1,8 +1,57 @@
+"use client";
+
 import Group from "@/assets/Authentication/Group.png";
+import { useDonationMutation } from "@/redux/features/Profile/Profile";
 import Image from "next/image";
+import { useState } from "react";
 
 const ChooseYourPlan = () => {
+  const [Donation, { isLoading }] = useDonationMutation();
+
   const donationAmounts = ["$ 05", "$ 10", "$ 15", "$ 20", "$ 25", "$ 30"];
+
+  const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
+  const [amount, setAmount] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
+
+  const handlePresetClick = (preset: string) => {
+    const numericValue = preset.replace(/[^0-9]/g, "");
+    setSelectedAmount(preset);
+    setAmount(numericValue);
+    setError("");
+  };
+
+  
+  const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    if (/^\d*\.?\d*$/.test(value)) {
+      setAmount(value);
+      setSelectedAmount(null);
+      setError("");
+    }
+  };
+
+  const handleDonate = async () => {
+    if (!amount || Number(amount) <= 0) {
+      setError("Please enter a valid amount");
+      return;
+    }
+
+    try {
+      const res = await Donation({ amount: Number(amount) }).unwrap();
+
+      if (res?.success && res?.data?.url) {
+        window.location.href = res.data.url;
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to create donation session. Please try again.");
+    }
+  };
 
   return (
     <div className="responsive-padding py-10 lg:py-20">
@@ -39,34 +88,49 @@ const ChooseYourPlan = () => {
           <p className="text-gray-300 text-sm mb-3">Amount Of Donation</p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-            {donationAmounts.map((amount) => (
+            {donationAmounts.map((preset) => (
               <button
-                key={amount}
+                key={preset}
                 type="button"
-                className="border border-red-600/60 text-white rounded-md py-3 text-sm
-                           hover:bg-red-600/20 hover:border-red-500 transition-colors
-                           focus:outline-none focus:ring-2 focus:ring-red-500"
+                onClick={() => handlePresetClick(preset)}
+                className={`border rounded-md py-3 text-sm transition-colors
+                           focus:outline-none focus:ring-2 focus:ring-red-500
+                           ${
+                             selectedAmount === preset
+                               ? "bg-red-600 border-red-500 text-white"
+                               : "border-red-600/60 text-white hover:bg-red-600/20 hover:border-red-500"
+                           }`}
               >
-                {amount}
+                {preset}
               </button>
             ))}
           </div>
 
           <input
             type="text"
+            inputMode="numeric"
+            value={amount}
+            onChange={handleManualChange}
             placeholder="Enter Amount Manually"
             className="w-full bg-transparent border border-red-600/60 rounded-md
-                       px-4 py-3 text-sm text-gray-300 placeholder-gray-500 mb-8
+                       px-4 py-3 text-sm text-gray-300 placeholder-gray-500
                        focus:outline-none focus:ring-2 focus:ring-red-500"
           />
 
-          <div className="flex justify-end">
+          {error && (
+            <p className="text-red-500 text-sm mt-2 mb-2">{error}</p>
+          )}
+
+          <div className={`flex justify-end ${error ? "mt-4" : "mt-8"}`}>
             <button
               type="button"
+              onClick={handleDonate}
+              disabled={isLoading}
               className="bg-red-600 hover:bg-red-700 transition-colors text-white
-                         font-medium rounded-md px-10 py-3"
+                         font-medium rounded-md px-10 py-3
+                         disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Donate
+              {isLoading ? "Processing..." : "Donate"}
             </button>
           </div>
         </div>

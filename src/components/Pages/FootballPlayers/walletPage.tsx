@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import React, { useState } from 'react';
-import { CreditCard, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useGetWalletQuery } from '@/redux/features/Profile/Profile';
+import { CreditCard, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useAddMoneyMutation, useGetProfileQuery, useGetWalletQuery } from '@/redux/features/Profile/Profile';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/redux/features/auth/authSlice';
 import Image from 'next/image';
@@ -29,17 +29,14 @@ const statusStyles: Record<string, string> = {
 const WalletPage = () => {
   const user = useSelector(selectCurrentUser);
   const UserId = user?._id;
-
+  const { data: singleUser } = useGetProfileQuery({});
   const [page, setPage] = useState(1);
   const limit = 10;
   const { data, isLoading, isFetching } = useGetWalletQuery({ page, limit });
   const walletData = data as any;
   const allTransactions = walletData?.data?.data ?? [];
   const pagination = walletData?.data?.pagination;
-  const totalBalance = walletData?.data?.totalBalance ?? 0;
 
-  // Only keep transactions where the current user is either the sender or the receiver.
-  // Everything else is hidden.
   const transactions = allTransactions.filter(
     (tx: any) => tx.sender?._id === UserId || tx.receiver?._id === UserId
   );
@@ -48,6 +45,34 @@ const WalletPage = () => {
     if (!pagination) return;
     if (p < 1 || p > pagination.totalPages) return;
     setPage(p);
+  };
+
+  const [AddMoney, { isLoading: isAddingMoney }] = useAddMoneyMutation();
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [amount, setAmount] = useState<number>(20);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleAddMoney = async () => {
+    setErrorMsg(null);
+    if (!amount || amount <= 0) {
+      setErrorMsg('Please enter a valid amount.');
+      return;
+    }
+    try {
+      const res: any = await AddMoney({ amount }).unwrap();
+      const checkoutUrl = res?.data?.url;
+      if (checkoutUrl) {
+        // Redirect the browser to the Stripe checkout session
+        window.location.href = checkoutUrl;
+      } else {
+        setErrorMsg('No checkout URL returned from server.');
+      }
+    } catch (error: any) {
+      console.log(error);
+      setErrorMsg(error?.data?.message || 'Something went wrong. Please try again.');
+    }
   };
 
   return (
@@ -61,7 +86,7 @@ const WalletPage = () => {
           </p>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl md:text-[2.25rem] font-bold text-white leading-none">
-              ${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              ${singleUser?.data?.walletBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </h1>
             <span className="bg-violet-500/15 text-violet-300 border border-violet-500/30 text-xs font-medium px-3 py-1 rounded-full">
               USD
@@ -81,11 +106,67 @@ const WalletPage = () => {
               </p>
             </div>
           </div>
-          <button className="text-sm px-5 py-2.5 whitespace-nowrap transition-colors flex-shrink-0 rounded-md bg-[#FFFFFF] border border-red-400 text-red-400 font-semibold shadow-[0_0_20px_rgba(255,0,0,0.5)]">
+          <button
+            onClick={() => {
+              setErrorMsg(null);
+              setAmount(20);
+              setShowModal(true);
+            }}
+            className="text-sm px-5 py-2.5 whitespace-nowrap transition-colors flex-shrink-0 rounded-md bg-[#FFFFFF] border border-red-400 text-red-400 font-semibold shadow-[0_0_20px_rgba(255,0,0,0.5)]"
+          >
             Add Balance
           </button>
         </div>
       </div>
+
+      {/* Add Balance Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl w-full max-w-sm p-6 relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-white font-semibold text-lg mb-1">Add Balance</h3>
+            <p className="text-gray-400 text-xs mb-5">
+              Enter the amount you want to add to your wallet.
+            </p>
+
+            <label className="text-gray-400 text-xs mb-1 block">Amount (USD)</label>
+            <input
+              type="number"
+              min={1}
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              className="w-full bg-[#111111] border border-[#2a2a2a] rounded-md px-3 py-2 text-white text-sm mb-2 outline-none focus:border-red-400"
+            />
+
+            {errorMsg && (
+              <p className="text-red-400 text-xs mb-2">{errorMsg}</p>
+            )}
+
+            <div className="flex items-center gap-3 mt-5">
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 text-sm px-4 py-2.5 rounded-md border border-[#2a2a2a] text-gray-300 hover:bg-[#1a1a1a]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddMoney}
+                disabled={isAddingMoney}
+                className="flex-1 text-sm px-4 py-2.5 rounded-md bg-red-500/15 border border-red-500/30 text-red-400 font-semibold disabled:opacity-50"
+              >
+                {isAddingMoney ? 'Processing...' : 'Continue'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Recent Transactions */}
       <div>
@@ -95,8 +176,8 @@ const WalletPage = () => {
           <table className="w-full min-w-[640px]">
             <thead>
               <tr className="border-b border-[#2a2a2a]">
-                <th className="text-left text-gray-400 text-xs font-medium py-3 px-2 w-12">Type</th>
-                <th className="text-left text-gray-400 text-xs font-medium py-3 px-2">Receiver</th>
+                <th className="text-left text-gray-400 text-xs font-medium py-3 px-2 w-12">Profile</th>
+                <th className="text-left text-gray-400 text-xs font-medium py-3 px-2">Name</th>
                 <th className="text-left text-gray-400 text-xs font-medium py-3 px-2">Service Type</th>
                 <th className="text-left text-gray-400 text-xs font-medium py-3 px-2">Amount</th>
                 <th className="text-left text-gray-400 text-xs font-medium py-3 px-2">Status</th>
@@ -119,8 +200,6 @@ const WalletPage = () => {
               ) : (
                 transactions.map((tx: any) => {
                   const isSender = tx.sender?._id === UserId;
-                  // Show the *other* party — if I'm the sender, show who I paid;
-                  // if I'm the receiver, show who paid me.
                   const otherParty = isSender ? tx.receiver : tx.sender;
 
                   return (
