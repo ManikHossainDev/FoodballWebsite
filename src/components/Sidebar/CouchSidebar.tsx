@@ -45,12 +45,10 @@ const CouchSidebar = ({ drawerOpen = false, onCloseDrawer }: CouchSidebarProps) 
     closeDrawer();
     window.location.href = "/";
   };
-
   const handleLogoutConfirm = () => {
     setLogoutModalVisible(false);
     handleLogout();
   };
-
   // ----- MENU LIST -----
   const menuList = [
     {

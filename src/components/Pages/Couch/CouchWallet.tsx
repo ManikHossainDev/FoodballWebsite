@@ -2,10 +2,11 @@
 "use client"
 import React, { useState } from 'react';
 import { CreditCard, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useAddMoneyMutation, useGetProfileQuery, useGetWalletQuery } from '@/redux/features/Profile/Profile';
+import { useGetProfileQuery, useGetWalletQuery, useWithdrawalBalanceMutation } from '@/redux/features/Profile/Profile';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/redux/features/auth/authSlice';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 
 const formatDate = (iso: string) => {
   const d = new Date(iso);
@@ -27,12 +28,13 @@ const statusStyles: Record<string, string> = {
 };
 
 const CouchWallet = () => {
+  
   const user = useSelector(selectCurrentUser);
   const UserId = user?._id;
-  const { data: singleUser } = useGetProfileQuery({});
+  const { data: singleUser, refetch:refetchProfile } = useGetProfileQuery({});
   const [page, setPage] = useState(1);
   const limit = 10;
-  const { data, isLoading, isFetching } = useGetWalletQuery({ page, limit });
+  const { data, isLoading, isFetching, refetch:refetchWallet } = useGetWalletQuery({ page, limit });
   const walletData = data as any;
   const allTransactions = walletData?.data?.data ?? [];
   const pagination = walletData?.data?.pagination;
@@ -47,33 +49,38 @@ const CouchWallet = () => {
     setPage(p);
   };
 
-  const [AddMoney, { isLoading: isAddingMoney }] = useAddMoneyMutation();
+  const [WithdrawalBalance, { isLoading: isAddingMoney }] = useWithdrawalBalanceMutation();
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState<number>(20);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleAddMoney = async () => {
-    setErrorMsg(null);
-    if (!amount || amount <= 0) {
-      setErrorMsg('Please enter a valid amount.');
-      return;
+  const handleWithdrawalMoney = async () => {
+  setErrorMsg(null);
+  if (!amount || amount <= 0) {
+    setErrorMsg('Please enter a valid amount.');
+    return;
+  }
+  try {
+    const res: any = await WithdrawalBalance({ amount }).unwrap();
+    if (res?.statusCode === 201) {
+      setShowModal(false);
+      Swal.fire({
+        title: "Withdrawal Successful",
+        text: "Your withdrawal request has been processed successfully!",
+        icon: "success"
+      });
+      // refetch balance + transactions so UI reflects the new pending withdrawal
+      refetchProfile();
+      refetchWallet();
+    } else {
+      setErrorMsg('No checkout URL returned from server.');
     }
-    try {
-      const res: any = await AddMoney({ amount }).unwrap();
-      const checkoutUrl = res?.data?.url;
-      if (checkoutUrl) {
-        // Redirect the browser to the Stripe checkout session
-        window.location.href = checkoutUrl;
-      } else {
-        setErrorMsg('No checkout URL returned from server.');
-      }
-    } catch (error: any) {
-      console.log(error);
-      setErrorMsg(error?.data?.message || 'Something went wrong. Please try again.');
-    }
-  };
+  } catch (error: any) {
+    setErrorMsg(error?.data?.message || 'Something went wrong. Please try again.');
+  }
+};
 
   return (
     <div className="text-white">
@@ -100,7 +107,7 @@ const CouchWallet = () => {
               <CreditCard className="w-5 h-5 text-red-500" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-white font-semibold text-sm">Add Balance</h3>
+              <h3 className="text-white font-semibold text-sm">Withdrawal Balance</h3>
               <p className="text-gray-400 text-xs mt-0.5 leading-snug">
                 Add balance to your wallet to continue all the transactions
               </p>
@@ -114,7 +121,7 @@ const CouchWallet = () => {
             }}
             className="text-sm px-5 py-2.5 whitespace-nowrap transition-colors flex-shrink-0 rounded-md bg-[#FFFFFF] border border-red-400 text-red-400 font-semibold shadow-[0_0_20px_rgba(255,0,0,0.5)]"
           >
-            Add Balance
+            Withdrawal Balance
           </button>
         </div>
       </div>
@@ -131,7 +138,7 @@ const CouchWallet = () => {
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-white font-semibold text-lg mb-1">Add Balance</h3>
+            <h3 className="text-white font-semibold text-lg mb-1">Withdrawal Balance</h3>
             <p className="text-gray-400 text-xs mb-5">
               Enter the amount you want to add to your wallet.
             </p>
@@ -157,7 +164,7 @@ const CouchWallet = () => {
                 Cancel
               </button>
               <button
-                onClick={handleAddMoney}
+                onClick={handleWithdrawalMoney}
                 disabled={isAddingMoney}
                 className="flex-1 text-sm px-4 py-2.5 rounded-md bg-red-500/15 border border-red-500/30 text-red-400 font-semibold disabled:opacity-50"
               >

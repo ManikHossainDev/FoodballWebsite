@@ -99,6 +99,14 @@ const Profile = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Profile"],
     }),
+    WithdrawalBalance: builder.mutation({
+      query: (data) => ({
+        url: "/payments/withdrawal",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Profile"],
+    }),
     donation: builder.mutation({
       query: (data) => ({
         url: "/payments/donation",
@@ -133,5 +141,6 @@ export const {
   useCosmicBlueprintMutation,
   useGetWalletQuery,
   useAddMoneyMutation,
-  useDonationMutation
+  useDonationMutation, 
+  useWithdrawalBalanceMutation
 } = Profile;
