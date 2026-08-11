@@ -124,6 +124,13 @@ const Profile = baseApi.injectEndpoints({
         providesTags: ["Profile"],
       },
     ),
+    GetPayoutHistory: builder.query<unknown,{ page?: number; limit?: number } | void>({
+      query: ({ page, limit } = {}) => ({
+        url: `/payments?page=${page}&limit=${limit}`,
+        method: "GET",
+      }),
+      providesTags: ["Profile"],
+    }),
   }),
 });
 
@@ -142,5 +149,6 @@ export const {
   useGetWalletQuery,
   useAddMoneyMutation,
   useDonationMutation, 
-  useWithdrawalBalanceMutation
+  useWithdrawalBalanceMutation,
+  useGetPayoutHistoryQuery
 } = Profile;

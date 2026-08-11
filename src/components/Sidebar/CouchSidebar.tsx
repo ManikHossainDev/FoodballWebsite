@@ -16,6 +16,7 @@ import { TbClipboardCheck } from "react-icons/tb";
 import { LuWalletCards } from "react-icons/lu";
 import { logout } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { AiFillSliders } from "react-icons/ai";
 
 // TODO: replace with your actual hook that exposes `refetch` (e.g. useAuth, useProfile)
 // import { useProfile } from "@/hooks/useProfile";
@@ -75,6 +76,11 @@ const CouchSidebar = ({ drawerOpen = false, onCloseDrawer }: CouchSidebarProps) 
       title: "Wallet",
       icon: <LuWalletCards size={20} />,
       href: "/couchwallet",
+    },
+    {
+      title: "Payout",
+      icon: <AiFillSliders size={20} />,
+      href: "/payouthistory",
     },
   ];
 
