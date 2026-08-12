@@ -299,7 +299,7 @@ const ReviewDetails = () => {
                 onClick={() => setIsOpen(true)}
                 className="bg-[#E43636] text-white rounded-lg py-2 xl:mx-2"
               >
-                Review Complete &amp; Provide Review
+                Mark as Complete
               </button>
             )}
           </div>
@@ -318,7 +318,7 @@ const ReviewDetails = () => {
             {/* Header */}
             <div className="bg-[#E43636] px-6 py-3 flex items-center justify-between">
               <h2 className="text-white font-semibold text-sm tracking-wide">
-                Provide Review
+                Provide Feedback
               </h2>
               <button
                 onClick={() => setIsOpen(false)}

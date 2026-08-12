@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCancelRecommendationMutation, useGetRecommendationResponsesQuery } from "@/redux/features/agents/agent";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { FiMail, FiPhone, FiUser } from "react-icons/fi";
 import Swal from "sweetalert2";
@@ -12,7 +12,7 @@ const RecommendedPlayersDetails = () => {
 
   const recommendation = data?.data;
   const player = recommendation?.player;
-  
+  const route = useRouter()
 
   const [CancelRecommendation] = useCancelRecommendationMutation();
 
@@ -25,6 +25,7 @@ const RecommendedPlayersDetails = () => {
           text: `${res?.message}` || "cancel successful",
           icon: "success",
         });
+        route.push("/recommendedplayers")
       }
     } catch (error: any) {
       Swal.fire({

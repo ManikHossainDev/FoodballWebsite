@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import { useAddHiringRecommendMutation, useGetSingleClubHiringQuery, useGetSuggestionsListQuery } from "@/redux/features/agents/agent";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import Swal from "sweetalert2";
@@ -20,6 +20,7 @@ interface SuggestedPlayer {
 const RecommendPlayerFc = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetSingleClubHiringQuery(id as string);
+  const route = useRouter();
   const post = data?.data;
   const { data: SuggestionsList, isFetching: isSuggestionsLoading } = useGetSuggestionsListQuery();
   const players: SuggestedPlayer[] = SuggestionsList?.data ?? [];
@@ -54,9 +55,23 @@ const RecommendPlayerFc = () => {
   }
 
   const isOpen = post?.status === "open";
-  const positionTags = post?.positionTitle
-    ? post.positionTitle.split(",").map((p: string) => p.trim())
+
+  // "positionTitle" is a single title string (e.g. "National Player") — NOT a list, don't split it
+  const positionTitle: string = post?.positionTitle ?? "";
+
+  // "positions" -> the actual role list, comma-separated (e.g. "midfilder, stricker")
+  // used for both the tag chips and the Select Position dropdown
+  const positionOptions: string[] = post?.positions
+    ? post.positions.split(",").map((p: string) => p.trim()).filter(Boolean)
     : [];
+
+  const formattedDeadline = post?.dateLine
+    ? new Date(post.dateLine).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
 
   const handleSelectPlayer = (player: SuggestedPlayer) => {
     setSelectedPlayerId(player._id);
@@ -126,6 +141,8 @@ const RecommendPlayerFc = () => {
       setSearchTerm("");
       setSelectedPosition("");
       setMessage("");
+
+      route.push('/recommendedplayers')
       }
     } catch (error: any) {
       console.error("Failed to send recommendation:", error);
@@ -173,14 +190,52 @@ const RecommendPlayerFc = () => {
           </div>
         </div>
 
-        <div className="px-4 pt-3">
-          <p className="text-white text-base font-medium text-center mb-3">
+        <div className="px-4 pt-3 pb-4">
+          <p className="text-white text-base font-medium text-center mb-1">
             {post?.author?.name ?? "Unknown Club"}
           </p>
+          {post?.author?.email && (
+            <p className="text-[#777] text-[11px] text-center mb-3">
+              {post.author.email}
+            </p>
+          )}
+          <div>
+            <p className="text-[#888] text-xs mb-1">post Title</p>
+            {positionTitle ? (
+              <span className="inline-block text-[#ccc] text-base py-1">
+                {positionTitle}
+              </span>
+            ) : (
+              <span className="text-[#666] text-xs">No title listed</span>
+            )}
 
-          <p className="text-[#aaa] text-xs leading-relaxed mb-4 line-clamp-3">
-            {post?.overview}
-          </p>
+          </div>
+          {post?.overview && (
+            <div className="mb-3">
+              <p className="text-[#888] text-xs mb-1">Overview</p>
+              <p className="text-[#ccc] text-xs leading-relaxed">
+                {post.overview}
+              </p>
+            </div>
+          )}
+
+          {post?.requirements && (
+            <div className="mb-3">
+              <p className="text-[#888] text-xs mb-1">Requirements</p>
+              <p className="text-[#ccc] text-xs leading-relaxed">
+                {post.requirements}
+              </p>
+            </div>
+          )}
+
+          {post?.facilities && (
+            <div className="mb-3">
+              <p className="text-[#888] text-xs mb-1">Facilities & Perks</p>
+              <p className="text-[#ccc] text-xs leading-relaxed">
+                {post.facilities}
+              </p>
+            </div>
+          )}
 
           <div className="mb-3">
             <div className="flex items-center justify-between mb-1.5">
@@ -189,30 +244,38 @@ const RecommendPlayerFc = () => {
                 {String(post?.openPositions ?? 0).padStart(2, "0")}
               </p>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {positionTags.length > 0 ? (
-                positionTags.map((tag: string) => (
+            
+          </div>
+
+          {positionOptions.length > 0 && (
+            <div className="">
+              <div className="flex gap-2 flex-wrap">
+                {positionOptions.map((tag: string) => (
                   <span
                     key={tag}
-                    className="text-[#ccc] text-xs border border-[#555] rounded px-3 py-1"
+                    className="text-[#ccc] text-xs border border-[#555] rounded px-3 py-1 capitalize"
                   >
                     {tag}
                   </span>
-                ))
-              ) : (
-                <span className="text-[#666] text-xs">No positions listed</span>
-              )}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex items-center justify-between mt-4 mb-1">
             <span className="text-[#888] text-xs">Type</span>
-            <span className="text-[#ccc] text-xs">{post?.employmentType}</span>
+            <span className="text-[#ccc] text-xs capitalize">{post?.employmentType}</span>
           </div>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-1">
             <span className="text-[#888] text-xs">Salary Range</span>
             <span className="text-[#ccc] text-xs">{post?.salaryRange}</span>
           </div>
+          {formattedDeadline && (
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[#888] text-xs">Deadline</span>
+              <span className="text-[#ccc] text-xs">{formattedDeadline}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -296,12 +359,12 @@ const RecommendPlayerFc = () => {
             className="w-full bg-[#3a3a3a] border border-[#555] rounded-md px-3 py-2.5 text-[#ccc] text-xs outline-none appearance-none"
           >
             <option value="" disabled>
-              {positionTags.length > 0
+              {positionOptions.length > 0
                 ? "Select a position"
                 : "No open positions available"}
             </option>
-            {positionTags.map((tag: string) => (
-              <option key={tag} value={tag}>
+            {positionOptions.map((tag: string) => (
+              <option key={tag} value={tag} className="capitalize">
                 {tag}
               </option>
             ))}

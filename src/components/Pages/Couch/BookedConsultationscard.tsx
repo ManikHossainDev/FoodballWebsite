@@ -26,7 +26,7 @@ interface Consultation {
 }
 const BookedConsultationscard = () => {
   const router = useRouter();
-  const { data, isLoading, isError } = useGetConsultationsQuery({ status: "accept" });
+  const { data, isLoading, isError } = useGetConsultationsQuery({ status: "accept-started" });
   const consultations: Consultation[] = data?.data || [];
   // ✅ id-based state instead of storing the whole object.
   // selectedId  -> which card is currently selected/active (card click or reschedule click)
@@ -60,9 +60,12 @@ const BookedConsultationscard = () => {
           showConfirmButton: false,
         });
         setTimeout(() => {
+          // if (res?.data?.meetingLink) {
+          //   window.location.href = res.data.meetingLink;
+          // }
           if (res?.data?.meetingLink) {
-            window.location.href = res.data.meetingLink;
-          }
+              window.open(res.data.meetingLink, '_blank');
+            }
         }, 2000);
       }
     } catch (error: any) {
@@ -139,7 +142,8 @@ const BookedConsultationscard = () => {
 
                   <div className="flex-1 mt-1 sm:mt-0">
                     <h3 className="text-white text-base md:text-lg font-semibold mb-1">
-                      {consultation.consultationTopic}
+                      {consultation.consultationTopic} <span className="text-gray-500 text-xs mt-1">
+                      {consultation.status}</span>
                     </h3>
                     <p className="text-gray-400 text-sm">
                       Player: {consultation.player?.name}
@@ -147,13 +151,11 @@ const BookedConsultationscard = () => {
                     <p className="text-gray-500 text-xs mt-1">
                       {formatDate(consultation.bookingSlot)}
                     </p>
-                    <p className="text-gray-500 text-xs mt-1">
-                      {consultation.status}
-                    </p>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-3 mt-2 xl:mt-0">
+                  {(consultation.status?.toLowerCase() === "accept" || consultation.status?.toLowerCase() === "started") && (
                   <button
                     onClick={(e) => handleJoinSession(e, consultation)}
                     disabled={isJoining}
@@ -161,16 +163,19 @@ const BookedConsultationscard = () => {
                   >
                     {isJoining ? "Joining..." : "Join Session"}
                   </button>
-                  <Link
-                    href={`/BookedConsultations/reschedulebooked?id=${consultation._id}&coachId=${consultation.coach}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedId(consultation._id); 
-                    }}
-                    className="border-2 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-2 md:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
-                  >
-                    Reschedule
-                  </Link>
+                  )}
+                  {consultation.status?.toLowerCase() === "accept" && (
+                      <Link
+                        href={`/BookedConsultations/reschedulebooked?id=${consultation._id}&coachId=${consultation.coach}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedId(consultation._id);
+                        }}
+                        className="border-2 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-2 md:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                      >
+                        Reschedule
+                      </Link>
+                    )}
                 </div>
               </div>
             </Link>

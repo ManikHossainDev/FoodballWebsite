@@ -14,6 +14,7 @@ const AgentDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useGetSingleAgentsQuery(id);
   const agent = data?.data;
+  console.log(agent)
   const [activeTab, setActiveTab] = useState('overview');
   const { data: reviewsResponse, isLoading: isReviewsLoading } = useGetReviewsForAUserQuery(id);
   const reviews = reviewsResponse?.data?.data ?? [];

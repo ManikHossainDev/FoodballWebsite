@@ -35,7 +35,7 @@ const HirerPlayersCard = () => {
                 </div>
               ) : (
                 hiringPosts.map((item: any) => (
-                  <div
+                  <Link href={`/Club/${item._id}`}
                     key={item._id}
                     className="bg-[#3F3F3F] rounded-lg p-3 md:flex items-center gap-3 transition cursor-pointer"
                   >
@@ -79,7 +79,7 @@ const HirerPlayersCard = () => {
                          Hiring Post Details
                       </Link>
                     </div>
-                  </div>
+                  </Link>
                 ))
               )}
                {/* Ant Design Pagination */}

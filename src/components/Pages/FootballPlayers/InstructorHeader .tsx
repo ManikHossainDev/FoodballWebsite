@@ -71,6 +71,7 @@ interface SocialLink {
 /* -------------------------------------------------------------------------- */
 
 function buildServices(coach: TCoach): Service[] {
+
   const services: Service[] = [];
 
   if (coach.profile?.videoReviewFee != null) {
@@ -127,7 +128,8 @@ const ErrorState = () => (
   <p className="text-red-400 text-center py-10">Failed to load coach details.</p>
 );
 
-const CoachHeader = ({ coach }: { coach: TCoach }) => (
+const CoachHeader = ({ coach, id }: { coach: TCoach; id: string }) => (
+  
   <div className="bg-[#303030] px-6 py-4 lg:flex items-center justify-between rounded-lg mb-6">
     {/* Profile info */}
     <div className="flex items-center gap-4">
@@ -157,17 +159,18 @@ const CoachHeader = ({ coach }: { coach: TCoach }) => (
     {/* Actions */}
     <div>
       <div className="flex space-x-2 py-2 justify-end">
-        <button
+        <Link
+          href={`/messaging/${id}`}
           type="button"
           aria-label="Message coach"
           className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded flex items-center justify-center transition-colors"
         >
           <FaRegMessage className="w-5 h-5 text-white" />
-        </button>
+        </Link>
       </div>
 
       <div className="flex items-center justify-between lg:justify-end gap-3">
-        <Link href="/HireCoach/requestreview">
+        <Link href={`/HireCoach/${id}/requestreview`}>
           <button
             type="button"
             className="border-red-500 border text-[10px] md:text-lg hover:bg-red-600 text-white font-medium px-2 md:px-6 py-2.5 rounded transition-colors"
@@ -176,7 +179,7 @@ const CoachHeader = ({ coach }: { coach: TCoach }) => (
           </button>
         </Link>
 
-        <Link href="/HireCoach/bookconsultation">
+        <Link href={`/HireCoach/${id}/bookconsultation`}>
           <button
             type="button"
             className="text-[10px] md:text-lg bg-red-500 hover:bg-red-600 text-white font-medium px-2 md:px-6 py-2.5 rounded border border-gray-600 transition-colors"
@@ -374,7 +377,7 @@ const InstructorProfile = () => {
 
   return (
     <div className="text-white">
-      <CoachHeader coach={coach} />
+      <CoachHeader coach={coach} id={id} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6  rounded-lg ">

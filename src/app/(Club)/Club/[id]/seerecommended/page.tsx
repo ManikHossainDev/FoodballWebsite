@@ -89,7 +89,7 @@ const Page = () => {
     isError: isClubError,
   } = useGetSingleClubQuery(id as string);
   const club = clubData?.data;
-
+  console.log(clubData)
   return (
     <div className=" md:p-6">
       <h2

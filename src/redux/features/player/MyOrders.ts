@@ -7,7 +7,7 @@ export const MyOrders = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getConsultation: builder.query<
       any,
-      { page?: number; limit?: number; status: string } | void
+      { page?: number; limit?: number; status: any } | void
     >({
       query: (args) => ({
         url: "/player-consultation",
@@ -21,18 +21,10 @@ export const MyOrders = baseApi.injectEndpoints({
       providesTags: ["MyOrders"],
     }),
 
-    getVideoRequest: builder.query<
-      any,
-      { page?: number; limit?: number; status: string } | void
-    >({
+    getVideoRequest: builder.query<any, { page?: number; limit?: number; status:any } | void>({
       query: (args) => ({
-        url: "/player-video-request", // TODO: confirm this matches your backend route
+        url: `player-video-request?page=${args?.page}&limit=${args?.limit}?.status=${args?.status}`,
         method: "GET",
-        params: {
-          page: args?.page ?? 1,
-          limit: args?.limit ?? 10,
-          status: args?.status,
-        },
       }),
       providesTags: ["MyOrders"],
     }),

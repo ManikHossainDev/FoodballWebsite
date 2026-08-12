@@ -55,6 +55,25 @@ const ClubDetails = () => {
             <span className="text-white/40 uppercase tracking-wide">Status</span>
             <span className="text-white/80 font-medium capitalize">{club.status}</span>
           </div>
+
+          {/* Positions */}
+          <div>
+            <span className="text-white/40 uppercase tracking-wide block mb-2">
+              Positions
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {club.positions
+                ?.split(",")
+                .map((pos: string, idx: number) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 text-[16px] rounded-md bg-white/5 border border-white/10 text-white/70 capitalize"
+                  >
+                    {pos.trim()}
+                  </span>
+                ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -81,7 +100,10 @@ const ClubDetails = () => {
           <button className="px-4 py-2 text-sm rounded-md border border-white/15 text-white/80 hover:bg-white/5 transition-colors">
             Edit Post
           </button>
-          <Link href={`/Club/${id}/seerecommended`} className="px-4 py-2 text-sm rounded-md bg-red-600 hover:bg-red-500 transition-colors font-medium">
+          <Link
+            href={`/Club/${id}/seerecommended`}
+            className="px-4 py-2 text-sm rounded-md bg-red-600 hover:bg-red-500 transition-colors font-medium"
+          >
             See Recommended Player
           </Link>
         </div>

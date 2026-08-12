@@ -237,9 +237,6 @@ const Agents = () => {
                     >
                       {item?.status === "cancelled" ? "Cancelled" : "Cancel"}
                     </button>
-                    <button className="bg-[#25DD000F]  text-[#25DD00] border border-[#25DD00] px-4 py-3 rounded text-xs font-medium transition whitespace-nowrap">
-                      Hired
-                    </button>
                   </div>
                 </div>
               ))}

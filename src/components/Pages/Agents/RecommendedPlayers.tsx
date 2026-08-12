@@ -72,7 +72,7 @@ const RecommendedPlayers = () => {
                       </div>
                       <div className="flex items-center text-xs">
                         <p className="text-gray-500">Status :</p>
-                        <p className="text-gray-400 ml-2 capitalize">{item.status}</p>
+                        <p className="text-gray-500 ml-2 capitalize">{item.status}</p>
                       </div>
                     </div>
                   </div>
@@ -83,10 +83,7 @@ const RecommendedPlayers = () => {
                       disabled={item?.status === "cancelled"}
                       className="flex-1 bg-[#e53935] text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-[#c62828] transition-colors disabled:bg-[#8a3a38] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-[#8a3a38]"
                     >
-                      {item?.status === "cancelled" ? "Cancelled" : "Cancel"}
-                    </button>
-                    <button className="bg-[#25DD000F]  text-[#25DD00] border border-[#25DD00] px-4 py-3 rounded text-xs font-medium transition whitespace-nowrap">
-                      Hired
+                      Cancel
                     </button>
                   </div>
                 </Link>

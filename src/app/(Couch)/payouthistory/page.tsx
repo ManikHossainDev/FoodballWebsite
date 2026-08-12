@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
-import { Table, Tag,  } from "antd"
+import { Table, Tag, Modal, Descriptions, Image, Button } from "antd"
+import { EyeOutlined } from "@ant-design/icons"
 import type { ColumnsType } from "antd/es/table"
 import { useGetPayoutHistoryQuery } from "@/redux/features/Profile/Profile"
 
@@ -11,6 +12,7 @@ interface Payment {
   status: string
   type: string
   createdAt: string
+  invoice?: string
 }
 
 const statusColor: Record<string, string> = {
@@ -22,6 +24,8 @@ const statusColor: Record<string, string> = {
 const Page = () => {
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const { data, isLoading } = useGetPayoutHistoryQuery({ page, limit })
 
@@ -38,6 +42,16 @@ const Page = () => {
 
   const payments = payoutHistory?.data?.data ?? []
   const pagination = payoutHistory?.data?.pagination
+
+  const handleViewDetails = (record: Payment) => {
+    setSelectedPayment(record)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedPayment(null)
+  }
 
   const columns: ColumnsType<Payment> = [
     {
@@ -89,6 +103,21 @@ const Page = () => {
       render: (date: string) => new Date(date).toLocaleString(),
       sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
+    {
+  title: "Action",
+  key: "action",
+  fixed: "right",
+  width: 90,
+  render: (_, record) => (
+    record.status === "success" && record.type === "withdraw" ? (
+      <Button
+        type="text"
+        icon={<EyeOutlined style={{ color: "#ffffff" }} />}
+        onClick={() => handleViewDetails(record)}
+      />
+    ) : null
+  ),
+},
   ]
 
   return (
@@ -111,8 +140,51 @@ const Page = () => {
         scroll={{ x: true }}
       />
 
+      <Modal
+        title="Payment Details"
+        open={isModalOpen}
+        onCancel={handleCloseModal}
+        footer={null}
+        className="dark-payout-modal"
+      >
+        {selectedPayment && (
+          <>
+            <Descriptions column={1} bordered size="small">
+              <Descriptions.Item label="Amount">
+                ${selectedPayment.amount}
+              </Descriptions.Item>
+              <Descriptions.Item label="Type">
+                <Tag color={selectedPayment.type === "credit" ? "blue" : "purple"}>
+                  {selectedPayment.type.toUpperCase()}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Status">
+                <Tag color={statusColor[selectedPayment.status] ?? "default"}>
+                  {selectedPayment.status.toUpperCase()}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Date">
+                {new Date(selectedPayment.createdAt).toLocaleString()}
+              </Descriptions.Item>
+            </Descriptions>
+
+            {selectedPayment.invoice && (
+              <div className="mt-3">
+                <p className="mb-2" style={{ color: "#ffffff" }}>
+                  Invoice
+                </p>
+                <Image
+                  src={selectedPayment.invoice}
+                  alt="Invoice"
+                  style={{ maxWidth: "100%", borderRadius: 8 }}
+                />
+              </div>
+            )}
+          </>
+        )}
+      </Modal>
+
       <style jsx global>{`
-       
         .dark-payout-table .ant-table-thead > tr > th {
           background-color: #333333;
           color: #ffffff;
@@ -139,7 +211,6 @@ const Page = () => {
           color: #ffffff;
           border-color: #333333;
         }
-      
         .dark-payout-table .ant-select-selector {
           background-color: #1a1a1a !important;
           color: #ffffff !important;
@@ -167,6 +238,34 @@ const Page = () => {
         .dark-payout-table .ant-pagination-disabled svg {
           color: #666666 !important;
           fill: #666666 !important;
+        }
+        .dark-payout-modal .ant-modal-content {
+          background-color: #1a1a1a;
+        }
+        .dark-payout-modal .ant-modal-header {
+          background-color: #1a1a1a;
+        
+        }
+        .dark-payout-modal .ant-modal-title {
+          color: #ffffff;
+        }
+        .dark-payout-modal .ant-modal-close {
+          color: #ffffff;
+        }
+        .dark-payout-modal .ant-descriptions-item-label {
+          // background-color: #333333 !important;
+          color: #ffffff !important;
+        }
+        .dark-payout-modal .ant-descriptions-item-content {
+          background-color: #1a1a1a !important;
+          color: #ffffff !important;
+        }
+        .dark-payout-modal .ant-descriptions-view {
+          border-color: #333333 !important;
+        }
+        .dark-payout-modal .ant-descriptions-row > th,
+        .dark-payout-modal .ant-descriptions-row > td {
+          border-color: #333333 !important;
         }
       `}</style>
     </div>

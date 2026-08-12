@@ -192,7 +192,7 @@ const UploadNew = () => {
         {/* Video Description */}
         <div className="mb-5">
           <label className="text-white text-sm font-medium block mb-2">
-            Video Description: :
+            Video Description  :
           </label>
           <textarea
             value={description}
@@ -208,7 +208,7 @@ const UploadNew = () => {
           <label className="text-white text-sm font-medium block mb-2">
             Upload Your Video{" "}
             <span className="text-[#8F8F8F] font-normal">
-              (You Can upload one video)
+              (Max 2 minutes, 50 MB — one video only)
             </span>
           </label>
 

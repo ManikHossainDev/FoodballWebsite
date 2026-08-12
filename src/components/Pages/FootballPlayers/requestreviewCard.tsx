@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Star, Upload, X, Loader2 } from 'lucide-react';
 // import user from '@/assets/Authentication/user.jpg';
 import { FaRegMessage } from 'react-icons/fa6';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useGetFileUploadSignatureQuery } from '@/redux/features/fileUpload/fileUpload';
 import { useAddVideoRequestsMutation, useGetSingleCoachesQuery } from '@/redux/features/player/hireCoachs';
 import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
@@ -30,14 +30,14 @@ interface SignatureData {
 }
 
 type ModalState = 'insufficient' | 'confirm' | null;
-const MAX_VIDEO_DURATION_SECONDS = 30;
+const MAX_VIDEO_DURATION_SECONDS = 120;
 
 const RequestReviewCard = () => {
   const pathname = usePathname();
   const coachId = pathname.split('/')[2];
   const { data: userData } = useGetProfileQuery({});
   const walletBalance = userData?.data?.walletBalance ?? 0;
-
+  const route = useRouter()
   const { data } = useGetSingleCoachesQuery(coachId);
   const videoReviewFee = data?.data?.profile?.videoReviewFee ?? 0;
   const profile = data?.data;
@@ -193,6 +193,7 @@ const RequestReviewCard = () => {
           text: "send video requests successful",
           icon: "success"
         });
+         route.push("/MyOrders")
       }
     } catch (err) {
       setSubmitError(
@@ -316,7 +317,7 @@ const RequestReviewCard = () => {
             <div>
               <label className="block text-sm font-medium">
                 Upload Your Video{' '}
-                <span className="text-gray-500 text-xs font-normal">(You can upload one video)</span>
+                <span className="text-gray-500 text-xs font-normal">(You can upload one video max_duration:2 minute )</span>
               </label>
 
               <input
@@ -356,6 +357,8 @@ const RequestReviewCard = () => {
                     Drop your video here
                     <br />
                     or <span className="text-red-500">Browse</span>
+                    <br />
+                    max_duration:2 minute
                   </p>
                   <Upload className="w-5 h-5 text-gray-500 mx-auto mt-3" />
                 </div>

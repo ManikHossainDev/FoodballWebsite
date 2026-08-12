@@ -6,7 +6,7 @@ import { Star, ChevronDown } from 'lucide-react';
 import { FaRegMessage } from 'react-icons/fa6';
 import { useGetProfileQuery } from '@/redux/features/Profile/Profile';
 import { useBookConsultationMutation, useGetCoachesTimesLotsQuery, useGetSingleCoachesQuery } from '@/redux/features/player/hireCoachs';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface CoachSlot {
@@ -26,7 +26,7 @@ interface DaySlots {
 const BookreviewCard = () => {
   const pathname = usePathname();
   const coachId = pathname.split('/')[2];
-
+  const route = useRouter()
   const { data: TimesLots } = useGetCoachesTimesLotsQuery(coachId);
   const AvailableTime: DaySlots[] = TimesLots?.data ?? [];
 
@@ -209,8 +209,13 @@ const BookreviewCard = () => {
       };
 
       try {
-        await BookConsultation(payload).unwrap();
+      const res =  await BookConsultation(payload).unwrap();
+      console.log(res)
+      console.log(res?.success)
+      if(res?.success === true){
         setShowSuccessModal(true);
+        route.push("/MyOrders")
+      }
       } catch (err: any) {
         console.error('Booking failed:', err);
         setBookingError(err?.data?.message || 'Something went wrong while booking. Please try again.');

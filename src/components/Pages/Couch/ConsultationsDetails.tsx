@@ -149,9 +149,9 @@ const ConsultationsDetails = () => {
             {player?.name} Consultation Details
           </span>
         </Link>
-        <button className="border border-[#E43636] text-white text-xs px-4 py-2 rounded hover:bg-[#E43636] transition-colors">
+        {/* <button className="border border-[#E43636] text-white text-xs px-4 py-2 rounded hover:bg-[#E43636] transition-colors">
           Report
-        </button>
+        </button> */}
       </div>
 
       {/* Main Content */}
@@ -179,19 +179,24 @@ const ConsultationsDetails = () => {
 
               {/* Buttons */}
               <div className="flex justify-between gap-2 mt-auto pt-4">
-                <button
+                {(booking.status?.toLowerCase() === "accept" || booking.status?.toLowerCase() === "started") && (
+                 <button
                   onClick={() => handleJoinSession(id as string)}
                   disabled={isJoining}
                   className="bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-medium px-4 py-1.5 rounded transition-colors"
                 >
                   {isJoining ? "Joining..." : "Join Session"}
                 </button>
-                <Link
-                  href={`/BookedConsultations/reschedulebooked?id=${id}`}
-                  className="border border-[#E43636] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-red-500/10 transition-colors"
-                >
-                  Reschedule
-                </Link>
+                  )}
+                
+                {booking.status?.toLowerCase() === "accept" && (
+                  <Link
+                    href={`/BookedConsultations/reschedulebooked?id=${id}`}
+                    className="border border-[#E43636] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-red-500/10 transition-colors"
+                  >
+                    Reschedule
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -222,13 +227,15 @@ const ConsultationsDetails = () => {
         </div>
 
         <div className="flex justify-end">
+          {booking.status?.toLowerCase() === "started" && (
           <button
             onClick={() => setShowReviewModal(true)}
             disabled={booking.isReviewed}
             className="bg-red-600 mt-5 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium px-6 py-2 rounded transition-colors"
           >
-            {booking.isReviewed ? "Review Submitted" : "Review Complete & Provide review"}
+            {booking.isReviewed ? "Review Submitted" : "Mark as Complete"}
           </button>
+            )}
         </div>
       </div>
 
@@ -245,14 +252,14 @@ const ConsultationsDetails = () => {
                     "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
                 }}
               >
-                Provide Review
+                Provide Feedback
               </h2>
             </div>
 
             {/* Modal Body */}
             <div className="p-6">
               <label className="text-white font-semibold text-sm mb-2 block">
-                Write Your review
+                Write Your Feedback
               </label>
               <textarea
                 value={review}

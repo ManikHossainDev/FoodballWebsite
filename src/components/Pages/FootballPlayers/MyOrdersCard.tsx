@@ -27,7 +27,7 @@ const PAGE_LIMIT = 10;
 
 const MyOrdersCard = () => {
   const [activeTab, setActiveTab] = useState<OrderCategory>('videoRequest');
-  const [statusFilter, setStatusFilter] = useState<string>(STATUS_OPTIONS[0]);
+  const [statusFilter, setStatusFilter] = useState();
   const [videoPage, setVideoPage] = useState(1);
   const [consultationPage, setConsultationPage] = useState(1);
 
@@ -38,13 +38,13 @@ const MyOrdersCard = () => {
     setActiveTab(tab);
   };
 
-  const handleStatusChange = (status: string) => {
+  const handleStatusChange = (status:any) => {
     setStatusFilter(status);
     setVideoPage(1);
     setConsultationPage(1);
   };
 
-  // Rating modal state
+ // Rating modal state
   const [ratingModal, setRatingModal] = useState<{
     open: boolean;
     type: OrderCategory | null;
