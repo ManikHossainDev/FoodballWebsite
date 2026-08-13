@@ -74,9 +74,9 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                 { label: 'Home', href: '/' },
-                { label: 'About Us', href: '/about-us' },
-                { label: 'Features', href: '/features' },
-                { label: 'Pricing', href: '/pricing' },
+                { label: 'Features', href: '/#features' },
+                { label: 'Explore', href: '/#explore'},
+                 { label: 'Community', href: '/#communitysays' },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -94,8 +94,10 @@ const Footer = () => {
           <div className='col-span-5 md:col-span-4 lg:col-span-2 xl:col-span-3'>
             <h4 className="text-lg font-semibold mb-4">For Users</h4>
 
+
             <ul className="space-y-3">
               {[
+                 
                 {
                   label: 'Terms & Conditions',
                   href: '/terms-condition',
@@ -105,8 +107,8 @@ const Footer = () => {
                   href: '/privacy-policy',
                 },
                 {
-                  label: 'FAQ',
-                  href: '/faq',
+                  label: 'Our Mission',
+                  href: '/#mission',
                 },
                 {
                   label: 'Contact Us',

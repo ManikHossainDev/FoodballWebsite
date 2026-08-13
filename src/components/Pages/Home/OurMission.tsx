@@ -2,10 +2,9 @@
 import OurMissionImage from "@/assets/HeroBannerSection/OurMition.png";
 import Image from "next/image";
 import VisionCards from "./VisionCards";
-
 const OurMission = () => {
   return (
-    <div className=" text-white py-16 px-4 lg:pt-20 ">
+    <div id="mission" className=" text-white py-16 px-4 lg:pt-20">
       <div className="xl:container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
           {/* Left side - Image */}
@@ -13,7 +12,7 @@ const OurMission = () => {
             <div className="relative group perspective-container">
               {/* Animated border effect */}
               <div className="absolute inset-0 rounded-lg animate-border-glow"></div>
-
+              
               {/* Player image with unique 3D tilt animation */}
               <div className=" relative animate-tilt-shake">
                 <Image

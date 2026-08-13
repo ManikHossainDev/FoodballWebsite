@@ -4,28 +4,23 @@ import Group from "@/assets/Authentication/Group.png";
 import { useDonationMutation } from "@/redux/features/Profile/Profile";
 import Image from "next/image";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const ChooseYourPlan = () => {
   const [Donation, { isLoading }] = useDonationMutation();
-
   const donationAmounts = ["$ 05", "$ 10", "$ 15", "$ 20", "$ 25", "$ 30"];
-
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>("");
   const [error, setError] = useState<string>("");
-
-
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const handlePresetClick = (preset: string) => {
     const numericValue = preset.replace(/[^0-9]/g, "");
     setSelectedAmount(preset);
     setAmount(numericValue);
     setError("");
   };
-
-  
   const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
     if (/^\d*\.?\d*$/.test(value)) {
       setAmount(value);
       setSelectedAmount(null);
@@ -33,15 +28,9 @@ const ChooseYourPlan = () => {
     }
   };
 
-  const handleDonate = async () => {
-    if (!amount || Number(amount) <= 0) {
-      setError("Please enter a valid amount");
-      return;
-    }
-
+  const proceedToDonate = async () => {
     try {
       const res = await Donation({ amount: Number(amount) }).unwrap();
-
       if (res?.success && res?.data?.url) {
         window.location.href = res.data.url;
       } else {
@@ -51,6 +40,25 @@ const ChooseYourPlan = () => {
       console.error(err);
       setError("Failed to create donation session. Please try again.");
     }
+  };
+
+  const handleDonate = async () => {
+    if (!amount || Number(amount) <= 0) {
+      setError("Please enter a valid amount");
+      return;
+    }
+    const token = Cookies.get("token");
+    if (!token) {
+      // token na thakle modal dekhabe -> user choose korbe Login naki Donate (as guest)
+      setShowLoginModal(true);
+      return;
+    }
+    await proceedToDonate();
+  };
+
+  const handleGuestDonate = async () => {
+    setShowLoginModal(false);
+    await proceedToDonate();
   };
 
   return (
@@ -117,9 +125,7 @@ const ChooseYourPlan = () => {
                        focus:outline-none focus:ring-2 focus:ring-red-500"
           />
 
-          {error && (
-            <p className="text-red-500 text-sm mt-2 mb-2">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm mt-2 mb-2">{error}</p>}
 
           <div className={`flex justify-end ${error ? "mt-4" : "mt-8"}`}>
             <button
@@ -135,6 +141,40 @@ const ChooseYourPlan = () => {
           </div>
         </div>
       </div>
+
+      {/* Login / Guest Donate modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="bg-[#111] border border-red-600/50 rounded-lg p-6 max-w-sm w-full text-center">
+            <h3 className="text-white text-lg font-semibold mb-3">
+              You&apos;re not logged in
+            </h3>
+            <p className="text-gray-300 text-sm mb-6">
+              If you log in, your donation will be saved as a record under
+              your account. You can also continue and donate without logging
+              in.
+            </p>
+            <div className="flex justify-center gap-3">
+              {/* <button
+                onClick={() => router.push("/login")}
+                disabled={isLoading}
+                className="px-5 py-2 rounded-md border border-red-600/60 text-white
+                           hover:bg-red-600/20 text-sm disabled:opacity-50"
+              >
+                Login
+              </button> */}
+              <button
+                onClick={handleGuestDonate}
+                disabled={isLoading}
+                className="px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm
+                           disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Processing..." : "Donate"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
