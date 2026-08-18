@@ -315,30 +315,30 @@ const Message = ({ receiverId }: { receiverId: string }) => {
   };
 
   /*** send message (link) ***/
-  const handleSendLink = () => {
-    if (!conversationId) return;
+  // const handleSendLink = () => {
+  //   if (!conversationId) return;
 
-    try {
-      new URL(message.text);
-      if (socket) {
-        const messageData = {
-          conversation: conversationId,
-          text: message.text,
-        };
-        socket.emit("Message", messageData);
-        setMessage({
-          text: "",
-          imageUrl: undefined,
-          videoUrl: undefined,
-          fileUrl: undefined,
-          linkUrl: undefined,
-          type: "text",
-        });
-      }
-    } catch (e) {
-      console.log("Not a valid URL", e);
-    }
-  };
+  //   try {
+  //     new URL(message.text);
+  //     if (socket) {
+  //       const messageData = {
+  //         conversation: conversationId,
+  //         text: message.text,
+  //       };
+  //       socket.emit("Message", messageData);
+  //       setMessage({
+  //         text: "",
+  //         imageUrl: undefined,
+  //         videoUrl: undefined,
+  //         fileUrl: undefined,
+  //         linkUrl: undefined,
+  //         type: "text",
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log("Not a valid URL", e);
+  //   }
+  // };
 
   return (
     <section className="w-full h-full flex flex-col rounded-md  border border-gray-800 ">

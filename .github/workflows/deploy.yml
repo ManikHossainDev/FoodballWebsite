@@ -1,0 +1,78 @@
+name: Deploy Next.js App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Validate before deployment
+  build-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npm install sharp
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Build Validation
+        run: npm run build
+
+  # Deploy only if build-check passed
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-check
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          APP_DIR: ~/next-app
+
+        run: |
+
+          ssh $VPS_USER@$VPS_HOST "mkdir -p $APP_DIR"
+
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.github' \
+            . \
+            $VPS_USER@$VPS_HOST:$APP_DIR/
+
+          ssh $VPS_USER@$VPS_HOST "
+
+            cd $APP_DIR &&
+            npm install &&
+            npm install sharp &&
+            npm run build
+          "
+
+          ssh $VPS_USER@$VPS_HOST "cd $APP_DIR && pm2 restart next-app || pm2 start npm --name next-app -- start && pm2 save"
+ 
