@@ -3,8 +3,33 @@
 import { Play } from "lucide-react";
 import Image from "next/image";
 import ImageHero from "@/assets/HeroBannerSection/hero.png";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hooks";
+import { openAuthModal } from "@/redux/features/auth/authSlice";
+import { useGetProfileQuery } from "@/redux/features/Profile/Profile";
 
 const HeroBannerSection = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { data } = useGetProfileQuery({});
+  const user = data?.data;
+
+  const handleGetStarted = () => {
+    if (user?.role) {
+      if (user.role === "player") {
+        router.push("/FootballPlayer");
+      } else if (user.role === "coach") {
+        router.push("/Couch");
+      } else if (user.role === "club") {
+        router.push("/Club");
+      } else if (user.role === "agent") {
+        router.push("/agents");
+      }
+    } else {
+      dispatch(openAuthModal("signup"));
+    }
+  };
   return (
     <div className="responsive-padding relative w-full min-h-[60vh] md:min-h-[80vh] lg:min-h-[95vh] xl:min-h-[100vh] overflow-hidden">
       {/* Background Image with Overlay */}
@@ -83,15 +108,21 @@ const HeroBannerSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex justify-start gap-4 mb-10 md:mb-16 animate-[slideUpBounce_0.8s_ease-out_1.2s_both]">
-            <button className="bg-red-600 hover:bg-red-700 text-white px-3 md:px-8 py-3 rounded font-semibold transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-red-500/50 hover:-translate-y-1 hover:scale-105 text-sm sm:text-base relative overflow-hidden group">
+            {/* this button click then herder login modal open Create Your Account  */}
+            <button
+              onClick={handleGetStarted}
+              className="bg-red-600 hover:bg-red-700 text-white px-3 md:px-8 py-3 rounded font-semibold transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-red-500/50 hover:-translate-y-1 hover:scale-105 text-sm sm:text-base relative overflow-hidden group cursor-pointer"
+            >
               <span className="relative z-10">Get Started</span>
               <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-500 transform -skew-x-12 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             </button>
-            <button className="bg-white/10 hover:bg-white/20 text-white px-3 md:px-8 py-3 rounded font-semibold backdrop-blur-sm transition-all duration-300 border border-white/20 flex items-center gap-2 hover:-translate-y-1 hover:scale-105 hover:border-red-500/50 text-sm sm:text-base group relative overflow-hidden">
-              <Play className="w-4 h-4 group-hover:animate-[spin_1s_ease-in-out] transition-transform relative z-10" />
-              <span className="relative z-10">Watch Demo</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            </button>
+            <Link href="/exploreplayersvideo">
+              <button className="bg-white/10 hover:bg-white/20 text-white px-3 md:px-8 py-3 rounded font-semibold backdrop-blur-sm transition-all duration-300 border border-white/20 flex items-center gap-2 hover:-translate-y-1 hover:scale-105 hover:border-red-500/50 text-sm sm:text-base group relative overflow-hidden">
+                <Play className="w-4 h-4 group-hover:animate-[spin_1s_ease-in-out] transition-transform relative z-10" />
+                <span className="relative z-10">Watch Demo</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              </button>
+            </Link>
           </div>
 
           {/* Stats Section */}

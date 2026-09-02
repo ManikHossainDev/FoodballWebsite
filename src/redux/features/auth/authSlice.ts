@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import {
   getFromCookies,
@@ -21,6 +21,8 @@ type TAuthState = {
   token: string | null;
   socketConnection: any;
   onlineUser: string[];
+  isAuthModalOpen: boolean;
+  authModalTab: "signin" | "signup";
 };
 
 // Initialize state from cookies if available
@@ -38,6 +40,8 @@ const initialState: TAuthState = {
   token: getTokenFromCookies(),
   socketConnection: null,
   onlineUser: [],
+  isAuthModalOpen: false,
+  authModalTab: "signin",
 };
 
 // Create the slice
@@ -72,13 +76,37 @@ const authSlice = createSlice({
     setOnlineUser: (state, action) => {
       state.onlineUser = action.payload;
     },
+    openAuthModal: (
+      state,
+      action: PayloadAction<"signin" | "signup" | undefined>
+    ) => {
+      state.isAuthModalOpen = true;
+      if (action.payload) {
+        state.authModalTab = action.payload;
+      }
+    },
+    closeAuthModal: (state) => {
+      state.isAuthModalOpen = false;
+    },
   },
 });
 
-export const { setUser, logout, setSocketConnection, setOnlineUser } = authSlice.actions;
+export const {
+  setUser,
+  logout,
+  setSocketConnection,
+  setOnlineUser,
+  openAuthModal,
+  closeAuthModal,
+} = authSlice.actions;
 export default authSlice.reducer;
 // Selector to get the current user state
 export const selectCurrentUser = (state: RootState) => state.auth.user;
 export const selectToken = (state: RootState) => state.auth.token;
 export const selectOnlineUsers = (state: RootState) => state.auth.onlineUser;
-export const selectSocketConnection = (state: RootState) => state.auth.socketConnection;
+export const selectSocketConnection = (state: RootState) =>
+  state.auth.socketConnection;
+export const selectIsAuthModalOpen = (state: RootState) =>
+  state.auth.isAuthModalOpen;
+export const selectAuthModalTab = (state: RootState) =>
+  state.auth.authModalTab;

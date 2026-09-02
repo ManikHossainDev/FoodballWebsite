@@ -11,8 +11,14 @@ import { FaRegUser } from "react-icons/fa";
 import AuthModal from "./Authmodal";
 import { useGetProfileQuery } from "@/redux/features/Profile/Profile";
 import Cookies from "js-cookie"; // 1. Import Cookies library
-import { logout } from "@/redux/features/auth/authSlice";
-import { useAppDispatch } from "@/redux/hooks";
+import {
+  logout,
+  openAuthModal,
+  closeAuthModal,
+  selectIsAuthModalOpen,
+  selectAuthModalTab,
+} from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 
 const navLink = [
@@ -29,19 +35,20 @@ const Navbar = () => {
   const { data, refetch } = useGetProfileQuery({});
   const user = data?.data;
 
+  const isAuthModalOpen = useAppSelector(selectIsAuthModalOpen);
+  const authTab = useAppSelector(selectAuthModalTab);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
 
   const showDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
 
   const showAuthModal = (tab: "signin" | "signup" = "signin") => {
-    setAuthTab(tab);
-    setIsAuthModalOpen(true);
+    dispatch(openAuthModal(tab));
   };
 
-  const closeAuthModal = () => setIsAuthModalOpen(false);
+  const handleCloseAuthModal = () => {
+    dispatch(closeAuthModal());
+  };
 
   const handleLinkClick = () => {
     closeDrawer();
@@ -214,7 +221,7 @@ const Navbar = () => {
       {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
-        onClose={closeAuthModal}
+        onClose={handleCloseAuthModal}
         initialTab={authTab}
       />
     </nav>
