@@ -4,6 +4,32 @@ import { useState } from "react";
 import { useGetReviewsQuery } from "@/redux/features/setting/setting";
 import TestimonialCard from "./TestimonialCard";
 
+interface ReviewAuthor {
+  name?: string;
+  role?: string;
+  image?: string;
+}
+
+interface ReviewRating {
+  value?: number;
+  comment?: string;
+}
+
+interface Review {
+  _id: string;
+  author?: ReviewAuthor;
+  rating?: ReviewRating;
+}
+
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  rating: number;
+  text: string;
+  image: string;
+}
+
 const WhatOurCommunitySays = () => {
   const [page, setPage] = useState(1);
   const { data } = useGetReviewsQuery(page);
@@ -11,7 +37,7 @@ const WhatOurCommunitySays = () => {
   const reviews = data?.data?.data || [];
   const pagination = data?.data?.pagination;
 
-  const testimonials = reviews.map((review: any) => ({
+  const testimonials: Testimonial[] = reviews.map((review: Review) => ({
     id: review._id,
     name: review.author?.name || "Anonymous",
     role: review.author?.role || "User",
