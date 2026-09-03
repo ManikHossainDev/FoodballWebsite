@@ -1,3 +1,4 @@
+"use client";
 import { baseApi } from "@/redux/api/baseApi";
 
 const setting = baseApi.injectEndpoints({
@@ -16,8 +17,16 @@ const setting = baseApi.injectEndpoints({
       }),
       transformResponse: (response) => response,
     }),
+    getReviews: builder.query({
+      query: (page = 1) => ({
+        url: `/ratings/public-reviews/all?page=${page}&limit=10`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response,
+    }),
   }),
 });
 export const {
   useSettingsQuery,
+  useGetReviewsQuery,
 } = setting;

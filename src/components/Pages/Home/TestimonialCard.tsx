@@ -1,17 +1,29 @@
 import { Star, User } from "lucide-react";
+import Image from "next/image";
 
 interface Testimonial {
   name: string;
   role: string;
   rating: number;
   text: string;
+  image?: string;
 }
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => (
     <div className="bg-zinc-900/50 rounded-lg p-5 lg:p-5 mx-2 md:mx-4 w-60 md:w-96 flex-shrink-0 border border-zinc-900">
       <div className="flex items-center gap-3 mb-4">
-        <div className="bg-zinc-800 rounded-full p-2">
-          <User className="w-6 h-6 text-white" />
+        <div className="bg-zinc-800 rounded-full p-2 w-10 h-10 flex items-center justify-center overflow-hidden">
+          {testimonial.image ? (
+            <Image
+              src={testimonial.image}
+              alt={testimonial.name}
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <User className="w-6 h-6 text-white" />
+          )}
         </div>
         <div>
           <h3 className="text-white font-semibold">{testimonial.name}</h3>
