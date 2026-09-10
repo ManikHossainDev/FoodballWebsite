@@ -35,20 +35,19 @@ const ContactUsPage = () => {
           <div className="space-y-5 text-gray-300 text-sm">
             <div className="flex items-start gap-3">
               <FaEnvelope className="mt-1 text-red-500" />
-              <span>info@footballconnect.com</span>
+              <span>evolutionhub27@gmail.com</span>
             </div>
 
             <div className="flex items-start gap-3">
               <FaPhoneAlt className="mt-1 text-red-500" />
-              <span>+1 (234) 567-890</span>
+              <span>9106161843</span>
             </div>
 
             <div className="flex items-start gap-3">
               <FaMapMarkerAlt className="mt-1 text-red-500" />
               <span>
-                123 Football Street
-                <br />
-                Sports City, SC 12345
+                309 vine st                
+                Cincinnati OH 45202
               </span>
             </div>
           </div>

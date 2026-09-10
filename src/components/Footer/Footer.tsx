@@ -139,7 +139,7 @@ const Footer = () => {
                 >
                   <FaEnvelope className="text-red-600 mt-1 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
                   <span className="text-sm break-all">
-                    info@visionstriker.com
+                    evolutionhub27@gmail.com
                   </span>
                 </Link>
               </li>
@@ -150,7 +150,7 @@ const Footer = () => {
                   className="flex items-start space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group"
                 >
                   <FaPhone className="text-red-600 mt-1 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
-                  <span className="text-sm">+1 (234) 567-890</span>
+                  <span className="text-sm">9106161843</span>
                 </Link>
               </li>
 
@@ -163,9 +163,8 @@ const Footer = () => {
                 >
                   <FaMapMarkerAlt className="text-red-600 mt-1 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
                   <span className="text-sm">
-                    123 Football Street
-                    <br />
-                    Sports City, SC 12345
+                    309 vine st                
+                    Cincinnati OH 45202
                   </span>
                 </Link>
               </li>
