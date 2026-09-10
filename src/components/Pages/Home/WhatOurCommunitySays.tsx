@@ -62,7 +62,7 @@ const WhatOurCommunitySays = () => {
 
       <div className="flex justify-center ">
         <h1 className="text-center text-xs  lg:max-w-lg md:text-base lg:text-lg  py-3 text-gray-300 mb-10">
-          Join thousands of satisfied users who have advanced their football careers with VISION STRIKER
+          Join thousands of satisfied users who have advanced their football careers with  Evolution Hub
         </h1>
       </div>
 

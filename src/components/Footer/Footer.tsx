@@ -178,7 +178,7 @@ const Footer = () => {
         <div className="py-6">
           <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © {currentYear} VISION STRIKER. All rights reserved.
+              © {currentYear} Evolution Hub All rights reserved.
             </p>
           </div>
         </div>

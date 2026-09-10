@@ -376,18 +376,18 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
         >
           {heading[view].title}
         </h2>
-        <p className="text-[10px] md:text-sm text-white/90">{heading[view].subtitle}</p>
+        <p className="text-[10px] md:text-sm text-white/90 -mb-2 mt-2">{heading[view].subtitle}</p>
       </div>
 
       {view === "signin" && (
         <div className="space-y-4">
           <div>
             <label className="block text-sm text-white mb-2">Email</label>
-            <Input placeholder="your@email.com" size="large" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-md" />
+            <Input placeholder="your@email.com" size="large" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <div>
             <label className="block text-sm text-white mb-2">Password</label>
-            <Input.Password placeholder="Enter your password" size="large" value={password} onChange={(e) => setPassword(e.target.value)} className="rounded-md" />
+            <Input.Password placeholder="Enter your password" size="large" value={password} onChange={(e) => setPassword(e.target.value)} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <div className="text-left">
             <button
@@ -417,19 +417,19 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
         <div className="space-y-4">
           <div>
             <label className="block text-sm text-white mb-2">Full Name</label>
-            <Input placeholder="Enter your name" size="large" value={signupData.fullName} onChange={(e) => setSignupData({ ...signupData, fullName: e.target.value })} className="rounded-md" />
+            <Input placeholder="Enter your name" size="large" value={signupData.fullName} onChange={(e) => setSignupData({ ...signupData, fullName: e.target.value })} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <div>
             <label className="block text-sm text-white mb-2">Email</label>
-            <Input placeholder="your@email.com" size="large" value={signupData.email} onChange={(e) => setSignupData({ ...signupData, email: e.target.value })} className="rounded-md" />
+            <Input placeholder="your@email.com" size="large" value={signupData.email} onChange={(e) => setSignupData({ ...signupData, email: e.target.value })} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <div>
             <label className="block text-sm text-white mb-2">Password</label>
-            <Input.Password placeholder="Enter your password" size="large" value={signupData.password} onChange={(e) => setSignupData({ ...signupData, password: e.target.value })} className="rounded-md" />
+            <Input.Password placeholder="Enter your password" size="large" value={signupData.password} onChange={(e) => setSignupData({ ...signupData, password: e.target.value })} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <div>
             <label className="block text-sm text-white mb-2">Confirm Password</label>
-            <Input.Password placeholder="Enter your password again" size="large" value={signupData.confirmPassword} onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })} className="rounded-md" />
+            <Input.Password placeholder="Enter your password again" size="large" value={signupData.confirmPassword} onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <Button type="primary" size="large" block onClick={handleSignUpFormSubmit} className="rounded-md font-medium mt-6" style={{ backgroundColor: "#ef4444", borderColor: "#ef4444", height: "44px" }}>
             Continue
@@ -511,7 +511,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
         <div className="space-y-4">
           <div>
             <label className="block text-sm text-white mb-2">Email</label>
-            <Input placeholder="your@email.com" size="large" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="rounded-md" />
+            <Input placeholder="your@email.com" size="large" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <Button type="primary" size="large" block loading={loading} onClick={handleForgotSubmit} className="rounded-md font-medium" style={{ backgroundColor: "#ef4444", borderColor: "#ef4444", height: "44px" }}>
             Send Code
@@ -528,11 +528,11 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
         <div className="space-y-4">
           <div>
             <label className="block text-sm text-white mb-2">New Password</label>
-            <Input.Password placeholder="Enter new password" size="large" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="rounded-md" />
+            <Input.Password placeholder="Enter new password" size="large" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <div>
             <label className="block text-sm text-white mb-2">Confirm New Password</label>
-            <Input.Password placeholder="Confirm new password" size="large" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} className="rounded-md" />
+            <Input.Password placeholder="Confirm new password" size="large" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} className="rounded-md bg-transparent border border-[#A1A1A1]" />
           </div>
           <Button type="primary" size="large" block loading={loading} onClick={handleResetSubmit} className="rounded-md font-medium" style={{ backgroundColor: "#ef4444", borderColor: "#ef4444", height: "44px" }}>
             Reset Password

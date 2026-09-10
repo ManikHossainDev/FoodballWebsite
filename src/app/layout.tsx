@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Football Managements',
+  title: 'EVOLUTION HUB',
   description: 'Manage football teams, players, matches, tournaments, schedules, standings, and statistics with an advanced football management platform.',
 }
 

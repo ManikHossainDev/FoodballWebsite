@@ -4,7 +4,7 @@ import logo from "@/assets/logo/logo.png";
 import Image from "next/image";
 import ActiveLink from "./ActiveLink";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Button, Drawer, Avatar } from "antd";
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { FaRegUser } from "react-icons/fa";
@@ -30,6 +30,7 @@ const navLink = [
 
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   // 2. Destructure refetch instead of refresh (RTK Query hook name)
   const { data, refetch } = useGetProfileQuery({});
@@ -38,6 +39,25 @@ const Navbar = () => {
   const isAuthModalOpen = useAppSelector(selectIsAuthModalOpen);
   const authTab = useAppSelector(selectAuthModalTab);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === "/") {
+      if (href === "/" || href === "/#") {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.pushState(null, "", "/");
+      } else if (href.includes("#")) {
+        e.preventDefault();
+        const hash = `#${href.split("#")[1]}`;
+        const id = href.split("#")[1];
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, "", hash);
+        }
+      }
+    }
+  };
 
   const showDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
@@ -80,7 +100,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="border-b border-[#535353] flex justify-between items-center px-4 md:px-8 py-1">
+      <div className="border-b border-[#535353] flex justify-between items-center px-1 ">
         {/* Logo & Desktop Nav */}
         <div className="flex items-center space-x-2">
           <Link href="/">
@@ -93,29 +113,33 @@ const Navbar = () => {
             />
           </Link>
 
-          <ul className="hidden md:flex gap-1">
+          <ul className="hidden md:flex gap-1 ">
             {navLink.map((link) => (
               <li key={link.href}>
-                <ActiveLink href={link.href} label={link.label} />
+                <ActiveLink
+                  href={link.href}
+                  label={link.label}
+                  onClick={(e) => handleNavLinkClick(e, link.href)}
+                />
               </li>
             ))}
           </ul>
         </div>
 
         {/* Right Side Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {!user ? (
-            <div className="hidden md:flex justify-between items-center md:gap-1">
+            <div className="hidden md:flex justify-between items-center md:gap-2">
               <div
                 onClick={() => showAuthModal("signin")}
-                className="rounded-[4px] md:px-6 px-1 md:py-5 py-2 text-white border-none flex space-x-1 items-center cursor-pointer"
+                className="rounded-[4px] md:px-4 px-2 py-2 text-white hover:text-red-400 border-none flex space-x-2 items-center cursor-pointer transition-colors duration-200"
               >
-                <FaRegUser />
-                <h1>Login</h1>
+                <FaRegUser className="text-[20px] md:text-[22px]" />
+                <span className="text-[18px] md:text-[20px] font-medium">Login</span>
               </div>
               <button
                 onClick={() => showAuthModal("signup")}
-                className="bg-[#E43636] space-x-2 py-2 px-4 text-white rounded-md hover:bg-[#c92e2e] transition-colors"
+                className="bg-[#E43636] text-[18px] md:text-[19px] font-medium py-2.5 px-5 md:px-6 text-white rounded-md hover:bg-[#c92e2e] transition-all duration-300 shadow-md"
               >
                 Get Started
               </button>
@@ -164,8 +188,15 @@ const Navbar = () => {
         >
           <ul className="flex flex-col gap-4">
             {navLink.map((link) => (
-              <li key={link.href} onClick={handleLinkClick}>
-                <ActiveLink href={link.href} label={link.label} />
+              <li key={link.href}>
+                <ActiveLink
+                  href={link.href}
+                  label={link.label}
+                  onClick={(e) => {
+                    handleNavLinkClick(e, link.href);
+                    closeDrawer();
+                  }}
+                />
               </li>
             ))}
           </ul>

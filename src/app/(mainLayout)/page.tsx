@@ -11,11 +11,11 @@ const HomePage = () => {
   return (
     <section>
       <HeroBannerSection />
-      <div id="ourmission">
+      <div id="ourmission" className="scroll-mt-24">
         <OurMission />
       </div>
 
-      <div id='explore' className="">
+      <div id='explore' className="scroll-mt-24">
         <h2
           className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
           style={{
@@ -32,11 +32,11 @@ const HomePage = () => {
         <ExplorePlayersVideo />
       </div>
 
-      <div id='features' className="py-10 md:py-14">
+      <div id='features' className="py-10 md:py-14 scroll-mt-20">
         <PowerfulFeatures />
       </div>
 
-      <div id="communitysays">
+      <div id="communitysays" className="scroll-mt-20">
         <WhatOurCommunitySays />
       </div>
       <ChooseYourPlan />
