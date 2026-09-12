@@ -283,7 +283,7 @@ const RequestReviewCard = () => {
       </div>
 
       {/* Form Section */}
-      <div className="bg-[#1f1f1f] rounded-lg p-6">
+      <div className="bg-[#1f1f1f] rounded-lg p-2 md:p-4 lg:p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">Video Information</h3>

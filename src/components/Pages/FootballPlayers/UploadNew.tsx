@@ -170,7 +170,7 @@ const UploadNew = () => {
         Upload video to get more insight & reach
       </p>
 
-      <div className="bg-black rounded-xl p-6 mt-4">
+      <div className="bg-black rounded-xl p-2 md:p-4  mt-4">
         <h3 className="text-white text-lg font-semibold mb-4">
           Video Information
         </h3>
