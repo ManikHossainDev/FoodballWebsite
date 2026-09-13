@@ -346,9 +346,9 @@ const AuthModal = ({ isOpen, onClose, initialTab = "signin" }: AuthModalProps) =
   if (!isOpen) return null;
 
   const heading: Record<View, { title: string; subtitle: string }> = {
-    signin: { title: "Sign in to Football Connect", subtitle: "Enter your credentials to access your account" },
+    signin: { title: "Sign in to Evolution Hub", subtitle: "Enter your credentials to access your account" },
     signup: { title: "Create Your Account", subtitle: "Step 1: Enter your credentials to create your account" },
-    role: { title: "Choose Your Role", subtitle: "Step 2: Select how you want to use FootballConnect" },
+    role: { title: "Choose Your Role", subtitle: "Step 2: Select how you want to use Evolution Hub" },
     verify: { title: "Verify Your Email", subtitle: `Step 3: Enter the ${OTP_LENGTH}-digit code sent to your email` },
     forgot: { title: "Forgot Password", subtitle: "Enter your email to receive a verification code" },
     reset: { title: "Reset Password", subtitle: "Enter your new password" },
