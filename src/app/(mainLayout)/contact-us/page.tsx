@@ -6,7 +6,7 @@ import {
 
 const ContactUsPage = () => {
   return (
-    <section className="responsive-padding py-20 bg-black text-white">
+    <section className="xl:container mx-auto py-20 bg-black text-white">
       {/* Header */}
       <div className="text-center my-7 xl:my-14">
         <h2

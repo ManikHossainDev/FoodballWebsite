@@ -100,7 +100,7 @@ const ExplorePlayers = () => {
   }
 
   return (
-    <div className="py-6 mt-16 responsive-padding">
+    <div className="py-6 mt-16 xl:container w-full mx-auto">
       
       <h2
         className="text-xl md:text-3xl font-bold text-white my-6 "

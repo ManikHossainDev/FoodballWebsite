@@ -50,7 +50,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       };
 
       const handleError = (err: Error) => {
-        console.error("🔴 [SocketContext] Socket error:", err.message);
+        console.warn("⚠️ [SocketContext] Socket connection notice:", err.message);
         setError(err.message);
         setConnected(false);
       };

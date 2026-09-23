@@ -12,23 +12,24 @@ export const initSocket = (token: string): Socket => {
     socket.disconnect();
   }
 
-  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
-    // ✅ Backend "Authorization" HTTP header theke token pore (Postman e confirm kora),
-    // tai extraHeaders e "Authorization" pathano hocche.
-    extraHeaders: {
-      Authorization: token,
+  const cleanToken = token?.replace(/['"]+/g, "").trim() || "";
+  const authBearer = cleanToken.startsWith("Bearer ") ? cleanToken : `Bearer ${cleanToken}`;
+  const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://socket.evolutionclub.org";
+
+  socket = io(socketUrl, {
+    auth: {
+      token: cleanToken,
+      Authorization: authBearer,
     },
-    // 🔴 Important: Browser er native WebSocket API custom header pathate pare na.
-    // extraHeaders SHUDHU "polling" transport e kaj kore. Tai amra "websocket"
-    // e upgrade hote dicchi na, sudhu "polling" e lock kore rakhchi -
-    // nahole 1st connect e header jabe, kintu websocket e upgrade hoyar por
-    // header chole jabe, backend token na peye connection drop/error dite pare.
-    transports: ["polling"],
+    extraHeaders: {
+      Authorization: authBearer,
+    },
+    transports: ["websocket", "polling"],
     reconnection: true,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax: 5000,
-    reconnectionAttempts: 5,
-    timeout: 20000,
+    reconnectionDelay: 2000,
+    reconnectionDelayMax: 10000,
+    reconnectionAttempts: 3,
+    timeout: 15000,
     forceNew: true,
   });
 

@@ -12,7 +12,7 @@ const ActiveLink = ({ label, href, onClick }: IActiveProps) => {
     <Link
       href={href}
       onClick={onClick}
-      className="text-[18px] md:text-[20px] lg:px-4 lg:py-6 px-2 py-3 md:py-5 relative inline-block font-medium transition-all duration-300 text-white hover:text-red-400"
+      className="text-sm md:text-[15px] px-3.5 py-2 rounded-lg font-medium transition-all duration-200 text-gray-200 hover:text-white hover:bg-white/[0.08] relative inline-flex items-center"
     >
       <span className="relative z-10">{label}</span>
     </Link>

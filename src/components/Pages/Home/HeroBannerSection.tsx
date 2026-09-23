@@ -1,45 +1,25 @@
 "use client";
 
-import { Play } from "lucide-react";
+import { Play, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import ImageHero from "@/assets/HeroBannerSection/hero.png";
+import ImageHero from "@/assets/HeroBannerSection/hero.jpg";
 import { useAppDispatch } from "@/redux/hooks";
 import { openAuthModal } from "@/redux/features/auth/authSlice";
 import { useGetProfileQuery } from "@/redux/features/Profile/Profile";
 
-// 1. Define routing map outside the component to avoid recreation on every render
 const ROLE_ROUTES: Record<string, string> = {
   player: "/FootballPlayer",
-  coach: "/Coach", // Fixed typo from "/Couch"
+  coach: "/Coach",
   club: "/Club",
   agent: "/agents",
 };
 
-// 2. Extract stats data for cleaner JSX mapping
-const STAT_ITEMS = [
-  {
-    value: "10K+",
-    label: "Active Players",
-    glowColor: "bg-red-500/20",
-    containerDelay: "1.4s",
-    countDelay: "1.6s",
-  },
-  {
-    value: "500+",
-    label: "Expert Coaches",
-    glowColor: "bg-blue-500/20",
-    containerDelay: "1.6s",
-    countDelay: "1.8s",
-  },
-  {
-    value: "200+",
-    label: "Professional Clubs",
-    glowColor: "bg-green-500/20",
-    containerDelay: "1.8s",
-    countDelay: "2s",
-  },
+const STATS = [
+  { value: "10K+", label: "ACTIVE PLAYERS" },
+  { value: "500+", label: "EXPERT COACHES" },
+  { value: "200+", label: "PROFESSIONAL CLUBS" },
 ];
 
 const HeroBannerSection = () => {
@@ -48,7 +28,6 @@ const HeroBannerSection = () => {
   const { data } = useGetProfileQuery({});
   const user = data?.data;
 
-  // 3. Simplified routing logic
   const handleGetStarted = () => {
     if (user?.role && ROLE_ROUTES[user.role]) {
       router.push(ROLE_ROUTES[user.role]);
@@ -58,170 +37,91 @@ const HeroBannerSection = () => {
   };
 
   return (
-    <div className="responsive-padding relative w-full flex items-center min-h-[60vh] md:min-h-[80vh] lg:min-h-[95vh] xl:min-h-[100vh] overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0">
+    <div className="relative w-full flex flex-col justify-between min-h-[85vh] md:min-h-screen bg-black overflow-hidden pt-20 md:pt-24">
+      {/* Background Image with Dark Color and Gradient Overlays */}
+      <div className="absolute inset-0 pointer-events-none">
         <Image
           src={ImageHero}
           alt="Football stadium"
           fill
-          className="object-cover object-center md:animate-[kenBurns_20s_ease-in-out_infinite_alternate]"
+          className="object-cover object-right md:object-center opacity-65"
           priority
         />
-        <div className="absolute inset-0 bg-white/5 animate-[pulse_3s_ease-in-out_infinite]" />
+        {/* Left side dark gradient to match design */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+        {/* Overall subtle dark tint */}
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 flex h-full items-center justify-center pt-20 md:pt-28">
-        <div className="w-full md:text-left">
-          
-          {/* Small Label */}
-          <div className="mb-4 flex items-center justify-start gap-2 md:mb-6 animate-[glitchSlide_0.8s_ease-out]">
-            <div className="h-0.5 w-8 bg-red-500 animate-[expandWidth_1.5s_ease-out]" />
-            <span className="text-sm font-medium tracking-wider text-white/80 sm:text-base animate-[letterSpacing_1s_ease-out]">
-              LET&apos;S GO!
-            </span>
+      <div className="w-full xl:container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-2  flex-1 flex flex-col justify-center">
+        <div className="max-w-4xl">
+          {/* Small Label / Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-950/30 px-3.5 py-1 text-xs font-semibold text-red-500 tracking-wider mb-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+            LET&apos;S GO!
           </div>
 
           {/* Main Heading */}
-          <h1 className="mb-4 text-lg font-extrabold leading-tight text-white sm:text-3xl md:mb-6 md:text-3xl lg:text-5xl ">
-            <span className="inline-block animate-[bounceInRotate_1s_ease-out_0.1s_both]">
-              EVOLUTION
-            </span>{" "}
-            <span className="inline-block animate-[bounceInRotate_1s_ease-out_0.2s_both] mr-1">
-              HUB
-            </span>
-            <br className="hidden sm:block" />
-            <span className="inline-block animate-[bounceInRotate_1s_ease-out_0.3s_both]">
-              Where FOOTBALL
-            </span>{" "}
-            <span
-              className="inline-block animate-pulse text-white mr-1"
-              style={{
-                textShadow:
-                  "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-                animation: "bounceInRotate 1s ease-out 0.4s both",
-              }}
-            >
-              TALENT
-            </span>
-            <br className="hidden sm:block" />
-            <span className="inline-block animate-[bounceInRotate_1s_ease-out_0.5s_both]">
-              MEETS REAL
-            </span>{" "}
-            <span className="inline-block animate-[bounceInRotate_1s_ease-out_0.6s_both]">
-              OPPORTUNITY
-            </span>
+          <h1 className="mb-6 text-4xl sm:text-6xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase tracking-tight text-white leading-[1.04]">
+            WHERE
+            <br />
+            FOOTBALL
+            <br />
+            TALENT <span className="text-red-600">MEETS</span>
+            <br />
+            REAL
+            <br />
+            OPPORTUNITY
           </h1>
 
           {/* Description */}
-          <p className="mx-auto mb-6 max-w-3xl text-xs leading-relaxed text-white/90 sm:text-base md:mx-0 md:mb-8 md:text-lg animate-[typewriter_2s_ease-out_0.8s_both]">
+          <p className="mb-8 max-w-2xl text-sm sm:text-base md:text-lg xl:text-xl leading-relaxed text-gray-400">
             Evolution Hub is a professional platform built to empower football
             talent by connecting players with coaches, scouts, agents, clubs, and
-            career opportunities worldwide. Players can showcase their skills
-            through gameplay videos, receive expert feedback, develop their game,
-            access career guidance, and take the next step toward professional
-            football.
+            career opportunities worldwide. Showcase your skills, receive expert
+            feedback, and take the next step.
           </p>
 
           {/* CTA Buttons */}
-          <div className="mb-4 xl:mb-10 flex justify-start gap-4  animate-[slideUpBounce_0.8s_ease-out_1.2s_both]">
+          <div className="flex flex-wrap items-center gap-4">
             <button
               onClick={handleGetStarted}
-              className="group relative cursor-pointer overflow-hidden rounded bg-red-600 px-3  py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-red-700 hover:shadow-2xl hover:shadow-red-500/50 sm:text-base md:px-10 lg:px-12 xl:px-16 gap-4"
+              className="inline-flex items-center gap-2 rounded bg-red-600 px-6 py-3.5 text-sm sm:text-base font-semibold text-white shadow-lg transition-colors hover:bg-red-700 cursor-pointer"
             >
-              <span className="relative z-10">Get Started</span>
-              <div className="absolute inset-0 -skew-x-12 translate-x-full transform bg-gradient-to-r from-red-700 to-red-500 transition-transform duration-500 group-hover:translate-x-0" />
+              <span>Get Started</span>
+              <ArrowRight className="h-4 w-4" />
             </button>
             <Link href="/exploreplayersvideo">
-              <button className="group relative flex overflow-hidden rounded border border-white/20 bg-white/10 px-3 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-red-500/50 hover:bg-white/20 sm:text-base md:px-8 lg:px-16 gap-2 items-center">
-                <Play className="relative z-10 h-4 w-4 transition-transform group-hover:animate-[spin_1s_ease-in-out]" />
-                <span className="relative z-10">Watch Demo</span>
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <button className="inline-flex items-center gap-2 rounded border border-white/20 bg-black/60 px-6 py-3.5 text-sm sm:text-base font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10 hover:border-white/40 cursor-pointer">
+                <Play className="h-4 w-4 fill-white text-white" />
+                <span>See How It Works</span>
               </button>
             </Link>
           </div>
+        </div>
+      </div>
 
-          {/* Stats Section mapped dynamically */}
-          <div className="flex justify-start gap-2 md:gap-10 lg:gap-14">
-            {STAT_ITEMS.map((stat, index) => (
+      {/* Bottom Stats Section */}
+      <div className="relative z-10 w-full py-5 border-b border-gray-900 bg-gradient-to-b from-transparent via-black/80 to-black">
+        <div className="w-full xl:container mx-auto px-4 sm:px-6 lg:px-8 pt-7 md:pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
+            {STATS.map((stat) => (
               <div
-                key={index}
-                className="cursor-pointer text-center hover:animate-[wiggle_0.5s_ease-in-out] md:text-left"
-                style={{
-                  animation: `popIn 0.6s cubic-bezier(0.68,-0.55,0.265,1.55) ${stat.containerDelay} both`,
-                }}
+                key={stat.label}
+                className="flex flex-col items-center justify-center py-4 md:py-1 text-center px-4"
               >
-                <div className="group relative mb-1 text-xl font-bold text-white md:text-2xl lg:text-3xl">
-                  <span
-                    className="inline-block"
-                    style={{ animation: `countUp 2s ease-out ${stat.countDelay} both` }}
-                  >
-                    {stat.value}
-                  </span>
-                  <div
-                    className={`absolute -inset-2 blur-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${stat.glowColor}`}
-                  />
-                </div>
-                <div className="text-xs font-medium text-white/70 sm:text-sm">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+                  {stat.value}
+                </span>
+                <span className="mt-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-gray-400">
                   {stat.label}
-                </div>
+                </span>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes kenBurns {
-          0%, 100% { transform: scale(1) translate(0, 0); }
-          50% { transform: scale(1.1) translate(-2%, -2%); }
-        }
-        @keyframes glitchSlide {
-          0% { opacity: 0; transform: translateX(-100px); }
-          60% { opacity: 1; transform: translateX(10px); }
-          80% { transform: translateX(-5px); }
-          100% { transform: translateX(0); }
-        }
-        @keyframes expandWidth {
-          from { width: 0; }
-          to { width: 2rem; }
-        }
-        @keyframes letterSpacing {
-          from { letter-spacing: 1em; opacity: 0; }
-          to { letter-spacing: 0.1em; opacity: 1; }
-        }
-        @keyframes bounceInRotate {
-          0% { opacity: 0; transform: translateY(-100px) rotate(-15deg) scale(0.5); }
-          60% { opacity: 1; transform: translateY(10px) rotate(5deg) scale(1.1); }
-          80% { transform: translateY(-5px) rotate(-2deg) scale(0.95); }
-          100% { transform: translateY(0) rotate(0) scale(1); }
-        }
-        @keyframes typewriter {
-          from { opacity: 0; max-height: 0; transform: translateY(20px); }
-          to { opacity: 1; max-height: 500px; transform: translateY(0); }
-        }
-        @keyframes slideUpBounce {
-          0% { opacity: 0; transform: translateY(100px) scale(0.8); }
-          70% { opacity: 1; transform: translateY(-10px) scale(1.05); }
-          100% { transform: translateY(0) scale(1); }
-        }
-        @keyframes popIn {
-          0% { opacity: 0; transform: scale(0) rotate(-180deg); }
-          70% { transform: scale(1.2) rotate(10deg); }
-          100% { transform: scale(1) rotate(0); }
-        }
-        @keyframes wiggle {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(-5deg) scale(1.1); }
-          75% { transform: rotate(5deg) scale(1.1); }
-        }
-        @keyframes countUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 };

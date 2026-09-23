@@ -62,7 +62,7 @@ const ChooseYourPlan = () => {
   };
 
   return (
-    <div className="responsive-padding py-10 lg:py-20">
+    <div className="xl:container w-full mx-auto py-10 lg:py-20">
       <h2
         className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
         style={{

@@ -16,7 +16,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="responsive-padding text-white ">
+    <footer className="xl:container w-full mx-auto text-white ">
       {/* Main Footer Content */}
       <div className="py-5 md:py-10 px-3 lg:px-0">
         <div className="grid grid-cols-12 gap-8  xl:gap-2 2xl:gap-24 ">

@@ -100,20 +100,21 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="border-b border-[#535353] flex justify-between items-center px-1 ">
+      <div className="border-b border-white/10 flex justify-between items-center py-2.5 md:py-3 px-1">
         {/* Logo & Desktop Nav */}
-        <div className="flex items-center space-x-2">
-          <Link href="/">
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <Link href="/" className="flex items-center">
             <Image
               src={logo}
-              width={500}
-              height={500}
+              width={160}
+              height={50}
               alt="logo"
-              className="w-16 h-12 md:w-[150px] md:h-[75px] lg:h-[85px] md:-my-5 md:-mx-3"
+              className="h-9 md:h-11 w-auto object-contain"
+              priority
             />
           </Link>
 
-          <ul className="hidden md:flex gap-1 ">
+          <ul className="hidden md:flex items-center gap-1 lg:gap-2">
             {navLink.map((link) => (
               <li key={link.href}>
                 <ActiveLink
@@ -127,66 +128,81 @@ const Navbar = () => {
         </div>
 
         {/* Right Side Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {!user ? (
-            <div className="hidden md:flex justify-between items-center md:gap-2">
-              <div
-                onClick={() => showAuthModal("signin")}
-                className="rounded-[4px] md:px-4 px-2 py-2 text-white hover:text-red-400 border-none flex space-x-2 items-center cursor-pointer transition-colors duration-200"
-              >
-                <FaRegUser className="text-[20px] md:text-[22px]" />
-                <span className="text-[18px] md:text-[20px] font-medium">Login</span>
-              </div>
+            <div className="hidden md:flex items-center gap-2">
               <button
+                type="button"
+                onClick={() => showAuthModal("signin")}
+                className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white hover:bg-white/[0.08] px-3.5 py-2 rounded-lg transition-all duration-200 cursor-pointer"
+              >
+                <FaRegUser className="text-[15px] text-gray-300" />
+                <span>Login</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => showAuthModal("signup")}
-                className="bg-[#E43636] text-[18px] md:text-[19px] font-medium py-2.5 px-5 md:px-6 text-white rounded-md hover:bg-[#c92e2e] transition-all duration-300 shadow-md"
+                className="bg-[#E43636] hover:bg-[#c92e2e] text-white text-sm font-semibold py-2 px-4 md:px-5 rounded-lg transition-all duration-200 shadow-md hover:shadow-red-600/25 active:scale-95 cursor-pointer"
               >
                 Get Started
               </button>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
               <div
                 onClick={handleProfileRedirect}
-                className="cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity"
+                className="cursor-pointer flex items-center gap-2.5 py-1 px-2.5 rounded-lg hover:bg-white/[0.08] transition-colors"
+                title="View Profile"
               >
                 <Avatar
                   src={user?.image}
                   icon={!user?.image && <UserOutlined />}
-                  className="border border-white  md:w-10 md:h-10 lg:w-12 lg:h-12"
+                  className="border border-white/20 w-8 h-8 md:w-9 md:h-9"
                 />
+                <div className="flex flex-col text-left">
+                  <span className="text-white text-xs font-semibold max-w-[120px] truncate leading-tight">
+                    {user?.name || "My Account"}
+                  </span>
+                  <span className="text-gray-400 text-[11px] capitalize leading-tight">
+                    {user?.role || "User"}
+                  </span>
+                </div>
               </div>
 
-              {/* Attached handleLogout to Desktop Button */}
-              <Button size="middle" type="primary" danger onClick={handleLogout}>
+              {/* Desktop Logout Button */}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="text-xs font-medium px-3.5 py-1.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
+              >
                 Logout
-              </Button>
+              </button>
             </div>
           )}
 
           {/* Mobile Drawer Button */}
           <Button
             type="text"
-            className="md:hidden"
-            icon={<MenuOutlined className="text-white" />}
+            className="md:hidden !p-2 !h-auto flex items-center justify-center text-white hover:!bg-white/10 rounded-lg border-none"
+            icon={<MenuOutlined className="text-lg text-white" />}
             onClick={showDrawer}
           />
         </div>
 
         {/* Mobile Drawer */}
         <Drawer
-          title="Menu"
+          title={<span className="text-white font-semibold text-base">Menu</span>}
           placement="right"
           onClose={closeDrawer}
           open={isDrawerOpen}
-          width={220}
+          width={260}
           styles={{
-            body: { backgroundColor: "#000000", color: "#ffffff" },
-            header: { backgroundColor: "#000000", color: "#ffffff", borderBottom: "1px solid #333" },
+            body: { backgroundColor: "#141414", color: "#ffffff", padding: "20px 16px" },
+            header: { backgroundColor: "#141414", color: "#ffffff", borderBottom: "1px solid rgba(255,255,255,0.08)" },
           }}
           maskClosable={true}
         >
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-1.5">
             {navLink.map((link) => (
               <li key={link.href}>
                 <ActiveLink
@@ -201,24 +217,25 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <div className="flex flex-col gap-4 mt-6 border-t border-[#333] pt-4">
+          <div className="flex flex-col gap-3 mt-6 border-t border-white/10 pt-5">
             {user ? (
               <>
                 <div
                   onClick={handleProfileRedirect}
-                  className="flex items-center gap-2 mb-2 cursor-pointer  p-2 rounded"
+                  className="flex items-center gap-3 p-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
                 >
-                  <Avatar src={user?.image} icon={!user?.image && <UserOutlined />} />
-                  <div className="flex flex-col">
-                    <span className="text-white text-sm font-medium truncate w-32">{user?.name}</span>
+                  <Avatar src={user?.image} icon={!user?.image && <UserOutlined />} className="w-9 h-9" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-white text-sm font-medium truncate">{user?.name}</span>
                     <span className="text-gray-400 text-xs capitalize">{user?.role}</span>
                   </div>
                 </div>
 
                 {/* Mobile Logout */}
                 <button
+                  type="button"
                   onClick={handleLogout}
-                  className="w-full text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm transition-colors"
+                  className="w-full text-white bg-red-600 hover:bg-red-700 py-2.5 px-4 rounded-lg text-sm font-medium transition-all shadow-sm active:scale-95"
                 >
                   Logout
                 </button>
@@ -226,22 +243,24 @@ const Navbar = () => {
             ) : (
               <>
                 <button
+                  type="button"
                   onClick={() => {
                     handleLinkClick();
                     showAuthModal("signin");
                   }}
-                  className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded transition-colors"
+                  className="w-full py-2.5 px-4 rounded-lg text-sm font-medium text-gray-200 bg-white/[0.08] hover:bg-white/[0.15] transition-all"
                 >
                   Login
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     handleLinkClick();
                     showAuthModal("signup");
                   }}
-                  className="px-4 py-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
+                  className="w-full py-2.5 px-4 rounded-lg text-sm font-semibold text-white bg-[#E43636] hover:bg-[#c92e2e] transition-all shadow-sm active:scale-95"
                 >
-                  Register
+                  Get Started
                 </button>
               </>
             )}

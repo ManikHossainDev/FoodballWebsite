@@ -6,7 +6,7 @@ const Page = () => {
   const terms = data?.data;
 
   return (
-    <div className="text-white responsive-padding">
+    <div className="text-white w-full xl:container ">
       <br />
       <div className=" md:py-16 flex flex-col justify-center items-center md:mb-20 py-4 space-y-6">
         {isLoading && <p>Loading...</p>}

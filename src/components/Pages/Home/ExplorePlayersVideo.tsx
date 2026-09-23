@@ -177,7 +177,7 @@ const ExplorePlayersVideo = () => {
   }
 
   return (
-    <div className="relative w-full responsive-padding group/slider">
+    <div className="relative w-full xl:container w-full mx-auto group/slider">
       {/* Left Arrow Button (Prominently visible on Mobile, Tablet & Desktop) */}
       <button
         type="button"

@@ -6,7 +6,7 @@ const Page = () => {
   const terms = data?.data;
 
   return (
-    <div className="responsive-padding text-white">
+    <div className="xl:container w-full mx-auto text-white">
       
 
       {/* content */}
