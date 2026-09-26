@@ -21,12 +21,12 @@ const Footer = () => {
       <div className="py-5 md:py-10 px-3 lg:px-0">
         <div className="grid grid-cols-12 gap-8  xl:gap-2 2xl:gap-24 ">
           {/* Brand Section */}
-          <div className="col-span-11 lg:col-span-3 xl:col-span-4">
+          <div className="col-span-11 lg:col-span-3 xl:col-span-4 mt-2">
             <div className="w-48 h-32 md:-mt-16 md:-ml-5">
               <Image src={logo} alt="Logo" />
             </div>
 
-            <p className="text-gray-400 text-base md:text-[18px] py-1 w-full md:w-[62%]">
+            <p className="text-gray-400 text-base md:text-[18px] py-1 w-full md:w-[70%]">
               Connecting football talent with opportunities worldwide. Your
               journey to professional football starts here.
             </p>
@@ -34,20 +34,20 @@ const Footer = () => {
             {/* Social Media Icons */}
             <div className="flex space-x-4">
               <Link
-                href="#"
+                href="https://www.facebook.com/share/1Lqm7nLsPk/?mibextid=wwXIfr"
                 aria-label="Facebook"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
               >
                 <FaFacebookF className="text-sm" />
               </Link>
 
-              <Link
+              {/* <Link
                 href="#"
                 aria-label="Twitter"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
               >
                 <FaTwitter className="text-sm" />
-              </Link>
+              </Link> */}
 
               <Link
                 href="#"

@@ -48,14 +48,11 @@ const WhatOurCommunitySays = () => {
 
   const shouldAnimate = testimonials.length >= 10;
 
-  return (
-    <div className="xl:container w-full mx-auto py-10 lg:py-20">
+    return (
+    <div className="border-b border-gray-900 w-full py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+      <div className="xl:container w-full mx-auto">
       <h2
         className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
-        style={{
-          textShadow:
-            '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000',
-        }}
       >
         What Our Community Says
       </h2>
@@ -147,6 +144,7 @@ const WhatOurCommunitySays = () => {
           animation-play-state: paused;
         }
       `}</style>
+      </div>
     </div>
   );
 };

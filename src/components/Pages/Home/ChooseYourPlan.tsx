@@ -1,182 +1,153 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
-import Group from "@/assets/Authentication/Group.png";
-import { useDonationMutation } from "@/redux/features/Profile/Profile";
-import Image from "next/image";
 import { useState } from "react";
-import Cookies from "js-cookie";
-
+import { useDonationMutation } from "@/redux/features/Profile/Profile";
+const presetAmounts = ["10", "25", "50", "100"];
 const ChooseYourPlan = () => {
-  const [Donation, { isLoading }] = useDonationMutation();
-  const donationAmounts = ["$ 05", "$ 10", "$ 15", "$ 20", "$ 25", "$ 30"];
-  const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
+  const [useDonation, { isLoading }] = useDonationMutation();
   const [amount, setAmount] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [error, setError] = useState<string>("")
   const handlePresetClick = (preset: string) => {
-    const numericValue = preset.replace(/[^0-9]/g, "");
-    setSelectedAmount(preset);
-    setAmount(numericValue);
+    setAmount(preset);
     setError("");
   };
-  const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*\.?\d*$/.test(value)) {
-      setAmount(value);
-      setSelectedAmount(null);
-      setError("");
-    }
+
+  const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    setAmount(value);
+    setError("");
   };
 
-  const proceedToDonate = async () => {
-    try {
-      const res = await Donation({ amount: Number(amount) }).unwrap();
-      if (res?.success && res?.data?.url) {
-        window.location.href = res.data.url;
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to create donation session. Please try again.");
-    }
-  };
-
-  const handleDonate = async () => {
+  const handleSupport = async () => {
     if (!amount || Number(amount) <= 0) {
-      setError("Please enter a valid amount");
+      setError("Please select or enter a valid support amount");
       return;
     }
-    const token = Cookies.get("token");
-    if (!token) {
-      // token na thakle modal dekhabe -> user choose korbe Login naki Donate (as guest)
-      setShowLoginModal(true);
-      return;
+    try {
+      setError("");
+      const response = await useDonation({
+        amount: Number(amount),
+      }).unwrap();
+      const paymentUrl = response?.data?.url;
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+        return;
+      }
+      setError("Unable to create payment. Please try again.");
+    } catch (err: any) {
+      console.error("Donation payment error:", err);
+      setError(
+        err?.data?.message ||
+          err?.error ||
+          "Something went wrong. Please try again."
+      );
     }
-    await proceedToDonate();
-  };
-
-  const handleGuestDonate = async () => {
-    setShowLoginModal(false);
-    await proceedToDonate();
   };
 
   return (
-    <div className="xl:container w-full mx-auto py-10 lg:py-20">
-      <h2
-        className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
-        style={{
-          textShadow:
-            "0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000",
-        }}
-      >
-        Make Donation
-      </h2>
+    <section
+      id="support"
+      className="w-full py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-[#130A0A]"
+    >
+      <div className="w-full px-2 xl:container mx-auto">
+        <div className="relative bg-[#0C0C0C] border border-zinc-800/80 rounded-3xl p-6 sm:p-10 lg:p-14 shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 xl:gap-20 items-center">
+            <div className="flex flex-col items-start">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-800 bg-[#161618] text-zinc-300 text-xs font-semibold">
+                <span className="text-red-500 text-sm">❤️</span>
+                <span>Support the Mission</span>
+              </div>
 
-      <div className="flex justify-center">
-        <h1 className="text-center text-xs md:text-base lg:text-md py-3 text-gray-300 mb-10">
-          As its a not profit site, so you can make donation if you want.
-        </h1>
-      </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black text-white tracking-tight uppercase leading-[1.1] mt-6 mb-5">
+                EMPOWER THE NEXT <br />
+                <span className="text-red-600">GENERATION</span>
+              </h2>
 
-      <div className="flex flex-col lg:flex-row items-center gap-10">
-        {/* Left side image */}
-        <div className="w-full lg:w-1/3 flex justify-center">
-          <Image
-            width={500}
-            height={500}
-            src={Group}
-            alt="Donate"
-            className="max-w-[280px] md:max-w-[320px] w-full h-auto"
-          />
-        </div>
+              <p className="text-zinc-400 text-sm sm:text-base leading-relaxed max-w-lg">
+                Evolution Hub is a nonprofit initiative working to connect
+                aspiring football talent with coaching, guidance, visibility,
+                and career opportunities. Your support helps the mission reach
+                more players.
+              </p>
+            </div>
 
-        {/* Right side donation form */}
-        <div className="w-full lg:w-2/3">
-          <p className="text-gray-300 text-sm mb-3">Amount Of Donation</p>
+            <div>
+              <div className="bg-[#131316] border border-zinc-800/80 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+                <h3 className="text-white font-bold text-lg sm:text-xl">
+                  Donation Amount
+                </h3>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-            {donationAmounts.map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => handlePresetClick(preset)}
-                className={`border rounded-md py-3 text-sm transition-colors
-                           focus:outline-none focus:ring-2 focus:ring-red-500
-                           ${
-                             selectedAmount === preset
-                               ? "bg-red-600 border-red-500 text-white"
-                               : "border-red-600/60 text-white hover:bg-red-600/20 hover:border-red-500"
-                           }`}
-              >
-                {preset}
-              </button>
-            ))}
-          </div>
+                <div className="grid grid-cols-4 gap-2.5 sm:gap-3.5">
+                  {presetAmounts.map((preset) => {
+                    const isSelected = amount === preset;
 
-          <input
-            type="text"
-            inputMode="numeric"
-            value={amount}
-            onChange={handleManualChange}
-            placeholder="Enter Amount Manually"
-            className="w-full bg-transparent border border-red-600/60 rounded-md
-                       px-4 py-3 text-sm text-gray-300 placeholder-gray-500
-                       focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => handlePresetClick(preset)}
+                        className={`py-3.5 rounded-xl font-bold text-base transition-all duration-200 cursor-pointer text-center ${
+                          isSelected
+                            ? "bg-[#e5252a] text-white border border-transparent shadow-[0_4px_22px_rgba(229,37,42,0.45)]"
+                            : "bg-[#1a1a1e] text-white border border-zinc-800/80 hover:border-zinc-700 hover:bg-[#202025]"
+                        }`}
+                      >
+                        ${preset}
+                      </button>
+                    );
+                  })}
+                </div>
 
-          {error && <p className="text-red-500 text-sm mt-2 mb-2">{error}</p>}
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-base select-none pointer-events-none">
+                    $
+                  </span>
 
-          <div className={`flex justify-end ${error ? "mt-4" : "mt-8"}`}>
-            <button
-              type="button"
-              onClick={handleDonate}
-              disabled={isLoading}
-              className="bg-red-600 hover:bg-red-700 transition-colors text-white
-                         font-medium rounded-md px-10 py-3
-                         disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Processing..." : "Donate"}
-            </button>
-          </div>
-        </div>
-      </div>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={amount}
+                    onChange={handleCustomChange}
+                    placeholder="Custom Amount"
+                    className="w-full bg-[#1a1a1e] border border-zinc-800/80 rounded-xl pl-8 pr-4 py-3.5 text-white placeholder-zinc-500 font-medium text-base outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all"
+                  />
+                </div>
 
-      {/* Login / Guest Donate modal */}
-      {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-          <div className="bg-[#111] border border-red-600/50 rounded-lg p-6 max-w-sm w-full text-center">
-            <h3 className="text-white text-lg font-semibold mb-3">
-              You&apos;re not logged in
-            </h3>
-            <p className="text-gray-300 text-sm mb-6">
-              If you log in, your donation will be saved as a record under
-              your account. You can also continue and donate without logging
-              in.
-            </p>
-            <div className="flex justify-center gap-3">
-              {/* <button
-                onClick={() => router.push("/login")}
-                disabled={isLoading}
-                className="px-5 py-2 rounded-md border border-red-600/60 text-white
-                           hover:bg-red-600/20 text-sm disabled:opacity-50"
-              >
-                Login
-              </button> */}
-              <button
-                onClick={handleGuestDonate}
-                disabled={isLoading}
-                className="px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm
-                           disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? "Processing..." : "Donate"}
-              </button>
+                {error && (
+                  <p className="text-red-500 text-sm font-medium -mt-2">
+                    {error}
+                  </p>
+                )}
+
+                <div className="space-y-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleSupport}
+                    disabled={isLoading}
+                    className="w-full bg-white hover:bg-zinc-200 disabled:opacity-60 disabled:cursor-not-allowed text-black font-bold py-3.5 sm:py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors duration-200 text-base shadow-sm cursor-pointer"
+                  >
+                    <span>
+                      {isLoading ? "Processing..." : "Donate Now"}
+                    </span>
+
+                    {!isLoading && (
+                      <span className="text-lg font-bold">→</span>
+                    )}
+                  </button>
+
+                  <p className="text-zinc-500 text-xs sm:text-xs text-center font-normal">
+                    We will reply with the available contribution options.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </section>
   );
 };
 
 export default ChooseYourPlan;
+

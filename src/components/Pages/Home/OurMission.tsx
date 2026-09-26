@@ -12,8 +12,8 @@ const missionPoints = [
 
 const OurMission = () => {
   return (
-    <section id="mission" className="relative py-16 md:py-24 bg-[#0a0a0a] text-white overflow-hidden flex items-center justify-center min-h-screen">
-      <div className="w-full xl:container mx-auto px-2">
+    <section id="mission" className="relative py-16 md:py-20 text-white overflow-hidden flex items-center justify-center border-b border-gray-900">
+      <div className="w-full xl:container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           
           {/* Left Column - Image with floating badge & red ambient glow */}

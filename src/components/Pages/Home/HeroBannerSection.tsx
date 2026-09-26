@@ -103,7 +103,7 @@ const HeroBannerSection = () => {
       </div>
 
       {/* Bottom Stats Section */}
-      <div className="relative z-10 w-full py-5 border-b border-gray-900 bg-gradient-to-b from-transparent via-black/80 to-black">
+      <div className="relative z-10 w-full py-5 md:py-8 border-b border-gray-900 bg-gradient-to-b from-transparent via-black/80 to-black">
         <div className="w-full xl:container mx-auto px-4 sm:px-6 lg:px-8 pt-7 md:pt-8">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {STATS.map((stat) => (

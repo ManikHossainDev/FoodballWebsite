@@ -1,99 +1,91 @@
-import { HiHomeModern } from 'react-icons/hi2';
-import { MdVideoLibrary, MdPerson, MdForum, MdAnalytics } from 'react-icons/md';
+import React from 'react';
+import { FiVideo, FiUsers, FiTrendingUp, FiTarget, FiShield } from 'react-icons/fi';
+import { BiTrophy } from 'react-icons/bi';
 
-const PowerfulFeatures = () => {
+const GoProFeatures = () => {
   const features = [
     {
-      icon: <MdVideoLibrary className="w-6 h-6" />,
-      title: 'Scouting Video Upload & Review',
+      icon: <FiVideo className="w-5 h-5" />,
+      title: 'Video Analysis',
       description:
-        'Players can upload high-quality gameplay videos, match highlights, and training clips to receive comprehensive frame-by-frame analysis and detailed tactical feedback from verified expert coaches.',
-      iconBg: 'bg-blue-500/10',
-      iconColor: 'text-blue-500',
+        'Upload your gameplay and get frame-by-frame breakdown from UEFA-licensed coaches.',
     },
     {
-      icon: <MdPerson className="w-6 h-6" />,
-      title: 'Expert Mentorship',
+      icon: <FiUsers className="w-5 h-5" />,
+      title: 'Direct Networking',
       description:
-        'Connect with experienced professional coaches who provide personalized 1-on-1 guidance, customized training plans, and tactical development strategies to accelerate your football growth.',
-      iconBg: 'bg-green-500/10',
-      iconColor: 'text-green-500',
+        'Connect directly with verified scouts, agents, and club representatives worldwide.',
     },
     {
-      icon: <MdForum className="w-6 h-6" />,
-      title: 'Career Consultation',
+      icon: <FiTrendingUp className="w-5 h-5" />,
+      title: 'Career Trajectory',
       description:
-        'Get professional advice on your career pathway, contract reviews, and trial preparations from licensed agents and industry consultants through direct messaging and consultations.',
-      iconBg: 'bg-purple-500/10',
-      iconColor: 'text-purple-500',
+        'Personalized development plans designed to get you ready for professional trials.',
     },
     {
-      icon: <HiHomeModern className="w-6 h-6" />,
-      title: 'Club Recruitment',
+      icon: <FiTarget className="w-5 h-5" />,
+      title: 'Targeted Showcases',
       description:
-        'Clubs and professional scouts can seamlessly browse verified player profiles, review match statistics, evaluate scouting footage, and directly connect with talent that matches their roster requirements.',
-      iconBg: 'bg-orange-500/10',
-      iconColor: 'text-orange-500',
+        'Get your profile in front of clubs that are actively looking for your exact player profile.',
     },
     {
-      icon: <MdAnalytics className="w-6 h-6" />,
-      title: 'Performance & Stats Analytics',
+      icon: <FiShield className="w-5 h-5" />,
+      title: 'Verified Opportunities',
       description:
-        'Track your in-game performance, match ratings, physical milestones, and tactical benchmarks with comprehensive data analytics to constantly measure and prove your career progress.',
-      iconBg: 'bg-emerald-500/10',
-      iconColor: 'text-emerald-500',
+        'No fake trials. Every scout and club on Evolution Hub is vetted for authenticity.',
+    },
+    {
+      icon: <BiTrophy className="w-5 h-5" />,
+      title: 'Performance Tracking',
+      description:
+        'Log your stats, track your physical metrics, and show your improvement over time.',
     },
   ];
 
   return (
-    <div className="xl:container w-full mx-auto py-10 lg:pb-20">
-      <h2
-        className="text-2xl md:text-5xl font-bold text-white mb-6 text-center"
-        style={{
-          textShadow:
-            '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000',
-        }}
-      >
-        Powerful Features
-      </h2>
+    <div className="border-b border-gray-900 py-16 md:py-20 px-4 sm:px-6 lg:px-8 font-sans flex items-center justify-center">
+      <div className="w-full xl:container mx-auto">
+        {/* Header Section */}
+        <div className="mb-14 text-center">
+          <h2 className="text-3xl md:text-[40px] font-black text-white mb-4 uppercase tracking-wide">
+            Everything you need to <span className="text-[#ff2a2a]">Go Pro</span>
+          </h2>
+          <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            We&apos;ve built a comprehensive ecosystem that bridges the gap between raw talent and
+            professional contracts. Stop waiting to be discovered.
+          </p>
+        </div>
 
-      <h1 className="text-xs md:text-base lg:text-lg text-center py-3 text-gray-300 mb-10">
-        Everything you need to develop your football career and connect with opportunities
-      </h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
-        {features.map((feature, index) => {
-          // Top 3 cards span 2 columns on desktop (2 + 2 + 2 = 6)
-          // Bottom 2 cards span 3 columns on desktop (3 + 3 = 6)
-          const colClass =
-            index < 3
-              ? 'col-span-1 md:col-span-1 lg:col-span-2'
-              : 'col-span-1 md:col-span-1 lg:col-span-3';
-
-          return (
+        {/* Grid Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+          {features.map((feature, index) => (
             <div
               key={index}
-              className={`bg-zinc-950 border ${colClass} border-zinc-900 rounded-xl p-4 md:p-6 lg:p-7 transition-all duration-300 hover:border-zinc-700 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 flex flex-col justify-start`}
+              className="group relative border border-zinc-800/80 rounded-xl p-6 lg:p-8 transition-all duration-300 hover:border-red-500/80 hover:-translate-y-1 overflow-hidden flex flex-col justify-start hover:shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_25px_rgba(220,38,38,0.15)]"
             >
-              <div
-                className={`w-12 h-12 ${feature.iconBg} rounded-lg flex items-center justify-center mb-5 ${feature.iconColor}`}
-              >
+              {/* Red hover background with soft black shadows on left and right */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-red-600/30 to-black opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shadow-[inset_35px_0_40px_-10px_rgba(0,0,0,0.95),inset_-35px_0_40px_-10px_rgba(0,0,0,0.95)]" />
+
+              {/* Icon Container */}
+              <div className="relative z-10 w-11 h-11 bg-red-950/20 border border-red-900/30 rounded-lg flex items-center justify-center text-[#ff3333] mb-6 group-hover:border-red-500/50 group-hover:bg-red-950/40 transition-colors duration-300">
                 {feature.icon}
               </div>
 
-              <h3 className="text-base md:text-xl font-semibold text-white mb-3">
+              {/* Title */}
+              <h3 className="relative z-10 text-lg md:text-xl font-bold text-white mb-3 tracking-wide transition-colors duration-300">
                 {feature.title}
               </h3>
 
-              <p className="text-gray-400 text-sm leading-relaxed">
+              {/* Description */}
+              <p className="relative z-10 text-gray-400 text-[14px] leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
                 {feature.description}
               </p>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default PowerfulFeatures;
+export default GoProFeatures;
